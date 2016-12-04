@@ -3,11 +3,13 @@
 As you all know, writing a  microservice is a trivial task. Yeah! I'll rephrase that. Writing a minimal example microservice that never gets deployed in a 
 live environment is a trival task.
 
-This project demonstrates a set of possible technologies(*) working together to build and deploy a **real** microservice. As the project proceeds, this list 
+This project demonstrates a set of possible technologies (1) working together to build and deploy a **real** microservice. As the project proceeds, this list 
 will change, technologies will be substituted and I will change things in the light of experience.
 
-(*) Only one example of each. I'm not doing every tool, framework and language in existence. Life is too short to ~~stuff a mushroom~~ follow new Node.js 
+(1) Only one example of each. I'm not doing every tool, framework and language in existence. Life is too short to ~~stuff a mushroom~~ follow new Node.js 
 frameworks.
+
+~~This was mistaken text~~
 
 To give you an idea of the problem, this is my basic list of things to get to grips with to build a **real** microservice. This is aimed at building Java 
 applications for an AWS environment.  
