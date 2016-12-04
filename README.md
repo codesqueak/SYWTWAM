@@ -9,8 +9,6 @@ will change, technologies will be substituted and I will change things in the li
 (1) Only one example of each. I'm not doing every tool, framework and language in existence. Life is too short to ~~stuff a mushroom~~ follow new Node.js 
 frameworks.
 
-~~This was mistaken text~~
-
 To give you an idea of the problem, this is my basic list of things to get to grips with to build a **real** microservice. This is aimed at building Java 
 applications for an AWS environment.  
 
