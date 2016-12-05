@@ -1,3 +1,5 @@
+[![License: MIT](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
+
 #So You Want To Write A Microservice
 
 As you all know, writing a  microservice is a trivial task. Yeah! I'll rephrase that. Writing a minimal example microservice that never gets deployed in a 
