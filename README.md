@@ -2,14 +2,15 @@
 
 #So You Want To Write A Microservice
 
-As you all know, writing a  microservice is a trivial task. Yeah! I'll rephrase that. Writing a minimal example microservice that never gets deployed in a 
+As you all know, writing a  microservice is a trivial task. Yeah! I'll rephrase that. Writing a trivial example microservice that never gets deployed in a 
 live environment is a trival task.
 
 This project demonstrates a set of possible technologies (1) working together to build and deploy a **real** microservice. As the project proceeds, this list 
 will change, technologies will be substituted and I will change things in the light of experience.
 
-(1) Only one example of each. I'm not doing every tool, framework and language in existence. Life is too short to ~~stuff a mushroom~~ follow new Node.js 
-frameworks.
+(1) Only one example of each. I'm not doing every tool, framework and language in existence. Life is too short to ~~follow new Node.js frameworks~~ try every 
+possible 
+combination.
 
 To give you an idea of the problem, this is my basic list of things to get to grips with to build a **real** microservice. This is aimed at building Java 
 applications for an AWS environment.  
@@ -21,13 +22,13 @@ applications for an AWS environment.
 
 
 ##The Microservice
-| Task            | Possible Implementation Technology  |
-|-----------------|---------------------|
+| Task            | Possible Implementation Technology  | Status |
+|-----------------|---------------------|---------------------|
 | Basic framework | [SpringBoot](http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)|
 | Configuration | [Spring](http://spring.io/) |
 | Async services | [RxJava](https://github.com/ReactiveX/RxJava) |
 | Sync services | [Java](https://www.java.com)  |
-| API Framework /  Documentation | [Swagger](http://swagger.io/)|
+| API Framework /  Documentation | [Swagger](http://swagger.io/) / [SpringFox](http://springfox.github.io/springfox/)|
 | Error handling |  |
 | Validation | [JSR303 (Hibernate Validator)](http://hibernate.org/validator/) |
 | Circuit breaker | [Hystrix](https://github.com/Netflix/Hystrix) |
@@ -46,8 +47,8 @@ applications for an AWS environment.
 
 
 ##Test Test Test ... !
-| Task            | Possible Implementation Technology  |
-|-----------------|---------------------|
+| Task            | Possible Implementation Technology  | Status |
+|-----------------|---------------------|---------------------|
 | Build | [Maven](https://maven.apache.org/) / [Gradle](https://gradle.org/)  |
 | Unit test | [JUnit](http://junit.org/junit4/) |
 | Integration test | [JUnit](http://junit.org/junit4/) / [Scala Test](http://www.scalatest.org/) |
@@ -58,14 +59,14 @@ applications for an AWS environment.
 | Code quality | [PMD](https://pmd.github.io/) |
 | Static analysis | [findbugs](http://findbugs.sourceforge.net/) |
 | CI | [Jenkins](https://jenkins.io/) / [Bamboo](https://www.atlassian.com/software/bamboo) |
-| Mocking | [Mockito](http://site.mockito.org/) / [EasyMock](http://site.mockito.org/) |
+| Mocking | [Mockito](http://site.mockito.org/) / [EasyMock](http://site.mockito.org/) ... and all the others |
 | Mock Services | [WireMock](http://wiremock.org/) |
 
 
 ## Infrastructure 
-| Task            | Possible Implementation Technology  |
-|-----------------|---------------------|
-| Cloud | [AWS](https://aws.amazon.com/) ... There are others ... ? |
+| Task            | Possible Implementation Technology  | Status |
+|-----------------|---------------------|---------------------|
+| Cloud | [AWS](https://aws.amazon.com/) ... There are others ... :) |
 | Firewall | Loads to choose from  | 
 | Routing | [Zuul](https://github.com/Netflix/zuul) |
 | Containers | [Docker](https://www.docker.com/) |
@@ -74,8 +75,8 @@ applications for an AWS environment.
 
 
 ## Environment 
-| Task            | Possible Implementation Technology  |
-|-----------------|---------------------|
+| Task            | Possible Implementation Technology  | Status |
+|-----------------|---------------------|---------------------|
 | Data storage / persistence | [MongoDB](https://www.mongodb.com/) / [Coucbase](http://www.couchbase.com/) / [PostgrSQL](https://www.postgresql.org/)  |
 | Cache | [Hazelcast](https://hazelcast.com/) / [memcached](https://memcached.org/)  |
 | Logging | [ELK (Elastic search / Logstash / Kibana)](https://www.elastic.co/webinars/introduction-elk-stack)  |
@@ -88,8 +89,8 @@ applications for an AWS environment.
 
 
 ## Deployment
-| Task            | Possible Implementation Technology  |
-|-----------------|---------------------|
+| Task            | Possible Implementation Technology  | Status |
+|-----------------|---------------------|---------------------|
 | CSCI store | [Artifactory](https://www.jfrog.com/artifactory/) / [Sonatype Nexus](https://www.sonatype.com/nexus-repository-sonatype) |
 | Build | [Puppet](https://puppet.com/) / [Ansible](https://www.ansible.com)  |
 | Containers | [Docker](https://www.docker.com/)  |
