@@ -1,0 +1,171 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        jcenter()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.1.RELEASE")
+        classpath('se.transmode.gradle:gradle-docker:1.2')
+    }
+}
+
+import org.apache.tools.ant.taskdefs.condition.Os
+
+apply plugin: 'spring-boot'
+apply plugin: 'idea'
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'findbugs'
+apply plugin: 'maven-publish'
+apply plugin: 'docker'
+apply plugin: 'application'
+
+sourceCompatibility = javaVersion
+targetCompatibility = javaVersion
+
+
+group = projectGroup
+
+task setVersion {
+    if (System.env.BUILD_NUMBER) {
+        version = projectVersionMajor + '.' + projectVersionMinor + '.' + System.env.BUILD_NUMBER + '-SNAPSHOT'
+    } else {
+        version = projectVersionMajor + '.' + projectVersionMinor + '.' + projectVersionBuild + '-SNAPSHOT'
+    }
+}
+
+jar {
+    dependsOn setVersion
+    baseName = projectName
+    manifest
+            {
+                attributes 'Implementation-Title': projectName,
+                        'Implementation-Version': version,
+                        'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            }
+}
+
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact sourceJar {
+                classifier 'sources'
+            }
+        }
+    }
+}
+
+publishToMavenLocal {
+    dependsOn build
+}
+
+
+jacoco {
+    toolVersion = "0.7.7.201606060606"
+    reportsDir = file("$buildDir/customJacocoReportDir")
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.destination "${buildDir}/jacocoHtml"
+    }
+}
+
+findbugs {
+    toolVersion = "3.+"
+    sourceSets = [sourceSets.main]
+    effort = "max"
+    reportLevel = "high"
+    findbugsTest.enabled = false
+    ignoreFailures = true
+}
+
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled = true
+        html.enabled = false
+    }
+}
+
+task buildDocker(type: Exec) {
+    doFirst {
+        copy {
+            from "build/libs"
+            into "build/docker/"
+            include "*.jar"
+        }
+        copy {
+            from "."
+            into "build/docker/"
+            include "Dockerfile"
+        }
+    }
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        commandLine 'cmd', '/c', 'docker', 'build', '-f', 'build/docker/Dockerfile', '-t', 'codesqueak', 'build/docker/'
+    } else {
+        commandLine 'docker', 'build', '-f', 'build/docker/Dockerfile', '-t', 'codesqueak', 'build/docker/'
+    }
+}
+
+task myJavadocs(type: Javadoc) {
+    source = sourceSets.main.allJava
+    classpath = configurations.compile
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    jcenter()
+    maven {
+        url 'https://repo.spring.io/libs-milestone'
+    }
+}
+
+// In this section you declare the dependencies for your production and test code
+dependencies {
+    //
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.4.2.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow', version: '1.4.2.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '1.4.2.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.4.2.RELEASE'
+    //
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter', version: '1.1.5.RELEASE'
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-netflix-core', version: '1.1.5.RELEASE'
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-commons', version: '1.1.5.RELEASE'
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix', version: '1.1.5.RELEASE'
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix-dashboard', version: '1.1.5.RELEASE'
+    //
+    compile group: 'org.springframework.data', name: 'spring-data-jpa', version: '2.0.0.M1'
+    compile group: 'org.springframework.data', name: 'spring-data-couchbase', version: '3.0.0.M1'
+    //
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.6.1'
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.6.1'
+    //
+    compile group: 'javax.inject', name: 'javax.inject', version: '1'
+    //
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.8.5'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.8.5'
+    //
+    compile group: 'io.reactivex', name: 'rxjava', version: '1.2.2'
+    //
+    compile group: 'com.couchbase.client', name: 'java-client', version: '2.3.5'
+    //
+    compile project(':subproj1')
+    // Declare the dependency for your test framework
+}
+
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.2'
+}
+

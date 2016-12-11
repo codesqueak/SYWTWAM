@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Base logback configuration provided for compatibility with Spring Boot 1.1 -->
+
+    <!-- <include resource="org/springframework/boot/logging/logback/defaults.xml" /> -->
+
+    <!-- Default logback configuration provided for import, equivalent to the programmatic initialization performed by Boot -->
+
+    <conversionRule conversionWord="clr"
+                    converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+    <conversionRule conversionWord="wex"
+                    converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p){red} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %X{SYSTEM:-${SYSTEM}} %X{SUBSYSTEM:-${SUBSYSTEM}} %clr(%-60.60logger{59}){blue} %clr(:){faint} %m%n%wex"/>
+
+    <property name="FILE_LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5level ${PID:- } --- [%thread] %X{SYSTEM:-${SYSTEM}} %X{SUBSYSTEM:-${SUBSYSTEM}} %-60.60logger{59} : %m%n%wex"/>
+
+    <appender name="DEBUG_LEVEL_REMAPPER"
+              class="org.springframework.boot.logging.logback.LevelRemappingAppender">
+        <destinationLogger>org.springframework.boot</destinationLogger>
+    </appender>
+
+    <logger name="org.hibernate.validator.internal.util.Version" level="WARN"/>
+    <logger name="org.springframework.boot.actuate.endpoint.jmx" additivity="false">
+        <appender-ref ref="DEBUG_LEVEL_REMAPPER"/>
+    </logger>
+    <logger name="org.thymeleaf" additivity="false">
+        <appender-ref ref="DEBUG_LEVEL_REMAPPER"/>
+    </logger>
+
+    <logger name="org.springframework.security"
+            level="INFO"/> <!-- to debug security related issues (DEBUG) -->
+    <logger name="org.springframework.web.servlet.mvc"
+            level="INFO"/> <!-- some serialization issues are at trace level here: org.springframework.web.servlet.mvc.method.annotation
+            .ServletInvocableHandlerMethod -->
+
+
+    <property name="LOG_FILE"
+              value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}/}spring.log}"/>
+
+
+    <!-- Console appender logback configuration provided for import, equivalent to the programmatic initialization performed
+        by Boot -->
+
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+
+    <!-- File appender logback configuration provided for import, equivalent to the programmatic initialization performed by
+        Boot -->
+
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+        <file>${LOG_FILE}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${LOG_FILE}.%i</fileNamePattern>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>10MB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
+
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+
+    <logger name="org.springframework.web" level="INFO"/>
+</configuration>
