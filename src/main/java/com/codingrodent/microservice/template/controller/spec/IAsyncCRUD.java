@@ -79,7 +79,8 @@ public interface IAsyncCRUD<K, V> {
     @ApiResponses(value = { //
             @ApiResponse(code = 200, message = "Response entity in body"), //
             @ApiResponse(code = 204, message = "Response entity body is empty"), //
-            @ApiResponse(code = 404, message = "No matching entity exists")})
+            @ApiResponse(code = 404, message = "No matching entity exists"), //
+            @ApiResponse(code = 410, message = "No matching entity exists (Permanent)")})
     default DeferredResult<ResponseEntity<Void>> delete(@PathVariable UUID uuid) {
         throw new UnsupportedOperationException("Delete an entity not implemented");
     }

@@ -8,13 +8,14 @@
 | HEAD          |                  | Singleton / Collection | Yes        | Yes   | As per GET but do not return body                                              |
 | POST          | CREATE           | Singleton              | No         | No    | New / modified entity enclosed in the request as identified by the Request-URI |
 | PUT           | UPDATE / REPLACE | Singleton              | Yes        | No    | Requests that the enclosed entity be stored under the supplied Request-URI     |
-| DELETE        | DELETE           | Singleton / Collection | Yes        | No    | Requests that the server delete the resource identified by the Request-URI     | 
-| TRACE         |                  |                        | No (*1)    | No    | Invoke a remote, application-layer loop-back of the request message            |
+| DELETE        | DELETE           | Singleton / Collection | Yes (*1)   | No    | Requests that the server delete the resource identified by the Request-URI     | 
+| TRACE         |                  |                        | No         | No    | Invoke a remote, application-layer loop-back of the request message            | 
 | CONNECT       |                  |                        | No         | No    | Reserved                                                                       |
-| OPTIONS       |                  | Singleton / Collection | No         | No    | Request for information about the communication options available              |
-| PATCH         | UPDATE / MODIFY  | Singleton              | No(*1)      | No   | Request to modify an existing entity                                           |      
+| OPTIONS       |                  | Singleton / Collection | Yes        | Yes   | Request for information about the communication options available              | 
+| PATCH         | UPDATE / MODIFY  | Singleton              | No (*1)     | No   | Request to modify an existing entity                                           |      
 
 (*1) Maybe ! - See notes on Delete further down
+
 (*2) Not considered idempotent but can be made so by use of strict versioning. e.g use of ETag / If-Match
 
 **Notes**
