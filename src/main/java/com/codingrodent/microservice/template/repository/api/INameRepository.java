@@ -22,45 +22,16 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.entity;
+package com.codingrodent.microservice.template.repository.api;
 
-import com.couchbase.client.java.repository.annotation.*;
-import org.springframework.data.annotation.Version;
-import org.springframework.data.couchbase.core.mapping.Document;
+import com.codingrodent.microservice.template.entity.ContactEntity;
+import org.springframework.data.repository.CrudRepository;
 
 import java.util.UUID;
 
 /**
- * Name persistence class
+ * Let spring build basic repository
  */
-@Document
-public class NameEntity {
-
-    @Id
-    private final UUID id;
-    @Field
-    private final String firstName;
-    @Field
-    private final String lastName;
-    @Version
-    private long version;
-
-    public NameEntity(String id, String firstName, String lastName) {
-        this.id = UUID.fromString(id);
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public UUID getId() {
-        return id;
-    }
+public interface INameRepository extends CrudRepository<ContactEntity, UUID> {
 
 }

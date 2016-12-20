@@ -25,40 +25,83 @@
 package com.codingrodent.microservice.template.model;
 
 import com.fasterxml.jackson.annotation.*;
-import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.*;
 
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**
- * Name model class
+ * Contact model class
  */
-@ApiModel
-public class Name {
+@ApiModel(description = "Sample contact model item")
+public class Contact {
 
     @JsonProperty
+    @NotNull
     private final UUID uuid;
     @JsonProperty("firstname")
+    @NotNull
     private final String firstName;
     @JsonProperty("lastname")
+    @NotNull
     private final String lastName;
+    @JsonProperty("age")
+    @NotNull
+    private final Integer age;
+    @JsonProperty("phone")
+    private final String phone;
+    @JsonProperty("mobile")
+    private final String mobile;
+    @JsonProperty("country")
+    @NotNull
+    private final String country;
 
     @JsonCreator
-    public Name(@JsonProperty("uuid") UUID uuid, @JsonProperty("firstname") String firstName, @JsonProperty("lastname") String lastName) {
+    public Contact(@JsonProperty("uuid") final UUID uuid, @JsonProperty("firstname") final String firstName, @JsonProperty("lastname") final String lastName,
+                   @JsonProperty("age") final Integer age, @JsonProperty("phone") final String phone, @JsonProperty("mobile") final String mobile,
+                   @JsonProperty("country") final String country) {
         this.uuid = uuid;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.age = age;
+        this.phone = phone;
+        this.mobile = mobile;
+        this.country = country;
     }
 
+    @ApiModelProperty(required = true, value = "Contact first name")
     public String getFirstName() {
         return firstName;
     }
 
+    @ApiModelProperty(required = true, value = "Contact last name")
     public String getLastName() {
         return lastName;
     }
 
+    @ApiModelProperty(required = true, value = "Unique ID")
     public UUID getUuid() {
         return uuid;
+    }
+
+    @ApiModelProperty(required = true, value = "Age")
+    public Integer getAge() {
+        return age;
+    }
+
+    @ApiModelProperty(required = false, value = "Phone number (landline)")
+    public String getPhone() {
+        return phone;
+    }
+
+    @ApiModelProperty(required = false, value = "Phone number (mobile)")
+    public String getMobile() {
+        return mobile;
+    }
+
+    @ApiModelProperty(required = true, value = "Country of residence")
+    public String getCountry() {
+        return country;
     }
 
 }

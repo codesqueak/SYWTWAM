@@ -24,8 +24,8 @@
  */
 package com.codingrodent.microservice.template.repository.impl;
 
-import com.codingrodent.microservice.template.entity.NameEntity;
-import com.codingrodent.microservice.template.repository.spec.IAsync;
+import com.codingrodent.microservice.template.entity.ContactEntity;
+import com.codingrodent.microservice.template.repository.api.IAsync;
 import com.couchbase.client.deps.com.fasterxml.jackson.core.JsonProcessingException;
 import com.couchbase.client.deps.com.fasterxml.jackson.databind.ObjectMapper;
 import com.couchbase.client.java.*;
@@ -40,13 +40,13 @@ import java.util.UUID;
  * Simple example repository
  */
 @Service
-public class NameRepository implements IAsync<NameEntity, UUID> {
+public class NameRepository implements IAsync<ContactEntity, UUID> {
 
     private final Cluster cluster = CouchbaseCluster.create("localhost");
     private final Bucket bucket = cluster.openBucket("template", "password");
 
     @Override
-    public Observable<?> saveAsync(final NameEntity entity) {
+    public Observable<?> saveAsync(final ContactEntity entity) {
         ObjectMapper mapper = new ObjectMapper();
         JsonObject name;
         try {
@@ -59,7 +59,7 @@ public class NameRepository implements IAsync<NameEntity, UUID> {
     }
 
     @Override
-    public Observable<NameEntity> findOneAsync(final UUID uuid) {
+    public Observable<ContactEntity> findOneAsync(final UUID uuid) {
         return Observable.empty();
     }
 }

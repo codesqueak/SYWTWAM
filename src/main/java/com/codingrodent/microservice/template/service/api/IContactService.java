@@ -22,23 +22,23 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.service.spec;
+package com.codingrodent.microservice.template.service.api;
 
-import com.codingrodent.microservice.template.model.Name;
+import com.codingrodent.microservice.template.model.Contact;
 import rx.Observable;
 
 import java.util.UUID;
 
 /**
- * Business logic for Name information
+ * Business logic for Contact information
  */
-public interface INameService {
+public interface IContactService {
 
-    Observable<?> saveAsync(Name name);
+    Observable<?> saveAsync(Contact contact);
 
-    Observable<Name> loadAsync(UUID uuid);
+    Observable<Contact> loadAsync(UUID uuid);
 
-    void save(Name name);
+    void save(Contact contact);
 
-    Name load(UUID uuid);
+    Contact load(UUID uuid);
 }

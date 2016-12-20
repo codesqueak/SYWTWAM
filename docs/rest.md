@@ -12,7 +12,7 @@
 | TRACE         |                  |                        | No         | No    | Invoke a remote, application-layer loop-back of the request message            | 
 | CONNECT       |                  |                        | No         | No    | Reserved                                                                       |
 | OPTIONS       |                  | Singleton / Collection | Yes        | Yes   | Request for information about the communication options available              | 
-| PATCH         | UPDATE / MODIFY  | Singleton              | No (*1)     | No   | Request to modify an existing entity                                           |      
+| PATCH         | UPDATE / MODIFY  | Singleton              | No (*2)     | No   | Request to modify an existing entity                                           |      
 
 (*1) Maybe ! - See notes on Delete further down
 

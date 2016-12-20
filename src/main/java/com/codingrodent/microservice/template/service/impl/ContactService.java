@@ -24,10 +24,10 @@
  */
 package com.codingrodent.microservice.template.service.impl;
 
-import com.codingrodent.microservice.template.entity.NameEntity;
-import com.codingrodent.microservice.template.model.Name;
-import com.codingrodent.microservice.template.repository.spec.*;
-import com.codingrodent.microservice.template.service.spec.INameService;
+import com.codingrodent.microservice.template.entity.ContactEntity;
+import com.codingrodent.microservice.template.model.Contact;
+import com.codingrodent.microservice.template.repository.api.*;
+import com.codingrodent.microservice.template.service.api.IContactService;
 import org.springframework.stereotype.Service;
 import rx.Observable;
 
@@ -38,39 +38,39 @@ import static com.codingrodent.microservice.template.converter.Converter.toNameE
 import static com.codingrodent.microservice.template.converter.Converter.toNameModel;
 
 /**
- * Business logic for Name information
+ * Business logic for Contact information
  */
 @Service
-public class NameService implements INameService {
+public class ContactService implements IContactService {
 
     private final INameRepository repository;
-    private final IAsync<NameEntity, UUID> asyncRepository;
+    private final IAsync<ContactEntity, UUID> asyncRepository;
 
     @Inject
-    public NameService(INameRepository repository, IAsync<NameEntity, UUID> asyncRepository) {
+    public ContactService(INameRepository repository, IAsync<ContactEntity, UUID> asyncRepository) {
         this.repository = repository;
         this.asyncRepository = asyncRepository;
     }
 
     @Override
-    public Observable<?> saveAsync(final Name model) {
+    public Observable<?> saveAsync(final Contact model) {
         return asyncRepository.saveAsync(toNameEntity.convert(model));
     }
 
     @Override
-    public Observable<Name> loadAsync(final UUID uuid) {
+    public Observable<Contact> loadAsync(final UUID uuid) {
         return asyncRepository.findOneAsync(uuid).map(toNameModel::convert);
     }
 
     @Override
-    public void save(final Name model) {
-        NameEntity entity = toNameEntity.convert(model);
+    public void save(final Contact model) {
+        ContactEntity entity = toNameEntity.convert(model);
         repository.save(entity);
     }
 
     @Override
-    public Name load(final UUID uuid) {
-        NameEntity entity = repository.findOne(uuid);
+    public Contact load(final UUID uuid) {
+        ContactEntity entity = repository.findOne(uuid);
         if (null == entity)
             return null;
         else

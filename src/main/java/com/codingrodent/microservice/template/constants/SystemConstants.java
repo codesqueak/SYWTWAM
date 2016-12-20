@@ -32,6 +32,9 @@ public class SystemConstants {
     // Logging
     public final static String SYSTEM_NAME = "SYSTEM";
     public final static String SUBSYSTEM_NAME = "SUBSYSTEM";
+    // API Versions
+    public final static String API_1 = "V_1";
+
 
     private SystemConstants() {
         // Never need to make an instance of this class

@@ -1,4 +1,4 @@
-package com.codingrodent.microservice.template.repository.spec;
+package com.codingrodent.microservice.template.repository.api;
 
 import rx.Observable;
 
