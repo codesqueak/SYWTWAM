@@ -43,18 +43,20 @@ import static com.codingrodent.microservice.template.converter.Converter.toNameM
 @Service
 public class ContactService implements IContactService {
 
-    private final INameRepository repository;
+    // Both sync and async implementations
+    // Normally use only one but this is for demo purposes
+    private final ISyncNameRepository repository;
     private final IAsync<ContactEntity, UUID> asyncRepository;
 
     @Inject
-    public ContactService(INameRepository repository, IAsync<ContactEntity, UUID> asyncRepository) {
+    public ContactService(ISyncNameRepository repository, IAsync<ContactEntity, UUID> asyncRepository) {
         this.repository = repository;
         this.asyncRepository = asyncRepository;
     }
 
     @Override
-    public Observable<?> saveAsync(final Contact model) {
-        return asyncRepository.saveAsync(toNameEntity.convert(model));
+    public Observable<?> saveAsync(final UUID uuid, final Contact model) {
+        return asyncRepository.saveAsync(toNameEntity.convert(uuid, model));
     }
 
     @Override
@@ -63,8 +65,8 @@ public class ContactService implements IContactService {
     }
 
     @Override
-    public void save(final Contact model) {
-        ContactEntity entity = toNameEntity.convert(model);
+    public void save(final UUID uuid, final Contact model) {
+        ContactEntity entity = toNameEntity.convert(uuid, model);
         repository.save(entity);
     }
 

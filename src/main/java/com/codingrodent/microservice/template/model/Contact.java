@@ -27,8 +27,7 @@ package com.codingrodent.microservice.template.model;
 import com.fasterxml.jackson.annotation.*;
 import io.swagger.annotations.*;
 
-import javax.validation.constraints.NotNull;
-import java.util.UUID;
+import javax.validation.constraints.*;
 
 /**
  * Contact model class
@@ -36,14 +35,13 @@ import java.util.UUID;
 @ApiModel(description = "Sample contact model item")
 public class Contact {
 
-    @JsonProperty
-    @NotNull
-    private final UUID uuid;
     @JsonProperty("firstname")
     @NotNull
+    @Size(min = 5, max = 10)
     private final String firstName;
     @JsonProperty("lastname")
     @NotNull
+    @Size(min = 5, max = 10)
     private final String lastName;
     @JsonProperty("age")
     @NotNull
@@ -57,10 +55,8 @@ public class Contact {
     private final String country;
 
     @JsonCreator
-    public Contact(@JsonProperty("uuid") final UUID uuid, @JsonProperty("firstname") final String firstName, @JsonProperty("lastname") final String lastName,
-                   @JsonProperty("age") final Integer age, @JsonProperty("phone") final String phone, @JsonProperty("mobile") final String mobile,
-                   @JsonProperty("country") final String country) {
-        this.uuid = uuid;
+    public Contact(@JsonProperty("firstname") final String firstName, @JsonProperty("lastname") final String lastName, @JsonProperty("age") final Integer
+            age, @JsonProperty("phone") final String phone, @JsonProperty("mobile") final String mobile, @JsonProperty("country") final String country) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
@@ -79,22 +75,17 @@ public class Contact {
         return lastName;
     }
 
-    @ApiModelProperty(required = true, value = "Unique ID")
-    public UUID getUuid() {
-        return uuid;
-    }
-
     @ApiModelProperty(required = true, value = "Age")
     public Integer getAge() {
         return age;
     }
 
-    @ApiModelProperty(required = false, value = "Phone number (landline)")
+    @ApiModelProperty(value = "Phone number (landline)")
     public String getPhone() {
         return phone;
     }
 
-    @ApiModelProperty(required = false, value = "Phone number (mobile)")
+    @ApiModelProperty(value = "Phone number (mobile)")
     public String getMobile() {
         return mobile;
     }

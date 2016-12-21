@@ -38,7 +38,7 @@ public class ContactEntity {
 
     @Id
     private final UUID id;
-    @Field("firsname")
+    @Field("firstname")
     private final String firstName;
     @Field("lastname")
     private final String lastName;

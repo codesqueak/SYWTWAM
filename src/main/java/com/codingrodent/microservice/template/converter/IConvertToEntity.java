@@ -22,21 +22,14 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.constants;
+package com.codingrodent.microservice.template.converter;
 
 /**
- * Various application wide constants
+ * Function interface defining mapping of a Source to a Target with key of ID.  These will represent entity and model objects
  */
-public class SystemConstants {
+@FunctionalInterface
+public interface IConvertToEntity<Source, Target, ID> {
 
-    // Logging
-    public final static String SYSTEM_NAME = "SYSTEM";
-    public final static String SUBSYSTEM_NAME = "SUBSYSTEM";
-    // API Versions
-    public final static String API_VERSION = "V1";
-
-    private SystemConstants() {
-        // Never need to make an instance of this class
-    }
+    Target convert(ID i, Source s);
 
 }

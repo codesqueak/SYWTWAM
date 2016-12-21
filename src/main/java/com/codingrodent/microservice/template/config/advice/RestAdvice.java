@@ -30,8 +30,9 @@ import com.codingrodent.microservice.template.utility.RestCallErrorInfo;
 import com.netflix.hystrix.exception.HystrixRuntimeException;
 import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.context.request.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -46,38 +47,32 @@ import javax.servlet.http.HttpServletRequest;
 public class RestAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(UnsupportedOperationException.class)
-    @ResponseBody
-    public ResponseEntity<RestCallErrorInfo> fault(HttpServletRequest req, UnsupportedOperationException ex) {
+    public ResponseEntity<Object> fault(HttpServletRequest req, UnsupportedOperationException ex) {
         return getResponseEntity(req, ex, HttpStatus.NOT_IMPLEMENTED);
     }
 
     @ExceptionHandler(DocumentNotFoundException.class)
-    @ResponseBody
-    public ResponseEntity<RestCallErrorInfo> fault(HttpServletRequest req, DocumentNotFoundException ex) {
+    public ResponseEntity<Object> fault(HttpServletRequest req, DocumentNotFoundException ex) {
         return getResponseEntity(req, ex, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ConflictException.class)
-    @ResponseBody
-    public ResponseEntity<RestCallErrorInfo> fault(HttpServletRequest req, ConflictException ex) {
+    public ResponseEntity<Object> fault(HttpServletRequest req, ConflictException ex) {
         return getResponseEntity(req, ex, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(HystrixRuntimeException.class)
-    @ResponseBody
-    public ResponseEntity<RestCallErrorInfo> fault(HttpServletRequest req, HystrixRuntimeException ex) {
+    public ResponseEntity<Object> fault(HttpServletRequest req, HystrixRuntimeException ex) {
         return getResponseEntity(req, ex, HttpStatus.SERVICE_UNAVAILABLE);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseBody
-    public ResponseEntity<RestCallErrorInfo> fault(HttpServletRequest req, IllegalArgumentException ex) {
+    public ResponseEntity<Object> fault(HttpServletRequest req, IllegalArgumentException ex) {
         return getResponseEntity(req, ex, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    @ResponseBody
-    public ResponseEntity<RestCallErrorInfo> fault(HttpServletRequest req, MethodArgumentTypeMismatchException ex) {
+    public ResponseEntity<Object> fault(HttpServletRequest req, MethodArgumentTypeMismatchException ex) {
         return getResponseEntity(req, ex, HttpStatus.BAD_REQUEST);
     }
 
@@ -88,28 +83,57 @@ public class RestAdvice extends ResponseEntityExceptionHandler {
      * @param ex  Exception being handled
      * @return 500 error reponse
      */
-    @ExceptionHandler(RuntimeException.class)
-    @ResponseBody
-    public ResponseEntity<RestCallErrorInfo> fault(HttpServletRequest req, RuntimeException ex) {
-        ex.printStackTrace();
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> fault(HttpServletRequest req, RuntimeException ex) {
         return getResponseEntity(req, ex, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**
-     * Customize the response for HttpMessageNotReadableException.
-     * <p>This method delegates to {@link #handleExceptionInternal}.
+     * Customized the response for HttpMessageNotReadableException. Usually arises from an invalid parameter being passed into a RESTful interface
      *
      * @param ex      the exception
-     * @param headers the headers to be written to the response
-     * @param status  the selected response status
+     * @param headers the headers to be written to the response (Not used)
+     * @param status  the selected response status (Not used)
      * @param request the current request
      * @return a {@code ResponseEntity} instance
      */
     @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest
-            request) {
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        return getResponseEntity(request, ex, HttpStatus.BAD_REQUEST);
+    }
 
-        return handleExceptionInternal(null, null, headers, HttpStatus.BAD_REQUEST, request);
+    /**
+     * Customized the response for MethodArgumentNotValid.  Usually arises from JSR303 validation failure.
+     *
+     * @param ex      the exception
+     * @param headers the headers to be written to the response (Not used)
+     * @param status  the selected response status (Not used)
+     * @param request the current request
+     * @return a {@code ResponseEntity} instance
+     */
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest
+            request) {
+        return getResponseEntity(request, ex, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Generate a standard response if the request is a ServletWebRequest else generate a custom response
+     * <p>
+     * param request the current request
+     *
+     * @param ex     the exception
+     * @param status the selected response status
+     * @return a {@code ResponseEntity} instance
+     */
+    private ResponseEntity<Object> getResponseEntity(WebRequest request, Exception ex, HttpStatus status) {
+        if (request instanceof ServletWebRequest) {
+            // Should be this type
+            return getResponseEntity(((ServletWebRequest) request).getRequest(), ex, status);
+        } else {
+            // but just in case it isn't, fall back to this
+            return new ResponseEntity<>(new RestCallErrorInfo(ex.getMessage(), status, ""), status);
+        }
     }
 
     /**
@@ -120,7 +144,7 @@ public class RestAdvice extends ResponseEntityExceptionHandler {
      * @param status  Resulting HTTP status code
      * @return Reponse entity wrapping standard error data structure
      */
-    private ResponseEntity<RestCallErrorInfo> getResponseEntity(HttpServletRequest request, Exception ex, HttpStatus status) {
+    private ResponseEntity<Object> getResponseEntity(HttpServletRequest request, Exception ex, HttpStatus status) {
         return new ResponseEntity<>(new RestCallErrorInfo(ex.getMessage(), status, request.getRequestURI()), status);
     }
 

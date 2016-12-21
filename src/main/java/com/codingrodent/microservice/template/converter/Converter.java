@@ -27,14 +27,17 @@ package com.codingrodent.microservice.template.converter;
 import com.codingrodent.microservice.template.entity.ContactEntity;
 import com.codingrodent.microservice.template.model.Contact;
 
+import java.util.UUID;
+
 /**
  *
  */
 public class Converter {
 
-    public final static IConverter<Contact, ContactEntity> toNameEntity = model -> new ContactEntity(model.getUuid().toString(), model.getFirstName(), model
+    public final static IConvertToEntity<Contact, ContactEntity, UUID> toNameEntity = (id, model) -> new ContactEntity(id.toString(), model.getFirstName(),
+            model
             .getLastName(), model.getAge(), model.getPhone(), model.getMobile(), model.getCountry());
-    public final static IConverter<ContactEntity, Contact> toNameModel = entity -> new Contact(entity.getId(), entity.getFirstName(), entity.getLastName(),
+    public final static IConvertToModel<ContactEntity, Contact> toNameModel = entity -> new Contact(entity.getFirstName(), entity.getLastName(),
             entity.getAge(), entity.getPhone(), entity.getMobile(), entity.getCountry());
 
     private Converter() {

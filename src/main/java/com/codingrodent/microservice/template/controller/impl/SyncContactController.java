@@ -32,19 +32,20 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import java.util.UUID;
 
-import static com.codingrodent.microservice.template.constants.SystemConstants.API_1;
+import static com.codingrodent.microservice.template.constants.SystemConstants.API_VERSION;
 
 /**
  * Simple sync REST controller
  */
 @RestController
-@Api(value = "synccontact", description = "Endpoint for contact management")
-@RequestMapping("/syncname/" + API_1)
+@Api(tags = "sync", value = "synccontact", description = "Endpoint for contact management")
+@RequestMapping("/syncname/" + API_VERSION)
 public class SyncContactController implements IREST<UUID, Contact> {
 
-    private IContactService contactService;
+    private final IContactService contactService;
 
     @Inject
     public SyncContactController(final IContactService contactService) {
@@ -63,9 +64,9 @@ public class SyncContactController implements IREST<UUID, Contact> {
 
     // PUT - Create (201) or Update  (200)
     @Override
-    public ResponseEntity<Void> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable final UUID uuid,
-                                       @RequestBody final Contact contact) {
-        contactService.save(contact);
+    public ResponseEntity<Void> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable final UUID uuid, @Valid
+    @RequestBody final Contact contact) {
+        contactService.save(uuid, contact);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

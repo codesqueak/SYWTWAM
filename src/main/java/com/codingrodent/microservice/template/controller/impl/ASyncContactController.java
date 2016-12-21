@@ -35,17 +35,17 @@ import org.springframework.web.context.request.async.DeferredResult;
 import javax.inject.Inject;
 import java.util.UUID;
 
-import static com.codingrodent.microservice.template.constants.SystemConstants.API_1;
+import static com.codingrodent.microservice.template.constants.SystemConstants.API_VERSION;
 
 /**
  * Simple async REST controller
  */
 @RestController
-@Api(value = "asynccontact", description = "Endpoint for contact management (async)")
-@RequestMapping("/asynccontact" + API_1)
+@Api(tags = "async", value = "asynccontact", description = "Endpoint for contact management (async)")
+@RequestMapping("/asynccontact" + API_VERSION)
 public class ASyncContactController implements IAsyncREST<UUID, Contact> {
 
-    private IContactService contactService;
+    private final IContactService contactService;
 
     @Inject
     public ASyncContactController(final IContactService contactService) {
@@ -66,7 +66,7 @@ public class ASyncContactController implements IAsyncREST<UUID, Contact> {
     public DeferredResult<ResponseEntity<Void>> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable final UUID
                                                                    uuid, @RequestBody final Contact contact) {
         DeferredResult<ResponseEntity<Void>> result = new DeferredResult<>();
-        contactService.saveAsync(contact).subscribe(e -> result.setResult(new ResponseEntity<>(HttpStatus.NO_CONTENT)));
+        contactService.saveAsync(uuid, contact).subscribe(e -> result.setResult(new ResponseEntity<>(HttpStatus.NO_CONTENT)));
         return result;
     }
 

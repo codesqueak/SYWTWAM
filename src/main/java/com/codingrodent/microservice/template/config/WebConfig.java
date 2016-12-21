@@ -41,7 +41,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
      */
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-        configurer.favorPathExtension(false) // Type to determine type by path,m e.g. a/b/c/doc.pdf
+        configurer.favorPathExtension(false) // Type to determine type by path, e.g. a/b/c/doc.pdf
                 .favorParameter(true) // Type defined by parameter
                 .parameterName("mediaType") // Name of parameter
                 .ignoreAcceptHeader(true) // Ignore the accept header media type definition for now

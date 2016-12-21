@@ -34,11 +34,11 @@ import java.util.UUID;
  */
 public interface IContactService {
 
-    Observable<?> saveAsync(Contact contact);
+    Observable<?> saveAsync(UUID uuid, Contact contact);
 
     Observable<Contact> loadAsync(UUID uuid);
 
-    void save(Contact contact);
+    void save(UUID uuid, Contact contact);
 
     Contact load(UUID uuid);
 }

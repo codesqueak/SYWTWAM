@@ -30,8 +30,8 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.UUID;
 
 /**
- * Let spring build basic repository
+ * Let spring build basic repository - we don't have to supply a body for this
  */
-public interface INameRepository extends CrudRepository<ContactEntity, UUID> {
+public interface ISyncNameRepository extends CrudRepository<ContactEntity, UUID> {
 
 }
