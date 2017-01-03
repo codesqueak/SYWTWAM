@@ -25,14 +25,15 @@
 package com.codingrodent.microservice.template.service.impl;
 
 import com.codingrodent.microservice.template.entity.ContactEntity;
-import com.codingrodent.microservice.template.model.Contact;
+import com.codingrodent.microservice.template.model.*;
 import com.codingrodent.microservice.template.repository.api.*;
 import com.codingrodent.microservice.template.service.api.IContactService;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import rx.Observable;
 
 import javax.inject.Inject;
-import java.util.UUID;
+import java.util.*;
 
 import static com.codingrodent.microservice.template.converter.Converter.toNameEntity;
 import static com.codingrodent.microservice.template.converter.Converter.toNameModel;
@@ -41,7 +42,8 @@ import static com.codingrodent.microservice.template.converter.Converter.toNameM
  * Business logic for Contact information
  */
 @Service
-public class ContactService implements IContactService {
+@Profile("prod")
+public class ContactService implements IContactService<Contact> {
 
     // Both sync and async implementations
     // Normally use only one but this is for demo purposes
@@ -55,8 +57,9 @@ public class ContactService implements IContactService {
     }
 
     @Override
-    public Observable<?> saveAsync(final UUID uuid, final Contact model) {
-        return asyncRepository.saveAsync(toNameEntity.convert(uuid, model));
+    public Observable<Contact> saveAsync(final UUID uuid, final Contact model) {
+        return asyncRepository.saveAsync(toNameEntity.convert(uuid, model, Optional.empty())).map(toNameModel::convert);
+
     }
 
     @Override
@@ -65,17 +68,29 @@ public class ContactService implements IContactService {
     }
 
     @Override
-    public void save(final UUID uuid, final Contact model) {
-        ContactEntity entity = toNameEntity.convert(uuid, model);
-        repository.save(entity);
+    public Optional<ModelVersion<Contact>> save(final UUID uuid, final Contact modelVersion, Optional<Long> version) {
+
+        ContactEntity entity = repository.save(toNameEntity.convert(uuid, modelVersion, version));
+        return Optional.of(new ModelVersion<>(toNameModel.convert(entity), Optional.ofNullable(entity.getVersion())));
     }
 
     @Override
-    public Contact load(final UUID uuid) {
+    public Optional<ModelVersion<Contact>> create(final Contact modelVersion) {
+        ContactEntity entity = repository.save(toNameEntity.convert(UUID.randomUUID(), modelVersion, Optional.empty()));
+        return Optional.of(new ModelVersion<>(toNameModel.convert(entity), Optional.ofNullable(entity.getVersion())));
+    }
+
+    @Override
+    public Optional<ModelVersion<Contact>> load(final UUID uuid) {
         ContactEntity entity = repository.findOne(uuid);
         if (null == entity)
-            return null;
+            return Optional.empty();
         else
-            return toNameModel.convert(entity);
+            return Optional.of(new ModelVersion<>(toNameModel.convert(entity), Optional.ofNullable(entity.getVersion())));
+    }
+
+    @Override
+    public void delete(UUID uuid) {
+        repository.delete(uuid);
     }
 }

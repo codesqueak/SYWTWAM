@@ -24,7 +24,9 @@
  */
 package com.codingrodent.microservice.template.entity;
 
+
 import com.couchbase.client.java.repository.annotation.*;
+import com.fasterxml.jackson.annotation.*;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.couchbase.core.mapping.Document;
 
@@ -38,12 +40,12 @@ public class ContactEntity {
 
     @Id
     private final UUID id;
-    @Field("firstname")
-    private final String firstName;
-    @Field("lastname")
-    private final String lastName;
     @Version
-    private long version;
+    private Long version;
+    @Field
+    private final String firstName;
+    @Field
+    private final String lastName;
     @Field
     private final Integer age;
     @Field
@@ -53,8 +55,10 @@ public class ContactEntity {
     @Field
     private final String country;
 
-    public ContactEntity(final String id, final String firstName, final String lastName, final Integer age, final String phone, final String mobile, final
-    String country) {
+    @JsonCreator
+    public ContactEntity(@JsonProperty("id") final String id, @JsonProperty("firstName") final String firstName, @JsonProperty("lastName") final String
+            lastName, @JsonProperty("age") final Integer age, @JsonProperty("phone") final String phone, @JsonProperty("mobile") final String mobile,
+                         @JsonProperty("country") final String country, @JsonProperty("version") final Long version) {
         this.id = UUID.fromString(id);
         this.firstName = firstName;
         this.lastName = lastName;
@@ -62,6 +66,7 @@ public class ContactEntity {
         this.phone = phone;
         this.mobile = mobile;
         this.country = country;
+        this.version = version;
     }
 
     public String getFirstName() {
@@ -70,6 +75,10 @@ public class ContactEntity {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public Long getVersion() {
+        return version;
     }
 
     public UUID getId() {

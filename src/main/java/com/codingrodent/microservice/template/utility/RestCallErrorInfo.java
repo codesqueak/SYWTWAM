@@ -49,13 +49,6 @@ public class RestCallErrorInfo implements Serializable {
     }
 
     /**
-     * @return the serialversionuid
-     */
-    public static long getSerialversionuid() {
-        return serialVersionUID;
-    }
-
-    /**
      * @return the timestamp
      */
     public long getTimestamp() {

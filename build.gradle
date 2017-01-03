@@ -134,10 +134,10 @@ repositories {
 // In this section you declare the dependencies for your production and test code
 dependencies {
     // Spring boot
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.4.2.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow', version: '1.4.2.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '1.4.2.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.4.2.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.4.3.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow', version: '1.4.3.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '1.4.3.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.4.3.RELEASE'
     // Cloud extensions
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter', version: '1.1.6.RELEASE'
     compile group: 'org.springframework.cloud', name: 'spring-cloud-commons', version: '1.1.6.RELEASE'
@@ -148,6 +148,8 @@ dependencies {
     // Spring data for couchbase
     compile group: 'org.springframework.data', name: 'spring-data-jpa', version: '2.0.0.M1'
     compile group: 'org.springframework.data', name: 'spring-data-couchbase', version: '3.0.0.M1'
+    // Spring hateoas support
+    compile group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '0.23.0.RELEASE'
     // Springfox swagger documentation tools
     compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.6.1'
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.6.1'

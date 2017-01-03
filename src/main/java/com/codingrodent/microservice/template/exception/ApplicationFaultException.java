@@ -22,14 +22,26 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.converter;
+package com.codingrodent.microservice.template.exception;
 
 /**
- * Function interface defining mapping of a Source to a Target with key of ID and Version of VERSION (Optional).  These will represent entity and model objects
+ * Thrown to indicate that an unexpected internal condition has occurred.
  */
-@FunctionalInterface
-public interface IConvertToEntity<Source, Target, ID, Version> {
+public class ApplicationFaultException extends RuntimeException {
 
-    Target convert(ID i, Source s, Version v);
+    /**
+     * Constructs an <code>DocumentNotFoundException</code> with no detail message.
+     */
+    public ApplicationFaultException() {
+        super();
+    }
 
+    /**
+     * Constructs an <code>DocumentNotFoundException</code> with the specified detail message.
+     *
+     * @param message the detail message.
+     */
+    public ApplicationFaultException(String message) {
+        super(message);
+    }
 }

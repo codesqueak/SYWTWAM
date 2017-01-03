@@ -25,7 +25,9 @@
 package com.codingrodent.microservice.template.controller.impl;
 
 import com.codingrodent.microservice.template.controller.api.IREST;
+import com.codingrodent.microservice.template.exception.ApplicationFaultException;
 import com.codingrodent.microservice.template.model.Contact;
+import com.codingrodent.microservice.template.model.*;
 import com.codingrodent.microservice.template.service.api.IContactService;
 import io.swagger.annotations.*;
 import org.springframework.http.*;
@@ -33,9 +35,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
-import java.util.UUID;
+import java.util.*;
 
 import static com.codingrodent.microservice.template.constants.SystemConstants.API_VERSION;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static org.springframework.http.HttpMethod.*;
 
 /**
  * Simple sync REST controller
@@ -45,40 +50,73 @@ import static com.codingrodent.microservice.template.constants.SystemConstants.A
 @RequestMapping("/syncname/" + API_VERSION)
 public class SyncContactController implements IREST<UUID, Contact> {
 
-    private final IContactService contactService;
+    private final IContactService<Contact> contactService;
+
+    private final static Set<HttpMethod> ALLOWED_OPTIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(GET, HEAD, POST, PUT, PATCH, DELETE,
+            OPTIONS)));
 
     @Inject
-    public SyncContactController(final IContactService contactService) {
+    public SyncContactController(final IContactService<Contact> contactService) {
         this.contactService = contactService;
     }
 
     // GET (200)
     @Override
-    public ResponseEntity<Contact> read(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable final UUID uuid) {
-        Contact contact = contactService.load(uuid);
-        if (null == contact)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        else
-            return new ResponseEntity<>(contact, HttpStatus.OK);
+    public ResponseEntity<Contact> read(@ApiParam(name = "uuid", value = "Unique contact UUID", required = true) @PathVariable final UUID uuid) {
+        Optional<ModelVersion<Contact>> modelVersion = contactService.load(uuid);
+
+        return modelVersion.map(mv -> new ResponseEntity<>(mv.getModel(), getETag(mv), HttpStatus.OK)).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     // PUT - Create (201) or Update  (200)
     @Override
-    public ResponseEntity<Void> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable final UUID uuid, @Valid
-    @RequestBody final Contact contact) {
-        contactService.save(uuid, contact);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<Optional<Contact>> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable final UUID
+                                                                uuid, //
+                                                    @ApiParam(name = "ETag", value = "CAS Value") @RequestHeader(value = HttpHeaders.ETAG, required = false)
+                                                            Optional<String> version, //
+                                                    @Valid @RequestBody final Contact contact) {
+        Optional<ModelVersion<Contact>> modelVersion = contactService.save(uuid, contact, version.map(Long::parseLong));
+        //
+        // The spring data couchbase component doesn't expose 'replace()' so that we can't tell if a document already exists. Calling exists() doesn't help
+        // doesn't solve this as we are not in a transactional system and the database may change
+        // As a workaround we will take the version to signify if this is a create or update
+        return modelVersion.map(mv -> new ResponseEntity<Optional<Contact>>(Optional.empty(), getETag(mv), mv.getVersion().map(e -> HttpStatus.NO_CONTENT)
+                .orElse(HttpStatus.CREATED))).orElseThrow(() -> new ApplicationFaultException("PUT failed to return a document"));
     }
 
     // POST - Create (201) - Return URL in location header
     @Override
-    public ResponseEntity<Void> create(@RequestBody final Contact value) {
-        throw new UnsupportedOperationException("Get an entity not implemented");
+    public ResponseEntity<Optional<Contact>> create(@Valid @RequestBody final Contact contact) {
+        Optional<ModelVersion<Contact>> modelVersion = contactService.create(contact);
+        return modelVersion.map(mv -> {
+            HttpHeaders headers = getETag(mv);
+            headers.setLocation(linkTo(methodOn(SyncContactController.class).read(UUID.randomUUID())).toUri());
+            return new ResponseEntity<Optional<Contact>>(Optional.empty(), headers, HttpStatus.NO_CONTENT);
+        }).orElseThrow(() -> new ApplicationFaultException("POST failed to return a document"));
     }
 
     // DELETE = Delete (200)
     @Override
-    public ResponseEntity<Void> delete(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable final UUID uuid) {
-        throw new UnsupportedOperationException("Get an entity not implemented");
+    public ResponseEntity<Optional<Void>> delete(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable final UUID uuid) {
+        contactService.delete(uuid);
+        return new ResponseEntity<>(Optional.empty(), HttpStatus.NO_CONTENT);
     }
+
+    // HEAD (200)
+    @Override
+    public ResponseEntity<Optional<Contact>> head(@ApiParam(name = "uuid", value = "Unique contact UUID", required = true) @PathVariable final UUID uuid) {
+        Optional<ModelVersion<Contact>> modelVersion = contactService.load(uuid);
+        return modelVersion.map(mv -> new ResponseEntity<Optional<Contact>>(Optional.empty(), getETag(mv), HttpStatus.OK)).orElse(new ResponseEntity<>
+                (Optional.empty(), HttpStatus.GONE));
+    }
+
+    /**
+     * Get all allowed methods for the RESTful interface
+     *
+     * @return Set of allowed HTTP methods
+     */
+    public Set<HttpMethod> getHeaders() {
+        return ALLOWED_OPTIONS;
+    }
+
 }

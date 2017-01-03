@@ -24,21 +24,26 @@
  */
 package com.codingrodent.microservice.template.service.api;
 
-import com.codingrodent.microservice.template.model.Contact;
+import com.codingrodent.microservice.template.model.*;
 import rx.Observable;
 
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Business logic for Contact information
  */
-public interface IContactService {
+public interface IContactService<M> {
+    // Async
+    Observable<M> saveAsync(UUID uuid, Contact contact);
 
-    Observable<?> saveAsync(UUID uuid, Contact contact);
+    Observable<M> loadAsync(UUID uuid);
 
-    Observable<Contact> loadAsync(UUID uuid);
+    // Sync
+    Optional<ModelVersion<M>> save(UUID uuid, M model, Optional<Long> version);
 
-    void save(UUID uuid, Contact contact);
+    Optional<ModelVersion<M>> create(M model);
 
-    Contact load(UUID uuid);
+    Optional<ModelVersion<M>> load(UUID uuid);
+
+    void delete(UUID uuid);
 }

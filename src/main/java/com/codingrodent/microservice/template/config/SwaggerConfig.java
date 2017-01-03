@@ -63,6 +63,10 @@ public class SwaggerConfig {
                         typeResolver.resolve(DeferredResult.class, typeResolver.resolve(ResponseEntity.class, WildcardType.class)), //
                         typeResolver.resolve(WildcardType.class)))
                 //
+                .alternateTypeRules(newRule(//
+                        typeResolver.resolve(Optional.class, String.class), //
+                        typeResolver.resolve(String.class)))
+                //
                 //  	Sets up the security schemes used to protect the apis. Can be ApiKey, BasicAuth and OAuth -- not used at the moment
                 .securitySchemes(Collections.singletonList(new ApiKey("ApiKey", "api_key", "header")));
         //
@@ -124,7 +128,8 @@ public class SwaggerConfig {
         addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.UNAUTHORIZED.value(), "The request requires user authentication", null, Collections
                 .emptyMap(), Collections.emptyList()));
         // 403
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.FORBIDDEN.value(), "User not authorized to perform the operation or the resource is " + "" + "" + "" + "" + "" + "" + "" + "" + "" + "unavailable", null, Collections.emptyMap(), Collections.emptyList()));
+        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.FORBIDDEN.value(), "User not authorized to perform the operation or the resource is " +
+                "" + "" + "" + "" + "" + "" + "" + "" + "" + "" + "" + "unavailable", null, Collections.emptyMap(), Collections.emptyList()));
         //
         // 404
         addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.NOT_FOUND.value(), "Resource not found", null, Collections.emptyMap(), Collections

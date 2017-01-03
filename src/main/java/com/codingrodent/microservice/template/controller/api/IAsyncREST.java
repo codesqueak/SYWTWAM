@@ -36,7 +36,7 @@ import java.util.UUID;
  * <p>
  * https://en.wikipedia.org/wiki/Representational_state_transfer
  */
-public interface IAsyncREST<K, V> {
+public interface IAsyncREST<K, V> extends RESTBase {
 
     // GET (200)
     @RequestMapping(path = "/{uuid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -63,7 +63,7 @@ public interface IAsyncREST<K, V> {
     }
 
     // POST - Create (201) - Return URL in location header
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create an entity", notes = "New / modified entity enclosed in the request as identified by the Request-URI", produces = MediaType
             .APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = { //

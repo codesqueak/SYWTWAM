@@ -67,6 +67,7 @@ Can be used to:
 | 201      | CREATED     | Entity body is the resource that was created            |
 | 204      | NO CONTENT  | Response entity body is empty                           |
 | 404      | NOT FOUND   | No matching entity exists                               | 
+| 412      | PRECON FAIL | For example, "if-Match" is invalid                               | 
 
 ##DELETE
 
@@ -78,6 +79,8 @@ Delete a resource
 | 204      | NO CONTENT  | Response entity body is empty                           |
 | 404      | NOT FOUND   | No matching entity exists  (May not be permanent)       | 
 | 410      | GONE        | No matching entity exists (Permanent)                   | 
+| 412      | PRECON FAIL | For example, "if-Match" is invalid                               | 
+
 
 Note: The exact semantics of delete can lead to various opinions.  For example, [this discussion](http://leedavis81.github.io/is-a-http-delete-requests-idempotent/)
 

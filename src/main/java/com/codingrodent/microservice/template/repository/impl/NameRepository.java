@@ -26,15 +26,17 @@ package com.codingrodent.microservice.template.repository.impl;
 
 import com.codingrodent.microservice.template.entity.ContactEntity;
 import com.codingrodent.microservice.template.repository.api.IAsync;
-import com.couchbase.client.deps.com.fasterxml.jackson.core.JsonProcessingException;
-import com.couchbase.client.deps.com.fasterxml.jackson.databind.ObjectMapper;
 import com.couchbase.client.java.*;
 import com.couchbase.client.java.document.*;
 import com.couchbase.client.java.document.json.JsonObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.stereotype.Service;
 import rx.Observable;
 
+import java.io.IOException;
 import java.util.UUID;
+import java.util.function.Function;
 
 /**
  * Simple example repository
@@ -46,22 +48,33 @@ public class NameRepository implements IAsync<ContactEntity, UUID> {
     private final Bucket bucket = cluster.openBucket("template", "password");
 
     @Override
-    public Observable<?> saveAsync(final ContactEntity entity) {
+    public Observable<ContactEntity> saveAsync(final ContactEntity entity) {
         ObjectMapper mapper = new ObjectMapper();
         JsonObject name;
         try {
             name = JsonObject.fromJson(mapper.writeValueAsString(entity));
-        } catch (JsonProcessingException e) {
-            return Observable.just(false);
+            Document document = JsonDocument.create(entity.getId().toString(), name);
+            return Observable.just(document).<Document>flatMap(d -> bucket.async().upsert(d)).map(docToEntity::apply);
+        } catch (IOException e) {
+            throw new InvalidDataAccessResourceUsageException("Entity serialization failed", e);
         }
-        Document document = JsonDocument.create(entity.getId().toString(), name);
-        return Observable.just(document).flatMap(d -> bucket.async().upsert(d));
     }
 
     @Override
     public Observable<ContactEntity> findOneAsync(final UUID uuid) {
         return Observable.empty();
     }
+
+    private final Function<Document, ContactEntity> docToEntity = doc -> {
+        String json = doc.content().toString();
+        ObjectMapper mapper = new ObjectMapper();
+        ContactEntity zz = null;
+        try {
+            return mapper.readValue(json, ContactEntity.class);
+        } catch (IOException e) {
+            throw new InvalidDataAccessResourceUsageException("JSON deerialization failed", e);
+        }
+    };
 }
 
 

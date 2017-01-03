@@ -24,32 +24,18 @@
  */
 package com.codingrodent.microservice.template;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import com.codingrodent.microservice.template.constants.SystemConstants;
+import org.junit.BeforeClass;
 
-import javax.inject.Inject;
+/**
+ *
+ */
+public abstract class BaseMVCTests {
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-public class HelloControllerTest {
-
-    @Inject
-    private MockMvc mvc;
-
-    @Test
-    public void getHello() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get("/hello").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andExpect(content().string(equalTo
-                ("{\"msg\":\"Greetings from Spring Boot!\"}")));
+    @BeforeClass
+    public static void initialize() {
+        System.setProperty(SystemConstants.SYSTEM_NAME, "MVC Test");
+        System.setProperty(SystemConstants.SUBSYSTEM_NAME, "Spring");
     }
+
 }

@@ -45,10 +45,10 @@ import static com.codingrodent.microservice.template.constants.SystemConstants.A
 @RequestMapping("/asynccontact" + API_VERSION)
 public class ASyncContactController implements IAsyncREST<UUID, Contact> {
 
-    private final IContactService contactService;
+    private final IContactService<Contact> contactService;
 
     @Inject
-    public ASyncContactController(final IContactService contactService) {
+    public ASyncContactController(final IContactService<Contact> contactService) {
         this.contactService = contactService;
     }
 
@@ -57,7 +57,7 @@ public class ASyncContactController implements IAsyncREST<UUID, Contact> {
     public DeferredResult<ResponseEntity<Contact>> read(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable final UUID
                                                                     uuid) {
         DeferredResult<ResponseEntity<Contact>> result = new DeferredResult<>();
-        contactService.loadAsync(uuid).subscribe(e -> result.setResult(new ResponseEntity<>(e, HttpStatus.OK)));
+        contactService.loadAsync(uuid).subscribe(c -> result.setResult(new ResponseEntity<>(c, HttpStatus.OK)));
         return result;
     }
 
@@ -66,7 +66,7 @@ public class ASyncContactController implements IAsyncREST<UUID, Contact> {
     public DeferredResult<ResponseEntity<Void>> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable final UUID
                                                                    uuid, @RequestBody final Contact contact) {
         DeferredResult<ResponseEntity<Void>> result = new DeferredResult<>();
-        contactService.saveAsync(uuid, contact).subscribe(e -> result.setResult(new ResponseEntity<>(HttpStatus.NO_CONTENT)));
+        contactService.saveAsync(uuid, contact).subscribe(c -> result.setResult(new ResponseEntity<>(HttpStatus.NO_CONTENT)));
         return result;
     }
 

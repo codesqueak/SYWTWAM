@@ -22,14 +22,25 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.converter;
+package com.codingrodent.microservice.template.controller.api;
+
+import com.codingrodent.microservice.template.model.ModelVersion;
+import org.springframework.http.HttpHeaders;
 
 /**
- * Function interface defining mapping of a Source to a Target with key of ID and Version of VERSION (Optional).  These will represent entity and model objects
+ * Useful utility code potentially used by many REST operations
  */
-@FunctionalInterface
-public interface IConvertToEntity<Source, Target, ID, Version> {
-
-    Target convert(ID i, Source s, Version v);
+public interface RESTBase {
+    /**
+     * Generate ETag header from version resource version (if it exists)
+     *
+     * @param modelVersion Source of version information
+     * @return Headers with ETag set (if available)
+     */
+    default HttpHeaders getETag(ModelVersion<?> modelVersion) {
+        HttpHeaders headers = new HttpHeaders();
+        modelVersion.getVersion().ifPresent(version -> headers.setETag("\"" + version + "\""));
+        return headers;
+    }
 
 }

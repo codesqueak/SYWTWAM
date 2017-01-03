@@ -28,6 +28,7 @@ package com.codingrodent.microservice.template.config.advice;
 import com.codingrodent.microservice.template.exception.*;
 import com.codingrodent.microservice.template.utility.RestCallErrorInfo;
 import com.netflix.hystrix.exception.HystrixRuntimeException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -76,12 +77,17 @@ public class RestAdvice extends ResponseEntityExceptionHandler {
         return getResponseEntity(req, ex, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    public ResponseEntity<Object> fault(HttpServletRequest req, OptimisticLockingFailureException ex) {
+        return getResponseEntity(req, ex, HttpStatus.PRECONDITION_FAILED);
+    }
+
     /**
-     * Fallback for all unhandled esceptions. Generates a 500 repsonse
+     * Fallback for all unhandled exceptions. Generates a 500 response
      *
-     * @param req HTTP eequest
+     * @param req HTTP request
      * @param ex  Exception being handled
-     * @return 500 error reponse
+     * @return 500 error response
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> fault(HttpServletRequest req, RuntimeException ex) {
@@ -98,7 +104,8 @@ public class RestAdvice extends ResponseEntityExceptionHandler {
      * @return a {@code ResponseEntity} instance
      */
     @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest
+            request) {
         return getResponseEntity(request, ex, HttpStatus.BAD_REQUEST);
     }
 
@@ -142,7 +149,7 @@ public class RestAdvice extends ResponseEntityExceptionHandler {
      * @param request Servlet request
      * @param ex      Exception
      * @param status  Resulting HTTP status code
-     * @return Reponse entity wrapping standard error data structure
+     * @return Response entity wrapping standard error data structure
      */
     private ResponseEntity<Object> getResponseEntity(HttpServletRequest request, Exception ex, HttpStatus status) {
         return new ResponseEntity<>(new RestCallErrorInfo(ex.getMessage(), status, request.getRequestURI()), status);

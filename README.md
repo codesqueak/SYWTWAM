@@ -22,7 +22,7 @@ applications for an AWS environment.
 
 ##The Microservice
 | Task            | Possible Implementation Technology  | Status |
-|-----------------|---------------------|---------------------|
+|-----------------|---------------------|:---------------------:|
 | Basic framework | [SpringBoot](http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)| ![alt text](docs/images/tick.png "Implemented") |
 | Configuration | [Spring](http://spring.io/) | ![alt text](docs/images/tick.png "Implemented") |
 | Async services | [RxJava](https://github.com/ReactiveX/RxJava) | ![alt text](docs/images/cross.png "Not Implemented") |
@@ -47,7 +47,7 @@ applications for an AWS environment.
 
 ##Test Test Test ... !
 | Task            | Possible Implementation Technology  | Status |
-|-----------------|---------------------|---------------------|
+|-----------------|---------------------|:---------------------:|
 | Build | [Maven](https://maven.apache.org/) / [Gradle](https://gradle.org/)  | ![alt text](docs/images/tick.png "Implemented") |
 | Unit test | [JUnit](http://junit.org/junit4/) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Integration test | [JUnit](http://junit.org/junit4/) / [Scala Test](http://www.scalatest.org/) | ![alt text](docs/images/cross.png "Not Implemented") |
@@ -64,7 +64,7 @@ applications for an AWS environment.
 
 ## Infrastructure 
 | Task            | Possible Implementation Technology  | Status |
-|-----------------|---------------------|---------------------|
+|-----------------|---------------------|:---------------------:|
 | Cloud | [AWS](https://aws.amazon.com/) ... There are others ... :) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Firewall | Loads to choose from  |  ![alt text](docs/images/cross.png "Not Implemented") |
 | Routing | [Zuul](https://github.com/Netflix/zuul) | ![alt text](docs/images/cross.png "Not Implemented") |
@@ -75,7 +75,7 @@ applications for an AWS environment.
 
 ## Environment 
 | Task            | Possible Implementation Technology  | Status |
-|-----------------|---------------------|---------------------|
+|-----------------|---------------------|:---------------------:|
 | Data storage / persistence | [MongoDB](https://www.mongodb.com/) / [Coucbase](http://www.couchbase.com/) / [PostgrSQL](https://www.postgresql.org/)  | ![alt text](docs/images/cross.png "Not Implemented") |
 | Cache | [Hazelcast](https://hazelcast.com/) / [memcached](https://memcached.org/)  | ![alt text](docs/images/cross.png "Not Implemented") |
 | Logging | [ELK (Elastic search / Logstash / Kibana)](https://www.elastic.co/webinars/introduction-elk-stack)  | ![alt text](docs/images/cross.png "Not Implemented") |
@@ -89,7 +89,7 @@ applications for an AWS environment.
 
 ## Deployment
 | Task            | Possible Implementation Technology  | Status |
-|-----------------|---------------------|---------------------|
+|-----------------|---------------------|:---------------------:|
 | CSCI store | [Artifactory](https://www.jfrog.com/artifactory/) / [Sonatype Nexus](https://www.sonatype.com/nexus-repository-sonatype) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Build | [Puppet](https://puppet.com/) / [Ansible](https://www.ansible.com)  | ![alt text](docs/images/cross.png "Not Implemented") |
 | Containers | [Docker](https://www.docker.com/)  | ![alt text](docs/images/cross.png "Not Implemented") |

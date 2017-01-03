@@ -22,14 +22,29 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.converter;
+package com.codingrodent.microservice.template.matchers;
+
+import org.hamcrest.*;
+
+import java.util.regex.Pattern;
 
 /**
- * Function interface defining mapping of a Source to a Target with key of ID and Version of VERSION (Optional).  These will represent entity and model objects
+ * Custom matcher to check for strong etags with numeric only content (used as optimistic locking version)
  */
-@FunctionalInterface
-public interface IConvertToEntity<Source, Target, ID, Version> {
+public class ETagNumericMatcher extends TypeSafeDiagnosingMatcher<String> {
+    private final Pattern pattern = Pattern.compile("\"-?+\\d++\"");
 
-    Target convert(ID i, Source s, Version v);
+    @Override
+    protected boolean matchesSafely(String etag, Description description) {
+        return pattern.matcher(etag).matches();
+    }
 
+    @Override
+    public void describeTo(Description description) {
+        description.appendText("A numeric only ETag");
+    }
+
+    public static ETagNumericMatcher isETagNumeric() {
+        return new ETagNumericMatcher();
+    }
 }
