@@ -22,31 +22,26 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.config;
-
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.MediaType;
-import org.springframework.web.servlet.config.annotation.*;
+package com.codingrodent.microservice.template.exception;
 
 /**
- * General MVC configuration for spring
+ * Thrown to indicate that an unexpected internal condition has occurred.
  */
-@Configuration
-public class WebConfig extends WebMvcConfigurerAdapter {
+public class ApplicationFaultException extends RuntimeException {
 
     /**
-     * Tell spring how to work out what content is.
-     *
-     * @param configurer New content configurer
+     * Constructs an <code>DocumentNotFoundException</code> with no detail message.
      */
-    @Override
-    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-        configurer.favorPathExtension(false) // Type to determine type by path, e.g. a/b/c/doc.pdf
-                .favorParameter(true) // Type defined by parameter
-                .parameterName("mediaType") // Name of parameter
-                .ignoreAcceptHeader(true) // Ignore the accept header media type definition for now
-                .useJaf(false) // Ignore Java Activation Framework - i.e. mappings of beans to media types
-                .defaultContentType(MediaType.APPLICATION_JSON) // If unknown, assume JSON
-                .mediaType("json", MediaType.APPLICATION_JSON); // If its .json, then its JSON
+    public ApplicationFaultException() {
+        super();
+    }
+
+    /**
+     * Constructs an <code>DocumentNotFoundException</code> with the specified detail message.
+     *
+     * @param message the detail message.
+     */
+    public ApplicationFaultException(String message) {
+        super(message);
     }
 }

@@ -22,7 +22,7 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.controller.spec;
+package com.codingrodent.microservice.template.controller.api;
 
 import io.swagger.annotations.*;
 import org.springframework.http.*;
@@ -36,7 +36,7 @@ import java.util.UUID;
  * <p>
  * https://en.wikipedia.org/wiki/Representational_state_transfer
  */
-public interface IAsyncCRUD<K, V> {
+public interface IAsyncREST<K, V> extends RESTBase {
 
     // GET (200)
     @RequestMapping(path = "/{uuid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -48,8 +48,8 @@ public interface IAsyncCRUD<K, V> {
         throw new UnsupportedOperationException("Get an entity not implemented");
     }
 
-    // PUT - Create (201) or Update  (200)
-    @RequestMapping(method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    // PUT - Create (201) or Update (200)
+    @RequestMapping(path = "/{uuid}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Update or create an entity", notes = "Requests that the enclosed entity be stored under the supplied Request-URI", produces =
             MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = { //
@@ -57,12 +57,13 @@ public interface IAsyncCRUD<K, V> {
             @ApiResponse(code = 201, message = "Entity body is the resource that was created"), //
             @ApiResponse(code = 204, message = "Response entity body is empty"), //
             @ApiResponse(code = 404, message = "No matching entity exists")})
-    default DeferredResult<ResponseEntity<Void>> upsert(@RequestBody V value) {
+    default DeferredResult<ResponseEntity<Void>> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid,
+                                                        @RequestBody V value) {
         throw new UnsupportedOperationException("Update an entity not implemented");
     }
 
     // POST - Create (201) - Return URL in location header
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create an entity", notes = "New / modified entity enclosed in the request as identified by the Request-URI", produces = MediaType
             .APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = { //
@@ -81,7 +82,7 @@ public interface IAsyncCRUD<K, V> {
             @ApiResponse(code = 204, message = "Response entity body is empty"), //
             @ApiResponse(code = 404, message = "No matching entity exists"), //
             @ApiResponse(code = 410, message = "No matching entity exists (Permanent)")})
-    default DeferredResult<ResponseEntity<Void>> delete(@PathVariable UUID uuid) {
+    default DeferredResult<ResponseEntity<Void>> delete(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid) {
         throw new UnsupportedOperationException("Delete an entity not implemented");
     }
 
@@ -96,9 +97,9 @@ public interface IAsyncCRUD<K, V> {
     }
 
     // OPTIONS (200) - Querying the Available Operations on a Resource
-    @RequestMapping(path = "/{uuid}", method = RequestMethod.OPTIONS)
+    @RequestMapping(method = RequestMethod.OPTIONS)
     @ApiOperation(value = "Querying the Available Operations on a Resource", notes = "Request for information about the communication options available")
-    default DeferredResult<ResponseEntity<Void>> options(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid) {
+    default DeferredResult<ResponseEntity<Void>> options() {
         throw new UnsupportedOperationException("Available options not implemented");
     }
 
@@ -110,8 +111,7 @@ public interface IAsyncCRUD<K, V> {
             @ApiResponse(code = 204, message = "Response entity body is empty"), //
             @ApiResponse(code = 404, message = "No matching entity exists")})
     default DeferredResult<ResponseEntity<Void>> patch(@RequestBody V value) {
-
-        throw new UnsupportedOperationException("Available options not implemented");
+        throw new UnsupportedOperationException("Patch not implemented");
     }
 
 }

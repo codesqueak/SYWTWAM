@@ -24,9 +24,9 @@
  */
 package com.codingrodent.microservice.template.controller.impl;
 
-import com.codingrodent.microservice.template.controller.spec.IAsyncCRUD;
-import com.codingrodent.microservice.template.model.Name;
-import com.codingrodent.microservice.template.service.spec.INameService;
+import com.codingrodent.microservice.template.controller.api.IAsyncREST;
+import com.codingrodent.microservice.template.model.Contact;
+import com.codingrodent.microservice.template.service.api.IContactService;
 import io.swagger.annotations.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -35,42 +35,44 @@ import org.springframework.web.context.request.async.DeferredResult;
 import javax.inject.Inject;
 import java.util.UUID;
 
+import static com.codingrodent.microservice.template.constants.SystemConstants.API_VERSION;
+
 /**
  * Simple async REST controller
  */
 @RestController
-@Api(value = "asyncname", description = "Endpoint for name management (async)")
-@RequestMapping("/asyncname")
-public class ASyncNameController implements IAsyncCRUD<UUID, Name> {
+@Api(tags = "async", value = "asynccontact", description = "Endpoint for contact management (async)")
+@RequestMapping("/asynccontact" + API_VERSION)
+public class ASyncContactController implements IAsyncREST<UUID, Contact> {
 
-    private INameService nameService;
+    private final IContactService<Contact> contactService;
 
     @Inject
-    public ASyncNameController(final INameService nameService) {
-        this.nameService = nameService;
+    public ASyncContactController(final IContactService<Contact> contactService) {
+        this.contactService = contactService;
     }
 
     // GET (200)
     @Override
-    public DeferredResult<ResponseEntity<Name>> read(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable final UUID
-                                                                 uuid) {
-        DeferredResult<ResponseEntity<Name>> result = new DeferredResult<>();
-        nameService.loadAsync(uuid).subscribe(e -> result.setResult(new ResponseEntity<>(e, HttpStatus.OK)));
+    public DeferredResult<ResponseEntity<Contact>> read(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable final UUID
+                                                                    uuid) {
+        DeferredResult<ResponseEntity<Contact>> result = new DeferredResult<>();
+        contactService.loadAsync(uuid).subscribe(c -> result.setResult(new ResponseEntity<>(c, HttpStatus.OK)));
         return result;
     }
 
     // PUT - Create (201) or Update  (200)
     @Override
-    public DeferredResult<ResponseEntity<Void>> upsert(@RequestBody final Name name) {
+    public DeferredResult<ResponseEntity<Void>> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable final UUID
+                                                                   uuid, @RequestBody final Contact contact) {
         DeferredResult<ResponseEntity<Void>> result = new DeferredResult<>();
-        nameService.saveAsync(name).subscribe(e -> result.setResult(new ResponseEntity<>(HttpStatus.NO_CONTENT)));
+        contactService.saveAsync(uuid, contact).subscribe(c -> result.setResult(new ResponseEntity<>(HttpStatus.NO_CONTENT)));
         return result;
     }
 
     // POST - Create (201) - Return URL in location header
     @Override
-    public DeferredResult<ResponseEntity<Void>> create(@RequestBody final Name value) {
-        System.out.println("Update: " + value.getUuid() + " " + value.getFirstName());
+    public DeferredResult<ResponseEntity<Void>> create(@RequestBody final Contact value) {
         DeferredResult<ResponseEntity<Void>> result = new DeferredResult<>();
         result.setResult(new ResponseEntity<>(HttpStatus.OK));
         return result;

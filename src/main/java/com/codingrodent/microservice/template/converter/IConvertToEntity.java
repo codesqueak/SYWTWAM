@@ -22,43 +22,14 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.model;
-
-import com.fasterxml.jackson.annotation.*;
-import io.swagger.annotations.ApiModel;
-
-import java.util.UUID;
+package com.codingrodent.microservice.template.converter;
 
 /**
- * Name model class
+ * Function interface defining mapping of a Source to a Target with key of ID and Version of VERSION (Optional).  These will represent entity and model objects
  */
-@ApiModel
-public class Name {
+@FunctionalInterface
+public interface IConvertToEntity<Source, Target, ID, Version> {
 
-    @JsonProperty
-    private final UUID uuid;
-    @JsonProperty("firstname")
-    private final String firstName;
-    @JsonProperty("lastname")
-    private final String lastName;
-
-    @JsonCreator
-    public Name(@JsonProperty("uuid") UUID uuid, @JsonProperty("firstname") String firstName, @JsonProperty("lastname") String lastName) {
-        this.uuid = uuid;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
+    Target convert(ID i, Source s, Version v);
 
 }

@@ -14,6 +14,7 @@ import springfox.documentation.swagger.web.UiConfiguration;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import javax.inject.Inject;
+import java.time.LocalDate;
 import java.util.*;
 
 import static springfox.documentation.schema.AlternateTypeRules.newRule;
@@ -23,9 +24,11 @@ import static springfox.documentation.schema.AlternateTypeRules.newRule;
  */
 @Configuration
 @EnableSwagger2
+@Import({springfox.documentation.spring.data.rest.configuration.SpringDataRestConfiguration.class, springfox.bean.validators.configuration
+        .BeanValidatorPluginsConfiguration.class})
 public class SwaggerConfig {
 
-    private TypeResolver typeResolver;
+    private final TypeResolver typeResolver;
 
     @Inject
     public SwaggerConfig(final TypeResolver typeResolver) {
@@ -48,16 +51,24 @@ public class SwaggerConfig {
                 .useDefaultResponseMessages(false)
                 // Sets information to be displayed in the API resource listing
                 .apiInfo(apiInfo())
+                // Tags used to identify components - purely documentation
+                .tags(new Tag("sync", "Synch demo interface"), new Tag("async", "Asynch demo interface"))
+                // Model substitution rule
+                .directModelSubstitute(LocalDate.class, String.class)
                 //
+                // A more complex substitution rule
                 // The type resolver is resolving DeferredResult<ResponseEntity<?>> to ?
                 // The rule  maps DeferredResult<ResponseEntity<?>> to ? for the model
-                //
                 .alternateTypeRules(newRule(//
                         typeResolver.resolve(DeferredResult.class, typeResolver.resolve(ResponseEntity.class, WildcardType.class)), //
                         typeResolver.resolve(WildcardType.class)))
                 //
+                .alternateTypeRules(newRule(//
+                        typeResolver.resolve(Optional.class, String.class), //
+                        typeResolver.resolve(String.class)))
+                //
                 //  	Sets up the security schemes used to protect the apis. Can be ApiKey, BasicAuth and OAuth -- not used at the moment
-                .securitySchemes(Arrays.asList(new ApiKey("ApiKey", "api_key", "header")));
+                .securitySchemes(Collections.singletonList(new ApiKey("ApiKey", "api_key", "header")));
         //
         // Add HTTP responses - this is a default set that is overridden later as required
         addHTTPResponses(docket);
@@ -90,7 +101,8 @@ public class SwaggerConfig {
                 "none",       // docExpansion          => none | list
                 "alpha",      // apiSorter             => alpha
                 "schema",     // defaultModelRendering => schema
-                UiConfiguration.Constants.DEFAULT_SUBMIT_METHODS, false,        // enableJsonEditor      => true | false
+                new String[]{"get", "post", "put", "delete", "patch", "head", "options"}, // add head and options as not set by default
+                false,        // enableJsonEditor      => true | false
                 true,         // showRequestHeaders    => true | false
                 60000L);      // requestTimeout => in milliseconds, defaults to null (uses jquery xh timeout)
     }
@@ -117,7 +129,7 @@ public class SwaggerConfig {
                 .emptyMap(), Collections.emptyList()));
         // 403
         addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.FORBIDDEN.value(), "User not authorized to perform the operation or the resource is " +
-                "" + "" + "" + "" + "" + "" + "unavailable", null, Collections.emptyMap(), Collections.emptyList()));
+                "" + "" + "" + "" + "" + "" + "" + "" + "" + "" + "" + "unavailable", null, Collections.emptyMap(), Collections.emptyList()));
         //
         // 404
         addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.NOT_FOUND.value(), "Resource not found", null, Collections.emptyMap(), Collections

@@ -22,45 +22,25 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.entity;
+package com.codingrodent.microservice.template.controller.api;
 
-import com.couchbase.client.java.repository.annotation.*;
-import org.springframework.data.annotation.Version;
-import org.springframework.data.couchbase.core.mapping.Document;
-
-import java.util.UUID;
+import com.codingrodent.microservice.template.model.ModelVersion;
+import org.springframework.http.HttpHeaders;
 
 /**
- * Name persistence class
+ * Useful utility code potentially used by many REST operations
  */
-@Document
-public class NameEntity {
-
-    @Id
-    private final UUID id;
-    @Field
-    private final String firstName;
-    @Field
-    private final String lastName;
-    @Version
-    private long version;
-
-    public NameEntity(String id, String firstName, String lastName) {
-        this.id = UUID.fromString(id);
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public UUID getId() {
-        return id;
+public interface RESTBase {
+    /**
+     * Generate ETag header from version resource version (if it exists)
+     *
+     * @param modelVersion Source of version information
+     * @return Headers with ETag set (if available)
+     */
+    default HttpHeaders getETag(ModelVersion<?> modelVersion) {
+        HttpHeaders headers = new HttpHeaders();
+        modelVersion.getVersion().ifPresent(version -> headers.setETag("\"" + version + "\""));
+        return headers;
     }
 
 }

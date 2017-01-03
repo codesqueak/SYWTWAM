@@ -22,21 +22,29 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.constants;
+package com.codingrodent.microservice.template.matchers;
+
+import org.hamcrest.*;
+
+import java.util.regex.Pattern;
 
 /**
- * Various application wide constants
+ * Custom matcher to check for strong etags with numeric only content (used as optimistic locking version)
  */
-public class SystemConstants {
+public class ETagNumericMatcher extends TypeSafeDiagnosingMatcher<String> {
+    private final Pattern pattern = Pattern.compile("\"-?+\\d++\"");
 
-    // Logging
-    public final static String SYSTEM_NAME = "SYSTEM";
-    public final static String SUBSYSTEM_NAME = "SUBSYSTEM";
-    // API Versions
-    public final static String API_VERSION = "V1";
-
-    private SystemConstants() {
-        // Never need to make an instance of this class
+    @Override
+    protected boolean matchesSafely(String etag, Description description) {
+        return pattern.matcher(etag).matches();
     }
 
+    @Override
+    public void describeTo(Description description) {
+        description.appendText("A numeric only ETag");
+    }
+
+    public static ETagNumericMatcher isETagNumeric() {
+        return new ETagNumericMatcher();
+    }
 }

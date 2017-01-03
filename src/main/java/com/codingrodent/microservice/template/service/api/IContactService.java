@@ -22,16 +22,28 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.repository.spec;
+package com.codingrodent.microservice.template.service.api;
 
-import com.codingrodent.microservice.template.entity.NameEntity;
-import org.springframework.data.repository.CrudRepository;
+import com.codingrodent.microservice.template.model.*;
+import rx.Observable;
 
-import java.util.UUID;
+import java.util.*;
 
 /**
- * Let spring build basic repository
+ * Business logic for Contact information
  */
-public interface INameRepository extends CrudRepository<NameEntity, UUID> {
+public interface IContactService<M> {
+    // Async
+    Observable<M> saveAsync(UUID uuid, Contact contact);
 
+    Observable<M> loadAsync(UUID uuid);
+
+    // Sync
+    Optional<ModelVersion<M>> save(UUID uuid, M model, Optional<Long> version);
+
+    Optional<ModelVersion<M>> create(M model);
+
+    Optional<ModelVersion<M>> load(UUID uuid);
+
+    void delete(UUID uuid);
 }

@@ -22,23 +22,16 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.service.spec;
+package com.codingrodent.microservice.template.repository.api;
 
-import com.codingrodent.microservice.template.model.Name;
-import rx.Observable;
+import com.codingrodent.microservice.template.entity.ContactEntity;
+import org.springframework.data.repository.CrudRepository;
 
 import java.util.UUID;
 
 /**
- * Business logic for Name information
+ * Let spring build basic repository - we don't have to supply a body for this
  */
-public interface INameService {
+public interface ISyncNameRepository extends CrudRepository<ContactEntity, UUID> {
 
-    Observable<?> saveAsync(Name name);
-
-    Observable<Name> loadAsync(UUID uuid);
-
-    void save(Name name);
-
-    Name load(UUID uuid);
 }
