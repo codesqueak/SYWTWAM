@@ -3,20 +3,20 @@
 #So You Want To Write A Microservice
 
 As you all know, writing a  microservice is a trivial task. Yeah! I'll rephrase that. Writing a trivial example microservice that never gets deployed in a 
-live environment is a trival task.
+live environment is a trivial task.
 
 This project sets out to demonstrate a group of possible technologies (1) working together to build and deploy a **real** microservice. As the project 
-proceeds, this list will change, technologies will be substituted and I will modofy things in the light of experience.
+proceeds, this list will change, technologies will be substituted and I will modify things in the light of experience.
 
-(1) Only one example of each. I'm not doing every tool, framework and language in existence. Life is too short to ~~follow new Node.js frameworks~~ try every 
-possible combination.
+(1) Only one example of each. I'm not doing every tool, framework and language in existence. Life is too short to ~~follow new JavaScript frameworks~~ 
+try every possible combination.
 
 To give you an idea of the problem, this is my basic list of things to get to grips with to build a **real** microservice. This is aimed at building Java 
 applications for an AWS environment.  
 
 1. Is this a definitive list? - No.
 2. Are these recommended tools & technologies? - No, just possible examples. Use whatever floats your boat.
-3. Do I need everything here? - No. But it makes a useful initial checklist to see if you have left anything out.
+3. Do I need everything here? - No, but it makes a useful initial checklist to see if you have left anything out.
 
 
 
@@ -26,15 +26,15 @@ applications for an AWS environment.
 | Basic framework | [SpringBoot](http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)| ![alt text](docs/images/tick.png "Implemented") |
 | Configuration | [Spring](http://spring.io/) | ![alt text](docs/images/tick.png "Implemented") |
 | Async services | [RxJava](https://github.com/ReactiveX/RxJava) | ![alt text](docs/images/cross.png "Not Implemented") |
-| Sync services | [Java](https://www.java.com)  | ![alt text](docs/images/cross.png "Not Implemented") |
-| API Framework /  Documentation | [Swagger](http://swagger.io/) / [SpringFox](http://springfox.github.io/springfox/)| ![alt text](docs/images/cross.png "Not Implemented") |
+| Sync services | [Java](https://www.java.com)  | ![alt text](docs/images/tick.png "Implemented") |
+| API Framework /  Documentation | [Swagger](http://swagger.io/) / [SpringFox](http://springfox.github.io/springfox/)| ![alt text](docs/images/tick.png "Implemented") |
 | Error handling |  | ![alt text](docs/images/cross.png "Not Implemented") |
 | Validation | [JSR303 (Hibernate Validator)](http://hibernate.org/validator/) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Circuit breaker | [Hystrix](https://github.com/Netflix/Hystrix) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Fallback  | [Hystrix](https://github.com/Netflix/Hystrix) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Fail Fast | [Hystrix](https://github.com/Netflix/Hystrix) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Bulkhead | [Hystrix](https://github.com/Netflix/Hystrix) | ![alt text](docs/images/cross.png "Not Implemented") |
-| Logging | [logback](http://logback.qos.ch/) / [log4j](http://logging.apache.org/log4j/2.x/) | ![alt text](docs/images/cross.png "Not Implemented") |
+| Logging | [logback](http://logback.qos.ch/) / [log4j](http://logging.apache.org/log4j/2.x/) | ![alt text](docs/images/tick.png "Implemented") |
 | Crypto /JCA | [Spring Security](http://docs.oracle.com/javase/7/docs/technotes/guides/security/crypto/CryptoSpec.html) | ![alt text](docs/images/cross.png "Not Implemented") |
 | SSL / x509 handling | [Spring Security](http://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/) | ![alt text](docs/images/cross.png "Not Implemented") |
 | HATEOAS | [Spring HATEOAS](http://docs.spring.io/autorepo/docs/spring-hateoas/0.20.x/reference/html/) | ![alt text](docs/images/cross.png "Not Implemented") |
@@ -49,7 +49,7 @@ applications for an AWS environment.
 | Task            | Possible Implementation Technology  | Status |
 |-----------------|---------------------|:---------------------:|
 | Build | [Maven](https://maven.apache.org/) / [Gradle](https://gradle.org/)  | ![alt text](docs/images/tick.png "Implemented") |
-| Unit test | [JUnit](http://junit.org/junit4/) | ![alt text](docs/images/cross.png "Not Implemented") |
+| Unit test | [JUnit](http://junit.org/junit4/) | ![alt text](docs/images/tick.png "Implemented") |
 | Integration test | [JUnit](http://junit.org/junit4/) / [Scala Test](http://www.scalatest.org/) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Performance analysis | [YourKit](https://yourkit.com) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Load test | [Bees with machine guns](https://github.com/newsapps/beeswithmachineguns) / [The Grinder](http://grinder.sourceforge.net/) | ![alt text](docs/images/cross.png "Not Implemented") |
@@ -58,8 +58,8 @@ applications for an AWS environment.
 | Code quality | [PMD](https://pmd.github.io/) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Static analysis | [findbugs](http://findbugs.sourceforge.net/) | ![alt text](docs/images/cross.png "Not Implemented") |
 | CI | [Jenkins](https://jenkins.io/) / [Bamboo](https://www.atlassian.com/software/bamboo) | ![alt text](docs/images/cross.png "Not Implemented") |
-| Mocking | [Mockito](http://site.mockito.org/) / [EasyMock](http://site.mockito.org/) ... and all the others | ![alt text](docs/images/cross.png "Not Implemented") |
-| Mock Services | [WireMock](http://wiremock.org/) | ![alt text](docs/images/cross.png "Not Implemented") |
+| Mocking | [Mockito](http://site.mockito.org/) / [EasyMock](http://site.mockito.org/) ... and all the others | ![alt text](docs/images/tick.png "Implemented") |
+| Mock Services | [WireMock](http://wiremock.org/) | ![alt text](docs/images/tick.png "Implemented") |
 
 
 ## Infrastructure 
