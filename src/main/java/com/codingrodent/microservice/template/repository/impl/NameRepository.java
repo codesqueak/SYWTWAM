@@ -30,6 +30,7 @@ import com.couchbase.client.java.*;
 import com.couchbase.client.java.document.*;
 import com.couchbase.client.java.document.json.JsonObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.context.annotation.Profile;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.stereotype.Service;
 import rx.Observable;
@@ -42,6 +43,7 @@ import java.util.function.Function;
  * Simple example repository
  */
 @Service
+@Profile("prod")
 public class NameRepository implements IAsync<ContactEntity, UUID> {
 
     private final Cluster cluster = CouchbaseCluster.create("localhost");

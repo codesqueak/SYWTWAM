@@ -37,7 +37,7 @@ import java.util.*;
 @Profile("test")
 public class ContactServiceMock implements IContactService<Contact> {
 
-    private Map<UUID, ModelVersion<Contact>> data = new HashMap<>();
+    private final Map<UUID, ModelVersion<Contact>> data = new HashMap<>();
 
     public ContactServiceMock() {
         System.out.println("mock");
@@ -55,23 +55,24 @@ public class ContactServiceMock implements IContactService<Contact> {
 
     @Override
     public Optional<ModelVersion<Contact>> save(final UUID uuid, final Contact model, final Optional<Long> version) {
-        ModelVersion<Contact> modelVersion = null;
+        ModelVersion<Contact> modelVersion;
         if (version.isPresent()) {
             if ((data.containsKey(uuid))) {
                 if (version.get().equals(data.get(uuid).getVersion().get())) {
+                    modelVersion = new ModelVersion<>(model, Optional.of(version.get() + 1));
                 } else {
                     throw new OptimisticLockingFailureException("Mock - Version mismatch");
                 }
             } else {
                 // version supplied, no pre-existing record
-                modelVersion = new ModelVersion(model, Optional.of(1l));
+                modelVersion = new ModelVersion<>(model, Optional.of(1L));
             }
         } else {
             // No version - create
             if (data.containsKey(uuid)) {
                 throw new OptimisticLockingFailureException("Mock - No version supplied but record already exists");
             } else {
-                modelVersion = new ModelVersion(model, Optional.of(1l));
+                modelVersion = new ModelVersion<>(model, Optional.of(1L));
             }
         }
         data.put(uuid, modelVersion);

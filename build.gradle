@@ -166,7 +166,6 @@ dependencies {
     compile group: 'com.couchbase.client', name: 'java-client', version: '2.3.6'
     // Subprojects
     compile project(':subproj1')
-    //
 }
 
 

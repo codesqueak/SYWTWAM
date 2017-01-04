@@ -29,7 +29,7 @@ import org.hamcrest.*;
 import java.util.regex.Pattern;
 
 /**
- * Custom matcher to check for strong etags with numeric only content (used as optimistic locking version)
+ * Custom matcher to check for strong ETags with numeric only content (used as optimistic locking version)
  */
 public class ETagNumericMatcher extends TypeSafeDiagnosingMatcher<String> {
     private final Pattern pattern = Pattern.compile("\"-?+\\d++\"");
