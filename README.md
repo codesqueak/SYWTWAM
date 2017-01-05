@@ -2,6 +2,8 @@
 
 #So You Want To Write A Microservice
 
+*...in Java !*
+
 As you all know, writing a  microservice is a trivial task. Yeah! I'll rephrase that. Writing a trivial example microservice that never gets deployed in a 
 live environment is a trivial task.
 
@@ -11,19 +13,21 @@ proceeds, this list will change, technologies will be substituted and I will mod
 (1) Only one example of each. I'm not doing every tool, framework and language in existence. Life is too short to ~~follow new JavaScript frameworks~~ 
 try every possible combination.
 
-To give you an idea of the problem, this is my basic list of things to get to grips with to build a **real** microservice. This is aimed at building Java 
-applications for an AWS environment.  
+To give you an idea of the problem, this is my basic list of things to understand with a view to building and deploying a production ready microservice, 
+using [Spring](https://spring.io/) / [Java](https://www.java.com/en/) and [AWS](https://aws.amazon.com/).
 
-1. Is this a definitive list? - No.
-2. Are these recommended tools & technologies? - No, just possible examples. Use whatever floats your boat.
-3. Do I need everything here? - No, but it makes a useful initial checklist to see if you have left anything out.
+* Is this a definitive list? - No.
+* Are these recommended tools & technologies? - No, just possible examples. Use whatever floats your boat.
+* Do I need everything here? - No, but it makes a useful initial checklist to see if you have left anything out.
 
+##Quick Start
 
+If you just want to see the microservice built and running, head over to the [quick start guide](docs/quick.md)
 
-##The Microservice
-| Task            | Possible Implementation Technology  | Status |
-|-----------------|---------------------|:---------------------:|
-| Basic framework | [SpringBoot](http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)| ![alt text](docs/images/tick.png "Implemented") |
+##Implementation Technology
+| Task            | Possible Implementation Technology  | Status | Doc |
+|-----------------|---------------------|:---------------------:|:---------------------:|
+| Basic framework | [SpringBoot](http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)| ![alt text](docs/images/tick.png "Implemented") | [Framework](docs/framework.md) |
 | Configuration | [Spring](http://spring.io/) | ![alt text](docs/images/tick.png "Implemented") |
 | Async services | [RxJava](https://github.com/ReactiveX/RxJava) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Sync services | [Java](https://www.java.com)  | ![alt text](docs/images/tick.png "Implemented") |
@@ -46,8 +50,8 @@ applications for an AWS environment.
 
 
 ##Test Test Test ... !
-| Task            | Possible Implementation Technology  | Status |
-|-----------------|---------------------|:---------------------:|
+| Task            | Possible Implementation Technology  | Status | Doc |
+|-----------------|---------------------|:---------------------:|:---------------------:|
 | Build | [Maven](https://maven.apache.org/) / [Gradle](https://gradle.org/)  | ![alt text](docs/images/tick.png "Implemented") |
 | Unit test | [JUnit](http://junit.org/junit4/) | ![alt text](docs/images/tick.png "Implemented") |
 | Integration test | [JUnit](http://junit.org/junit4/) / [Scala Test](http://www.scalatest.org/) | ![alt text](docs/images/cross.png "Not Implemented") |
@@ -63,8 +67,8 @@ applications for an AWS environment.
 
 
 ## Infrastructure 
-| Task            | Possible Implementation Technology  | Status |
-|-----------------|---------------------|:---------------------:|
+| Task            | Possible Implementation Technology  | Status | Doc |
+|-----------------|---------------------|:---------------------:|:---------------------:|
 | Cloud | [AWS](https://aws.amazon.com/) ... There are others ... :) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Firewall | Loads to choose from  |  ![alt text](docs/images/cross.png "Not Implemented") |
 | Routing | [Zuul](https://github.com/Netflix/zuul) | ![alt text](docs/images/cross.png "Not Implemented") |
@@ -74,8 +78,8 @@ applications for an AWS environment.
 
 
 ## Environment 
-| Task            | Possible Implementation Technology  | Status |
-|-----------------|---------------------|:---------------------:|
+| Task            | Possible Implementation Technology  | Status | Doc |
+|-----------------|---------------------|:---------------------:|:---------------------:|
 | Data storage / persistence | [MongoDB](https://www.mongodb.com/) / [Coucbase](http://www.couchbase.com/) / [PostgrSQL](https://www.postgresql.org/)  | ![alt text](docs/images/cross.png "Not Implemented") |
 | Cache | [Hazelcast](https://hazelcast.com/) / [memcached](https://memcached.org/)  | ![alt text](docs/images/cross.png "Not Implemented") |
 | Logging | [ELK (Elastic search / Logstash / Kibana)](https://www.elastic.co/webinars/introduction-elk-stack)  | ![alt text](docs/images/cross.png "Not Implemented") |
@@ -88,8 +92,8 @@ applications for an AWS environment.
 
 
 ## Deployment
-| Task            | Possible Implementation Technology  | Status |
-|-----------------|---------------------|:---------------------:|
+| Task            | Possible Implementation Technology  | Status | Doc |
+|-----------------|---------------------|:---------------------:|:---------------------:|
 | CSCI store | [Artifactory](https://www.jfrog.com/artifactory/) / [Sonatype Nexus](https://www.sonatype.com/nexus-repository-sonatype) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Build | [Puppet](https://puppet.com/) / [Ansible](https://www.ansible.com)  | ![alt text](docs/images/cross.png "Not Implemented") |
 | Containers | [Docker](https://www.docker.com/)  | ![alt text](docs/images/cross.png "Not Implemented") |
