@@ -12,12 +12,12 @@ Specifically the following components are used:
 
 ##spring-boot-starter-web
 
-This ‘[Starter](https://spring.io/guides/gs/actuator-service/)’ supplies basic functionality for using Spring Web Services 
+This ‘[Starter](https://spring.io/guides/gs/spring-boot/)’ supplies basic functionality for using Spring Web Services 
 
 
 ##spring-boot-starter-undertow
 
-This ‘[Starter](https://spring.io/guides/gs/actuator-service/)’ allows the use of the [Undertow](http://undertow.io/) high performance web server rather than
+This ‘[Starter](https://docs.spring.io/spring-boot/docs/current/reference/html/howto-embedded-servlet-containers.html)’ allows the use of the [Undertow](http://undertow.io/) high performance web server rather than
  the default Tomcat container
 
 
