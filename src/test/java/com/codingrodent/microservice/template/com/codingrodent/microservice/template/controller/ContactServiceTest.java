@@ -25,52 +25,108 @@
 package com.codingrodent.microservice.template.com.codingrodent.microservice.template.controller;
 
 import com.codingrodent.microservice.template.BaseMVCTests;
-import com.codingrodent.microservice.template.model.Contact;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
+import com.codingrodent.microservice.template.controller.impl.SyncContactController;
+import com.codingrodent.microservice.template.model.*;
+import com.codingrodent.microservice.template.service.api.IContactService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.junit.*;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.*;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.*;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.http.HttpHeaders;
 
-import javax.inject.Inject;
-import java.util.UUID;
+import java.util.*;
 
 import static com.codingrodent.microservice.template.constants.SystemConstants.API_VERSION;
-import static com.codingrodent.microservice.template.matchers.ETagNumericMatcher.isETagNumeric;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- *
+ * Controller unit tests
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
+@RunWith(MockitoJUnitRunner.class)
 public class ContactServiceTest extends BaseMVCTests {
 
-    @Inject
-    private MockMvc mvc;
+    private String json;
+    private ModelVersion<Contact> modelVersion;
+    private SyncContactController controller;
+
+    @Mock
+    private IContactService<Contact> contactService;
+
+    @Before
+    public void init() throws JsonProcessingException {
+        Contact contact = new Contact("Firstname", "Lastname", 1, "000 000 000", "001 001 001", "AZ");
+        json = mapper.writeValueAsString(contact);
+        modelVersion = new ModelVersion<>(contact, Optional.of(12345L));
+        controller = new SyncContactController(contactService);
+    }
 
     @Test
     public void getContact() throws Exception {
-        // Not available test
-        mvc.perform(MockMvcRequestBuilders.get("/syncname/" + API_VERSION + "/" + UUID.randomUUID()).accept(MediaType.APPLICATION_JSON_VALUE))//
-                .andExpect(status().isNotFound());
+        when(contactService.load(any())).thenReturn(Optional.of(modelVersion)).thenReturn(Optional.empty());
+
+        // @formatter:off
+        // Invalid UUID
+        performGet(controller, "/syncname/" + API_VERSION + "/" + "abc-123")
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        // @formatter:on
+
+        // @formatter:off
+        // load
+        performGet(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID())
+                .andExpect(status().isOk())
+                .andExpect(content().json(json))
+                .andExpect(header().string(HttpHeaders.ETAG, "\"12345\""))
+                .andReturn();
+        // @formatter:on
+
+        // @formatter:off
+        // load
+        performGet(controller,"/syncname/" + API_VERSION + "/" + UUID.randomUUID())
+                .andExpect(status().isNotFound())
+                .andReturn();
+        // @formatter:on
+        verify(contactService, times(2)).load(any());
     }
 
     @Test
-    public void createContact() throws Exception {
-        // Create test
-        Contact contact = new Contact("Firstname", "Lastname", 1, "000 000 000", "001 001 001", "AZ");
-        ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(contact);
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.put("/syncname/" + API_VERSION + "/" + UUID.randomUUID()).accept(MediaType
-                .APPLICATION_JSON_VALUE).content(json).contentType(MediaType.APPLICATION_JSON_VALUE);
-        mvc.perform(builder).andExpect(status().isNoContent()).andExpect(header().string(HttpHeaders.ETAG, isETagNumeric()));
+    public void putContact() throws Exception {
+        when(contactService.save(any(), any(), any())).thenReturn(Optional.of(modelVersion));
+
+        // @formatter:off
+        // No body
+       performPut(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(),null,null)
+                .andExpect(status()
+                .isBadRequest())
+                .andReturn();
+        // @formatter:on
+
+        // @formatter:off
+        // Invalid UUID
+        performPut(controller, "/syncname/" + API_VERSION + "/" + "abc-123",null,null)
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        // @formatter:on
+
+        // @formatter:off
+        // Save
+        performPut(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), "\"12345\"", json)
+                .andExpect(status().isOk())
+                .andReturn();
+        // @formatter:on
+
+        // @formatter:off
+        // Create
+        performPut(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), null, json)
+                .andExpect(status().isCreated())
+                .andReturn();
+        // @formatter:on
+
+        verify(contactService, times(2)).save(any(), any(), any());
     }
 
 }
+
+

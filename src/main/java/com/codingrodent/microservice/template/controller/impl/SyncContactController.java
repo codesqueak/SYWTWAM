@@ -38,8 +38,7 @@ import javax.validation.Valid;
 import java.util.*;
 
 import static com.codingrodent.microservice.template.constants.SystemConstants.API_VERSION;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 import static org.springframework.http.HttpMethod.*;
 
 /**
@@ -52,8 +51,7 @@ public class SyncContactController implements IREST<UUID, Contact> {
 
     private final IContactService<Contact> contactService;
 
-    private final static Set<HttpMethod> ALLOWED_OPTIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(GET, HEAD, POST, PUT, PATCH, DELETE,
-            OPTIONS)));
+    private final static Set<HttpMethod> ALLOWED_OPTIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS)));
 
     @Inject
     public SyncContactController(final IContactService<Contact> contactService) {
@@ -75,12 +73,12 @@ public class SyncContactController implements IREST<UUID, Contact> {
                                                     @ApiParam(name = "ETag", value = "CAS Value") @RequestHeader(value = HttpHeaders.ETAG, required = false)
                                                             Optional<String> version, //
                                                     @Valid @RequestBody final Contact contact) {
-        Optional<ModelVersion<Contact>> modelVersion = contactService.save(uuid, contact, version.map(Long::parseLong));
+        Optional<ModelVersion<Contact>> modelVersion = contactService.save(uuid, contact, version.map(v -> Long.parseLong(v.replace("\"", ""))));
         //
         // The spring data couchbase component doesn't expose 'replace()' so that we can't tell if a document already exists. Calling exists() doesn't help
         // doesn't solve this as we are not in a transactional system and the database may change
         // As a workaround we will take the version to signify if this is a create or update
-        return modelVersion.map(mv -> new ResponseEntity<Optional<Contact>>(Optional.empty(), getETag(mv), mv.getVersion().map(e -> HttpStatus.NO_CONTENT)
+        return modelVersion.map(mv -> new ResponseEntity<Optional<Contact>>(Optional.empty(), getETag(mv), version.map(e -> HttpStatus.OK)
                 .orElse(HttpStatus.CREATED))).orElseThrow(() -> new ApplicationFaultException("PUT failed to return a document"));
     }
 
@@ -106,8 +104,7 @@ public class SyncContactController implements IREST<UUID, Contact> {
     @Override
     public ResponseEntity<Optional<Contact>> head(@ApiParam(name = "uuid", value = "Unique contact UUID", required = true) @PathVariable final UUID uuid) {
         Optional<ModelVersion<Contact>> modelVersion = contactService.load(uuid);
-        return modelVersion.map(mv -> new ResponseEntity<Optional<Contact>>(Optional.empty(), getETag(mv), HttpStatus.OK)).orElse(new ResponseEntity<>
-                (Optional.empty(), HttpStatus.GONE));
+        return modelVersion.map(mv -> new ResponseEntity<Optional<Contact>>(Optional.empty(), getETag(mv), HttpStatus.OK)).orElse(new ResponseEntity<>(Optional.empty(), HttpStatus.GONE));
     }
 
     /**
