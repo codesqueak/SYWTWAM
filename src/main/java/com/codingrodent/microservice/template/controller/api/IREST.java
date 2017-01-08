@@ -102,7 +102,7 @@ public interface IREST<K, V> extends RESTBase {
     @ApiOperation(value = "Querying the Available Operations on a Resource", notes = "Request for information about the communication options available")
     default ResponseEntity<Void> options() {
         HttpHeaders headers = new HttpHeaders();
-        headers.setAllow(getHeaders());
+        headers.setAllow(getOptions());
         return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
@@ -124,6 +124,6 @@ public interface IREST<K, V> extends RESTBase {
      *
      * @return Set of allowed HTTP methods
      */
-    Set<HttpMethod> getHeaders();
+    Set<HttpMethod> getOptions();
 
 }

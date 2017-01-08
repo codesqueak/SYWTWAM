@@ -68,6 +68,14 @@ public abstract class BaseMVCTests {
         // @formatter:on
     }
 
+    protected ResultActions performHead(IREST<UUID, Contact> controller, String urlTemplate, Object... urlVars) throws Exception {
+        // @formatter:off
+        MockHttpServletRequestBuilder builder = head(urlTemplate, urlVars)
+                .characterEncoding("UTF-8");
+        return getMockMvc(controller).perform(builder);
+        // @formatter:on
+    }
+
     protected ResultActions performPut(IREST<UUID, Contact> controller, String urlTemplate, String eTag, String bodyJson, Object... urlVars) throws Exception {
         // @formatter:off
         MockHttpServletRequestBuilder builder = put(urlTemplate, urlVars)
@@ -82,4 +90,19 @@ public abstract class BaseMVCTests {
         // @formatter:on
     }
 
+    protected ResultActions performDelete(IREST<UUID, Contact> controller, String urlTemplate, Object... urlVars) throws Exception {
+        // @formatter:off
+        MockHttpServletRequestBuilder builder = delete(urlTemplate, urlVars)
+                .characterEncoding("UTF-8");
+        return getMockMvc(controller).perform(builder);
+        // @formatter:on
+    }
+
+    protected ResultActions performOptions(IREST<UUID, Contact> controller, String urlTemplate, Object... urlVars) throws Exception {
+        // @formatter:off
+        MockHttpServletRequestBuilder builder = options(urlTemplate, urlVars)
+                .characterEncoding("UTF-8");
+        return getMockMvc(controller).perform(builder);
+        // @formatter:on
+    }
 }

@@ -51,7 +51,7 @@ public class SyncContactController implements IREST<UUID, Contact> {
 
     private final IContactService<Contact> contactService;
 
-    private final static Set<HttpMethod> ALLOWED_OPTIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS)));
+    private final static Set<HttpMethod> ALLOWED_OPTIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(GET, HEAD, POST, PUT, PATCH, DELETE)));
 
     @Inject
     public SyncContactController(final IContactService<Contact> contactService) {
@@ -112,7 +112,7 @@ public class SyncContactController implements IREST<UUID, Contact> {
      *
      * @return Set of allowed HTTP methods
      */
-    public Set<HttpMethod> getHeaders() {
+    public Set<HttpMethod> getOptions() {
         return ALLOWED_OPTIONS;
     }
 

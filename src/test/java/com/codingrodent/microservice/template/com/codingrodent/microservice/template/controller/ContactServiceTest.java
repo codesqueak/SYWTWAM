@@ -33,11 +33,13 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpHeaders;
 
 import java.util.*;
 
 import static com.codingrodent.microservice.template.constants.SystemConstants.API_VERSION;
+import static com.codingrodent.microservice.template.matchers.ExtraHeaderResultMatchers.extra;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -74,7 +76,7 @@ public class ContactServiceTest extends BaseMVCTests {
         // @formatter:on
 
         // @formatter:off
-        // load
+        // load - found
         performGet(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID())
                 .andExpect(status().isOk())
                 .andExpect(content().json(json))
@@ -83,7 +85,7 @@ public class ContactServiceTest extends BaseMVCTests {
         // @formatter:on
 
         // @formatter:off
-        // load
+        // load - not found
         performGet(controller,"/syncname/" + API_VERSION + "/" + UUID.randomUUID())
                 .andExpect(status().isNotFound())
                 .andReturn();
@@ -92,8 +94,37 @@ public class ContactServiceTest extends BaseMVCTests {
     }
 
     @Test
+    public void headContact() throws Exception {
+        when(contactService.load(any())).thenReturn(Optional.of(modelVersion)).thenReturn(Optional.empty());
+
+        // @formatter:off
+        // Invalid UUID
+        performHead(controller, "/syncname/" + API_VERSION + "/" + "abc-123")
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        // @formatter:on
+
+        // @formatter:off
+        // load - found
+        performHead(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID())
+                .andExpect(status().isOk())
+                .andExpect(content().string("")) // Must be an empty body even if it is found
+                .andExpect(header().string(HttpHeaders.ETAG, "\"12345\""))
+                .andReturn();
+        // @formatter:on
+
+        // @formatter:off
+        // load - not found
+        performHead(controller,"/syncname/" + API_VERSION + "/" + UUID.randomUUID())
+                .andExpect(status().isGone())
+                .andReturn();
+        // @formatter:on
+        verify(contactService, times(2)).load(any());
+    }
+
+    @Test
     public void putContact() throws Exception {
-        when(contactService.save(any(), any(), any())).thenReturn(Optional.of(modelVersion));
+        when(contactService.save(any(), any(), any())).thenThrow(OptimisticLockingFailureException.class).thenReturn(Optional.of(modelVersion));
 
         // @formatter:off
         // No body
@@ -111,6 +142,13 @@ public class ContactServiceTest extends BaseMVCTests {
         // @formatter:on
 
         // @formatter:off
+        // CAS fail
+        performPut(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), "\"12345\"", json)
+                .andExpect(status().isPreconditionFailed())
+                .andReturn();
+        // @formatter:on
+
+        // @formatter:off
         // Save
         performPut(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), "\"12345\"", json)
                 .andExpect(status().isOk())
@@ -124,9 +162,40 @@ public class ContactServiceTest extends BaseMVCTests {
                 .andReturn();
         // @formatter:on
 
-        verify(contactService, times(2)).save(any(), any(), any());
+        verify(contactService, times(3)).save(any(), any(), any());
     }
 
+    @Test
+    public void deleteContact() throws Exception {
+
+        // @formatter:off
+        // Invalid UUID
+        performDelete(controller, "/syncname/" + API_VERSION + "/" + "abc-123")
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        // @formatter:on
+
+        // @formatter:off
+        // Save
+        performDelete(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(),json)
+                .andExpect(status().isNoContent())
+                .andReturn();
+        // @formatter:on
+
+        verify(contactService, times(1)).delete(any());
+    }
+
+    @Test
+    public void optionsContact() throws Exception {
+
+        // @formatter:off
+        // Save
+        performOptions(controller, "/syncname/" + API_VERSION)
+                .andExpect(status().isOk())
+                .andExpect(extra().options("GET, HEAD, POST, PUT, PATCH, DELETE"))
+                .andReturn();
+        // @formatter:on
+    }
 }
 
 
