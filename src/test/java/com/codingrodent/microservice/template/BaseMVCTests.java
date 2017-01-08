@@ -24,18 +24,62 @@
  */
 package com.codingrodent.microservice.template;
 
+import com.codingrodent.microservice.template.config.advice.RestAdvice;
 import com.codingrodent.microservice.template.constants.SystemConstants;
+import com.codingrodent.microservice.template.controller.api.IREST;
+import com.codingrodent.microservice.template.model.Contact;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.BeforeClass;
+import org.springframework.http.*;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.test.web.servlet.*;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.UUID;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 /**
  *
  */
 public abstract class BaseMVCTests {
 
+    protected final MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
+    protected final ObjectMapper mapper = new ObjectMapper();
+
     @BeforeClass
     public static void initialize() {
         System.setProperty(SystemConstants.SYSTEM_NAME, "MVC Test");
         System.setProperty(SystemConstants.SUBSYSTEM_NAME, "Spring");
+    }
+
+    protected MockMvc getMockMvc(IREST<UUID, Contact> controller) {
+        return MockMvcBuilders.standaloneSetup(controller).setControllerAdvice(new RestAdvice()).setMessageConverters(mappingJackson2HttpMessageConverter)
+                .build();
+    }
+
+    protected ResultActions performGet(IREST<UUID, Contact> controller, String urlTemplate, Object... urlVars) throws Exception {
+        // @formatter:off
+        MockHttpServletRequestBuilder builder = get(urlTemplate, urlVars)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .characterEncoding("UTF-8");
+        return getMockMvc(controller).perform(builder);
+        // @formatter:on
+    }
+
+    protected ResultActions performPut(IREST<UUID, Contact> controller, String urlTemplate, String eTag, String bodyJson, Object... urlVars) throws Exception {
+        // @formatter:off
+        MockHttpServletRequestBuilder builder = put(urlTemplate, urlVars)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .characterEncoding("UTF-8");
+        if (null != eTag)
+            builder.header(HttpHeaders.ETAG, eTag);
+        if (null != bodyJson)
+            builder.content(bodyJson);
+        return getMockMvc(controller).perform(builder);
+        // @formatter:on
     }
 
 }

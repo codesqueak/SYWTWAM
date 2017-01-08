@@ -39,10 +39,6 @@ public class ContactServiceMock implements IContactService<Contact> {
 
     private final Map<UUID, ModelVersion<Contact>> data = new HashMap<>();
 
-    public ContactServiceMock() {
-        System.out.println("mock");
-    }
-
     @Override
     public Observable<Contact> saveAsync(final UUID uuid, final Contact contact) {
         return null;

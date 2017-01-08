@@ -51,6 +51,7 @@ task sourceJar(type: Jar) {
     from sourceSets.main.allJava
 }
 
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -69,7 +70,7 @@ publishToMavenLocal {
 
 
 jacoco {
-    toolVersion = "0.7.7.201606060606"
+    toolVersion = "0.7+"
     reportsDir = file("$buildDir/customJacocoReportDir")
 }
 
@@ -80,6 +81,21 @@ jacocoTestReport {
         html.destination "${buildDir}/jacocoHtml"
     }
 }
+
+test {
+    dependsOn javadoc
+    maxParallelForks = 1
+    filter
+            {
+                includeTestsMatching "com.codingrodent.microservice.template.*"
+            }
+    jacoco {
+        append = false
+        destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
+        classDumpFile = file("$buildDir/jacoco/classpathdumps")
+    }
+}
+
 
 findbugs {
     toolVersion = "3.+"
@@ -131,6 +147,11 @@ repositories {
     }
 }
 
+check {
+    dependsOn jacocoTestReport
+}
+
+
 // In this section you declare the dependencies for your production and test code
 dependencies {
     // Spring boot
@@ -167,7 +188,6 @@ dependencies {
     // Subprojects
     compile project(':subproj1')
 }
-
 
 task wrapper(type: Wrapper) {
     gradleVersion = '3.3'
