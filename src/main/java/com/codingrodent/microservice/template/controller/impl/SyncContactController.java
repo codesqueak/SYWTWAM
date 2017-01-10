@@ -78,8 +78,8 @@ public class SyncContactController implements IREST<UUID, Contact> {
         // The spring data couchbase component doesn't expose 'replace()' so that we can't tell if a document already exists. Calling exists() doesn't help
         // doesn't solve this as we are not in a transactional system and the database may change
         // As a workaround we will take the version to signify if this is a create or update
-        return modelVersion.map(mv -> new ResponseEntity<Optional<Contact>>(Optional.empty(), getETag(mv), version.map(e -> HttpStatus.OK)
-                .orElse(HttpStatus.CREATED))).orElseThrow(() -> new ApplicationFaultException("PUT failed to return a document"));
+        return modelVersion.map(mv -> new ResponseEntity<Optional<Contact>>(getETag(mv), version.map(e -> HttpStatus.OK).orElse(HttpStatus.CREATED)))
+                .orElseThrow(() -> new ApplicationFaultException("PUT failed to return a document"));
     }
 
     // POST - Create (201) - Return URL in location header
@@ -104,7 +104,9 @@ public class SyncContactController implements IREST<UUID, Contact> {
     @Override
     public ResponseEntity<Optional<Contact>> head(@ApiParam(name = "uuid", value = "Unique contact UUID", required = true) @PathVariable final UUID uuid) {
         Optional<ModelVersion<Contact>> modelVersion = contactService.load(uuid);
-        return modelVersion.map(mv -> new ResponseEntity<Optional<Contact>>(Optional.empty(), getETag(mv), HttpStatus.OK)).orElse(new ResponseEntity<>(Optional.empty(), HttpStatus.GONE));
+        return modelVersion.map(mv -> new ResponseEntity<Optional<Contact>>(Optional.empty(), getETag(mv), HttpStatus.OK)).orElse(new ResponseEntity<>
+                                                                                                                                          (Optional.empty(),
+                                                                                                                                           HttpStatus.GONE));
     }
 
     /**

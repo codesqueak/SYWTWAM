@@ -30,13 +30,6 @@ package com.codingrodent.microservice.template.exception;
 public class ApplicationFaultException extends RuntimeException {
 
     /**
-     * Constructs an <code>DocumentNotFoundException</code> with no detail message.
-     */
-    public ApplicationFaultException() {
-        super();
-    }
-
-    /**
      * Constructs an <code>DocumentNotFoundException</code> with the specified detail message.
      *
      * @param message the detail message.

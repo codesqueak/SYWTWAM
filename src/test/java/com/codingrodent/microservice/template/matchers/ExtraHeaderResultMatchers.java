@@ -13,7 +13,7 @@ import static org.springframework.test.util.AssertionErrors.assertEquals;
 public class ExtraHeaderResultMatchers {
 
     /**
-     * Access to extra HTTP response matchers.
+     * Access to extra HTTP response matcher implementations
      */
     public static ExtraHeaderResultMatchers extra() {
         return new ExtraHeaderResultMatchers();

@@ -22,19 +22,35 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.exception;
+package com.codingrodent.microservice.template.entity;
 
-/**
- * Thrown to indicate that a request caused an internal conflict (REST).
- */
-public class ConflictException extends RuntimeException {
+import org.junit.Test;
 
-    /**
-     * Constructs an <code>ConflictException</code> with the specified detail message.
-     *
-     * @param message the detail message.
-     */
-    public ConflictException(String message) {
-        super(message);
+import java.util.UUID;
+
+import static org.junit.Assert.assertEquals;
+
+public class ContactEntityTest {
+
+    @Test
+    public void basicTest() {
+        UUID id = UUID.randomUUID();
+        Long version = 12345L;
+        String firstName = "first";
+        String lastName = "last";
+        Integer age = 100;
+        String phone = "1-2-3-4-5";
+        String mobile = "6-7-8-9";
+        String country = "US";
+        ContactEntity contactEntity = new ContactEntity(id.toString(), firstName, lastName, age, phone, mobile, country, version);
+        //
+        assertEquals(id, contactEntity.getId());
+        assertEquals(version, contactEntity.getVersion());
+        assertEquals(firstName, contactEntity.getFirstName());
+        assertEquals(lastName, contactEntity.getLastName());
+        assertEquals(age, contactEntity.getAge());
+        assertEquals(phone, contactEntity.getPhone());
+        assertEquals(mobile, contactEntity.getMobile());
+        assertEquals(country, contactEntity.getCountry());
     }
 }

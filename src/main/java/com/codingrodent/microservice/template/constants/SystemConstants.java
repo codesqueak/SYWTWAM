@@ -29,14 +29,15 @@ package com.codingrodent.microservice.template.constants;
  */
 public class SystemConstants {
 
+    private SystemConstants() {
+        // Never need to make an instance of this class
+    }
+
     // Logging
     public final static String SYSTEM_NAME = "SYSTEM";
     public final static String SUBSYSTEM_NAME = "SUBSYSTEM";
     // API Versions
     public final static String API_VERSION = "V1";
-
-    private SystemConstants() {
-        // Never need to make an instance of this class
-    }
-
+    //Encoding
+    public final static String CHAR_ENCODING = "UTF-8";
 }

@@ -30,18 +30,18 @@ import com.codingrodent.microservice.template.model.Contact;
 import java.util.*;
 
 /**
- *
+ * Converters to allow entity and model objects to be interchanged
  */
 public class Converter {
+
+    private Converter() {
+        // Do not instantiate.
+    }
 
     public final static IConvertToEntity<Contact, ContactEntity, UUID, Optional<Long>> toNameEntity = (id, m, v) -> new ContactEntity(id.toString(), m
             .getFirstName(), m.getLastName(), m.getAge(), m.getPhone(), m.getMobile(), m.getCountry(), v.orElse(null));
 
     public final static IConvertToModel<ContactEntity, Contact> toNameModel = entity -> new Contact(entity.getFirstName(), entity.getLastName(), entity
             .getAge(), entity.getPhone(), entity.getMobile(), entity.getCountry());
-
-    private Converter() {
-        // Do not instantiate.
-    }
 
 }
