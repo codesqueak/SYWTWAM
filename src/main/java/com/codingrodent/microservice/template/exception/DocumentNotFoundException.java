@@ -28,7 +28,6 @@ package com.codingrodent.microservice.template.exception;
  * Thrown to indicate that a document could not be found (REST).
  */
 public class DocumentNotFoundException extends RuntimeException {
-    private static final long serialVersionUID = -8929578094254088535L;
 
     /**
      * Constructs an <code>DocumentNotFoundException</code> with no detail message.

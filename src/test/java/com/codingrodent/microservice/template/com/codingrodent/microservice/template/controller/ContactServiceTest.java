@@ -70,7 +70,7 @@ public class ContactServiceTest extends BaseMVCTests {
 
         // @formatter:off
         // Invalid UUID
-        performGet(controller, "/syncname/" + API_VERSION + "/" + "abc-123")
+        performGet(controller, "/syncname/" + API_VERSION + "/" + BAD_UUID)
                 .andExpect(status().isBadRequest())
                 .andReturn();
         // @formatter:on
@@ -99,7 +99,7 @@ public class ContactServiceTest extends BaseMVCTests {
 
         // @formatter:off
         // Invalid UUID
-        performHead(controller, "/syncname/" + API_VERSION + "/" + "abc-123")
+        performHead(controller, "/syncname/" + API_VERSION + "/" + BAD_UUID)
                 .andExpect(status().isBadRequest())
                 .andReturn();
         // @formatter:on
@@ -136,7 +136,7 @@ public class ContactServiceTest extends BaseMVCTests {
 
         // @formatter:off
         // Invalid UUID
-        performPut(controller, "/syncname/" + API_VERSION + "/" + "abc-123",null,null)
+        performPut(controller, "/syncname/" + API_VERSION + "/" + BAD_UUID,null,null)
                 .andExpect(status().isBadRequest())
                 .andReturn();
         // @formatter:on
@@ -170,7 +170,7 @@ public class ContactServiceTest extends BaseMVCTests {
 
         // @formatter:off
         // Invalid UUID
-        performDelete(controller, "/syncname/" + API_VERSION + "/" + "abc-123")
+        performDelete(controller, "/syncname/" + API_VERSION + "/" + BAD_UUID)
                 .andExpect(status().isBadRequest())
                 .andReturn();
         // @formatter:on
