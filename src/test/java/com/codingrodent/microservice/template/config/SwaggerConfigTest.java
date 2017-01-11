@@ -22,28 +22,35 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.service.api;
+package com.codingrodent.microservice.template.config;
 
-import com.codingrodent.microservice.template.model.*;
-import rx.Observable;
+import com.fasterxml.classmate.TypeResolver;
+import org.junit.*;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger.web.UiConfiguration;
 
-import java.util.*;
+import static org.junit.Assert.*;
 
-/**
- * Business logic for Contact information
- */
-public interface IContactService<M> {
-    // Async
-    Observable<M> saveAsync(UUID uuid, Contact contact);
+public class SwaggerConfigTest {
 
-    Observable<M> loadAsync(UUID uuid);
+    private SwaggerConfig swaggerConfig;
 
-    // Sync
-    Optional<ModelVersion<M>> save(UUID uuid, M model, Optional<Long> version);
+    @Before
+    public void init() {
+        swaggerConfig = new SwaggerConfig(new TypeResolver());
+    }
 
-    Optional<ModelVersion<M>> create(M mode, Optional<Long> version);
+    @Test
+    public void panopticonApi() throws Exception {
+        Docket docket = swaggerConfig.panopticonApi();
+        assertEquals("template-api", docket.getGroupName());
+    }
 
-    Optional<ModelVersion<M>> load(UUID uuid);
+    @Test
+    public void uiConfig() throws Exception {
+        UiConfiguration uiConfig = swaggerConfig.uiConfig();
+        assertEquals(60000L, uiConfig.getRequestTimeout().longValue());
+        assertArrayEquals(new String[]{"get", "post", "put", "delete", "patch", "head", "options"}, uiConfig.getSupportedSubmitMethods());
+    }
 
-    void delete(UUID uuid);
 }

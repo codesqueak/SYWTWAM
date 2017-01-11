@@ -57,8 +57,8 @@ public interface IREST<K, V> extends RESTBase {
             @ApiResponse(code = 204, message = "Response entity body is empty"), //
             @ApiResponse(code = 404, message = "No matching entity exists"), //
             @ApiResponse(code = 412, message = "Precondition fail - CAS mismatch ?")})
-    default ResponseEntity<Optional<V>> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid,
-                                               @RequestHeader(value = HttpHeaders.ETAG, required = false) Optional<String> version, @RequestBody V value) {
+    default ResponseEntity<V> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid,
+                                     @RequestHeader(value = HttpHeaders.ETAG, required = false) Optional<String> version, @RequestBody V value) {
         throw new UnsupportedOperationException("Update  or create an entity not implemented");
     }
 
@@ -70,7 +70,7 @@ public interface IREST<K, V> extends RESTBase {
             @ApiResponse(code = 201, message = "Entity body is the resource that was created"), //
             @ApiResponse(code = 204, message = "Response entity body is empty"), //
             @ApiResponse(code = 409, message = "The resource already exists")})
-    default ResponseEntity<Optional<V>> create(@RequestBody V value) {
+    default ResponseEntity<V> create(@RequestHeader(value = HttpHeaders.ETAG, required = false) Optional<String> version, @RequestBody V value) {
         throw new UnsupportedOperationException("Create an entity not implemented");
     }
 

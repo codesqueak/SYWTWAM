@@ -22,28 +22,28 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.service.api;
+package com.codingrodent.microservice.template.model;
 
-import com.codingrodent.microservice.template.model.*;
-import rx.Observable;
+import org.junit.Test;
 
-import java.util.*;
+import java.util.Optional;
 
-/**
- * Business logic for Contact information
- */
-public interface IContactService<M> {
-    // Async
-    Observable<M> saveAsync(UUID uuid, Contact contact);
+import static org.junit.Assert.assertEquals;
 
-    Observable<M> loadAsync(UUID uuid);
+public class ModelVersionTest {
 
-    // Sync
-    Optional<ModelVersion<M>> save(UUID uuid, M model, Optional<Long> version);
+    @Test
+    public void getModel() throws Exception {
+        ModelVersion<String> modelVersion = new ModelVersion<String>("abc123", Optional.of(12345L));
+        assertEquals("abc123", modelVersion.getModel());
+    }
 
-    Optional<ModelVersion<M>> create(M mode, Optional<Long> version);
+    @Test
+    public void getVersion() throws Exception {
+        ModelVersion<String> modelVersion = new ModelVersion<String>("abc123", Optional.of(12345L));
+        assertEquals(12345L, modelVersion.getVersion().orElse(-1L).longValue());
+        modelVersion = new ModelVersion<String>("abc123", Optional.empty());
+        assertEquals(-1L, modelVersion.getVersion().orElse(-1L).longValue());
+    }
 
-    Optional<ModelVersion<M>> load(UUID uuid);
-
-    void delete(UUID uuid);
 }

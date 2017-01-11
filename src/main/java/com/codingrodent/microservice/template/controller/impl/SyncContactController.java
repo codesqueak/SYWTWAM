@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import java.util.*;
+import java.util.function.Function;
 
 import static com.codingrodent.microservice.template.constants.SystemConstants.API_VERSION;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
@@ -68,28 +69,28 @@ public class SyncContactController implements IREST<UUID, Contact> {
 
     // PUT - Create (201) or Update  (200)
     @Override
-    public ResponseEntity<Optional<Contact>> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable final UUID
+    public ResponseEntity<Contact> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable final UUID
                                                                 uuid, //
-                                                    @ApiParam(name = "ETag", value = "CAS Value") @RequestHeader(value = HttpHeaders.ETAG, required = false)
+                                          @ApiParam(name = "ETag", value = "CAS Value") @RequestHeader(value = HttpHeaders.ETAG, required = false)
                                                             Optional<String> version, //
-                                                    @Valid @RequestBody final Contact contact) {
-        Optional<ModelVersion<Contact>> modelVersion = contactService.save(uuid, contact, version.map(v -> Long.parseLong(v.replace("\"", ""))));
+                                          @Valid @RequestBody final Contact contact) {
+        Optional<ModelVersion<Contact>> modelVersion = contactService.save(uuid, contact, version.map(extractETag));
         //
         // The spring data couchbase component doesn't expose 'replace()' so that we can't tell if a document already exists. Calling exists() doesn't help
         // doesn't solve this as we are not in a transactional system and the database may change
         // As a workaround we will take the version to signify if this is a create or update
-        return modelVersion.map(mv -> new ResponseEntity<Optional<Contact>>(getETag(mv), version.map(e -> HttpStatus.OK).orElse(HttpStatus.CREATED)))
+        return modelVersion.map(mv -> new ResponseEntity<>(mv.getModel(), getETag(mv), version.map(e -> HttpStatus.CREATED).orElse(HttpStatus.CREATED)))
                 .orElseThrow(() -> new ApplicationFaultException("PUT failed to return a document"));
     }
 
     // POST - Create (201) - Return URL in location header
     @Override
-    public ResponseEntity<Optional<Contact>> create(@Valid @RequestBody final Contact contact) {
-        Optional<ModelVersion<Contact>> modelVersion = contactService.create(contact);
+    public ResponseEntity<Contact> create(@ApiParam(name = "ETag", value = "CAS Value") @RequestHeader(value = HttpHeaders.ETAG, required = false) Optional<String> version, @Valid @RequestBody final Contact contact) {
+        Optional<ModelVersion<Contact>> modelVersion = contactService.create(contact, version.map(extractETag));
         return modelVersion.map(mv -> {
             HttpHeaders headers = getETag(mv);
             headers.setLocation(linkTo(methodOn(SyncContactController.class).read(UUID.randomUUID())).toUri());
-            return new ResponseEntity<Optional<Contact>>(Optional.empty(), headers, HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(mv.getModel(), headers, HttpStatus.CREATED);
         }).orElseThrow(() -> new ApplicationFaultException("POST failed to return a document"));
     }
 
@@ -117,5 +118,7 @@ public class SyncContactController implements IREST<UUID, Contact> {
     public Set<HttpMethod> getOptions() {
         return ALLOWED_OPTIONS;
     }
+
+    private Function<String, Long> extractETag = v -> Long.parseLong(v.replace("\"", ""));
 
 }

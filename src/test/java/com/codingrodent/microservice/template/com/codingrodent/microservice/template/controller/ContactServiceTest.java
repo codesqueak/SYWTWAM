@@ -33,7 +33,7 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.dao.*;
 import org.springframework.http.HttpHeaders;
 
 import java.util.*;
@@ -52,13 +52,14 @@ public class ContactServiceTest extends BaseMVCTests {
     private String json;
     private ModelVersion<Contact> modelVersion;
     private SyncContactController controller;
+    private Contact contact;
 
     @Mock
     private IContactService<Contact> contactService;
 
     @Before
     public void init() throws JsonProcessingException {
-        Contact contact = new Contact("Firstname", "Lastname", 1, "000 000 000", "001 001 001", "AZ");
+        contact = new Contact("Firstname", "Lastname", 1, "000 000 000", "001 001 001", "AZ");
         json = mapper.writeValueAsString(contact);
         modelVersion = new ModelVersion<>(contact, Optional.of(12345L));
         controller = new SyncContactController(contactService);
@@ -152,6 +153,8 @@ public class ContactServiceTest extends BaseMVCTests {
         // Save
         performPut(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), "\"12345\"", json)
                 .andExpect(status().isOk())
+                .andExpect(content().json(json))
+          //      .andExpect(header().string(HttpHeaders.ETAG, "\"12345\""))
                 .andReturn();
         // @formatter:on
 
@@ -159,10 +162,54 @@ public class ContactServiceTest extends BaseMVCTests {
         // Create
         performPut(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), null, json)
                 .andExpect(status().isCreated())
+                .andExpect(content().json(json))
+                .andExpect(header().doesNotExist(HttpHeaders.ETAG))
                 .andReturn();
         // @formatter:on
 
         verify(contactService, times(3)).save(any(), any(), any());
+    }
+
+    @Test
+    public void postContact() throws Exception {
+        Long version = 789L;
+        when(contactService.create(any(), any())).thenThrow(DuplicateKeyException.class).thenReturn(Optional.of(modelVersion)).thenAnswer(inv -> Optional.of
+                (new ModelVersion<>(contact, (Optional) inv.getArguments()[1])));
+
+        // @formatter:off
+        // No body
+       performPost(controller, "/syncname/" + API_VERSION,null,null)
+                .andExpect(status()
+                .isBadRequest())
+                .andReturn();
+        // @formatter:on
+
+        // @formatter:off
+        // Already exists
+        performPost(controller, "/syncname/" + API_VERSION , "\"12345\"", json)
+                .andExpect(status().isConflict())
+                .andReturn();
+        // @formatter:on
+
+        // @formatter:off
+        // Create - no eTag
+        performPost(controller, "/syncname/" + API_VERSION , null, json)
+                .andExpect(status().isCreated())
+                .andExpect(content().json(json))
+                .andExpect(header().string(HttpHeaders.ETAG, "\"12345\""))
+                .andReturn();
+        // @formatter:on
+
+        // @formatter:off
+        // Create with eTag
+        performPost(controller, "/syncname/" + API_VERSION , "\""+version+"\"", json)
+                .andExpect(status().isCreated())
+                .andExpect(content().json(json))
+                .andExpect(header().string(HttpHeaders.ETAG, "\""+version+"\""))
+                .andReturn();
+        // @formatter:on
+
+        verify(contactService, times(3)).create(any(), any());
     }
 
     @Test

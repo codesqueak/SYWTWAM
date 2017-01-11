@@ -22,28 +22,28 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.service.api;
+package com.codingrodent.microservice.template.model;
 
-import com.codingrodent.microservice.template.model.*;
-import rx.Observable;
+import org.junit.Test;
 
-import java.util.*;
+import static org.junit.Assert.assertEquals;
 
-/**
- * Business logic for Contact information
- */
-public interface IContactService<M> {
-    // Async
-    Observable<M> saveAsync(UUID uuid, Contact contact);
-
-    Observable<M> loadAsync(UUID uuid);
-
-    // Sync
-    Optional<ModelVersion<M>> save(UUID uuid, M model, Optional<Long> version);
-
-    Optional<ModelVersion<M>> create(M mode, Optional<Long> version);
-
-    Optional<ModelVersion<M>> load(UUID uuid);
-
-    void delete(UUID uuid);
+public class ContactTest {
+    @Test
+    public void basicTest() {
+        String firstName = "first";
+        String lastName = "last";
+        Integer age = 100;
+        String phone = "1-2-3-4-5";
+        String mobile = "6-7-8-9";
+        String country = "US";
+        Contact contactEntity = new Contact(firstName, lastName, age, phone, mobile, country);
+        //
+        assertEquals(firstName, contactEntity.getFirstName());
+        assertEquals(lastName, contactEntity.getLastName());
+        assertEquals(age, contactEntity.getAge());
+        assertEquals(phone, contactEntity.getPhone());
+        assertEquals(mobile, contactEntity.getMobile());
+        assertEquals(country, contactEntity.getCountry());
+    }
 }

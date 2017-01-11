@@ -22,28 +22,16 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.service.api;
+package com.codingrodent.microservice.template.config;
 
-import com.codingrodent.microservice.template.model.*;
-import rx.Observable;
+import org.junit.Test;
 
-import java.util.*;
+import static org.junit.Assert.assertNotNull;
 
-/**
- * Business logic for Contact information
- */
-public interface IContactService<M> {
-    // Async
-    Observable<M> saveAsync(UUID uuid, Contact contact);
+public class ConfigRootTest {
 
-    Observable<M> loadAsync(UUID uuid);
-
-    // Sync
-    Optional<ModelVersion<M>> save(UUID uuid, M model, Optional<Long> version);
-
-    Optional<ModelVersion<M>> create(M mode, Optional<Long> version);
-
-    Optional<ModelVersion<M>> load(UUID uuid);
-
-    void delete(UUID uuid);
+    @Test
+    public void basicTest() {
+        assertNotNull(new ConfigRoot());
+    }
 }

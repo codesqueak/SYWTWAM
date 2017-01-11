@@ -76,7 +76,7 @@ public class ContactServiceMock implements IContactService<Contact> {
     }
 
     @Override
-    public Optional<ModelVersion<Contact>> create(final Contact model) {
+    public Optional<ModelVersion<Contact>> create(final Contact contact, final Optional<Long> version) {
         return Optional.empty();
     }
 

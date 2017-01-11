@@ -28,7 +28,7 @@ package com.codingrodent.microservice.template.config.advice;
 import com.codingrodent.microservice.template.exception.*;
 import com.codingrodent.microservice.template.utility.RestCallErrorInfo;
 import com.netflix.hystrix.exception.HystrixRuntimeException;
-import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.dao.*;
 import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -59,6 +59,11 @@ public class RestAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<Object> fault(HttpServletRequest req, ConflictException ex) {
+        return getResponseEntity(req, ex, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(DuplicateKeyException.class)
+    public ResponseEntity<Object> fault(HttpServletRequest req, DuplicateKeyException ex) {
         return getResponseEntity(req, ex, HttpStatus.CONFLICT);
     }
 

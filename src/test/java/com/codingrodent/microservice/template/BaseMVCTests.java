@@ -131,6 +131,30 @@ public abstract class BaseMVCTests {
     }
 
     /**
+     * Execute a test POST request
+     *
+     * @param controller  Controller under test
+     * @param urlTemplate URL to be called
+     * @param eTag        eTag value (May be null)
+     * @param bodyJson    Body (May be null for tests)
+     * @param urlVars     Zero or more URL variables
+     * @return Execution result
+     * @throws Exception Thrown on any error
+     */
+    protected ResultActions performPost(IREST<UUID, Contact> controller, String urlTemplate, String eTag, String bodyJson, Object... urlVars) throws Exception {
+        // @formatter:off
+        MockHttpServletRequestBuilder builder = post(urlTemplate, urlVars)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .characterEncoding(CHAR_ENCODING);
+        if (null != eTag)
+            builder.header(HttpHeaders.ETAG, eTag);
+        if (null != bodyJson)
+            builder.content(bodyJson);
+        return getMockMvc(controller).perform(builder);
+        // @formatter:on
+    }
+    /**
      * Execute a test DELETE request
      *
      * @param controller  Controller under test
