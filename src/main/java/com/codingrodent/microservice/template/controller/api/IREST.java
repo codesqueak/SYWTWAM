@@ -35,69 +35,9 @@ import java.util.*;
  * <p>
  * https://en.wikipedia.org/wiki/Representational_state_transfer
  */
-public interface IREST<K, V> extends RESTBase {
+public interface IREST<K, V> extends RESTBase<K, V> {
 
-    // GET (200)
-    @RequestMapping(path = "/{uuid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Read an entity", notes = "Retrieve en entity identified by the Request-URI")
-    @ApiResponses(value = { //
-            @ApiResponse(code = 200, message = "Response entity in body"), //
-            @ApiResponse(code = 404, message = "No matching entity exists")})
-    default ResponseEntity<V> read(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid) {
-        throw new UnsupportedOperationException("Get an entity not implemented");
-    }
-
-    // PUT - Create (201) or Update (200)
-    @RequestMapping(path = "/{uuid}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Update or create an entity", notes = "Requests that the enclosed entity be stored under the supplied Request-URI", consumes =
-            MediaType.APPLICATION_JSON_VALUE)
-    @ApiResponses(value = { //
-            @ApiResponse(code = 200, message = "Response entity in body"), //
-            @ApiResponse(code = 201, message = "Entity body is the resource that was created"), //
-            @ApiResponse(code = 204, message = "Response entity body is empty"), //
-            @ApiResponse(code = 404, message = "No matching entity exists"), //
-            @ApiResponse(code = 412, message = "Precondition fail - CAS mismatch ?")})
-    default ResponseEntity<V> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid,
-                                     @RequestHeader(value = HttpHeaders.ETAG, required = false) Optional<String> version, @RequestBody V value) {
-        throw new UnsupportedOperationException("Update  or create an entity not implemented");
-    }
-
-    // POST - Create (201) - Return URL in location header
-    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Create an entity", notes = "New / modified entity enclosed in the request as identified by the Request-URI", consumes = MediaType
-            .APPLICATION_JSON_VALUE)
-    @ApiResponses(value = { //
-            @ApiResponse(code = 201, message = "Entity body is the resource that was created"), //
-            @ApiResponse(code = 204, message = "Response entity body is empty"), //
-            @ApiResponse(code = 409, message = "The resource already exists")})
-    default ResponseEntity<V> create(@RequestHeader(value = HttpHeaders.ETAG, required = false) Optional<String> version, @RequestBody V value) {
-        throw new UnsupportedOperationException("Create an entity not implemented");
-    }
-
-    // DELETE (200)
-    @RequestMapping(path = "/{uuid}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Delete an entity", notes = "Requests that the server delete the resource identified by the Request-URI")
-    @ApiResponses(value = { //
-            @ApiResponse(code = 200, message = "Response entity in body"), //
-            @ApiResponse(code = 204, message = "Response entity body is empty"), //
-            @ApiResponse(code = 404, message = "No matching entity exists"), //
-            @ApiResponse(code = 410, message = "No matching entity exists (Permanent)"), @ApiResponse(code = 412, message = "Precondition fail - CAS " +
-            "mismatch" + " ?")})
-    default ResponseEntity<Optional<Void>> delete(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid) {
-        throw new UnsupportedOperationException("Delete an entity not implemented");
-    }
-
-    // HEAD (200) - Find Out When a Resource Was Last Modified
-    @RequestMapping(path = "/{uuid}", method = RequestMethod.HEAD)
-    @ApiOperation(value = "Find Out When a Resource Was Last Modified", notes = "As per GET but do not return body")
-    @ApiResponses(value = { //
-            @ApiResponse(code = 204, message = "Response entity body is empty"), //
-            @ApiResponse(code = 404, message = "No matching entity exists")})
-    default ResponseEntity<Optional<V>> head(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid) {
-        throw new UnsupportedOperationException("Entity last modified not implemented");
-    }
-
-    // OPTIONS (200) - Querying the Available Operations on a Resource
+    // OPTIONS - Querying the Available Operations on a Resource
     @RequestMapping(method = RequestMethod.OPTIONS)
     @ApiOperation(value = "Querying the Available Operations on a Resource", notes = "Request for information about the communication options available")
     default ResponseEntity<Void> options() {
@@ -106,17 +46,75 @@ public interface IREST<K, V> extends RESTBase {
         return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
+    // POST - Create - Return URL in location header
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Create an entity", notes = "New / modified entity enclosed in the request as identified by the Request-URI", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses(value = { //
+            @ApiResponse(code = 201, message = "Entity body is the resource that was created"), //
+            @ApiResponse(code = 409, message = "The resource already exists")})
+    default ResponseEntity<V> create(@RequestHeader(value = HttpHeaders.ETAG, required = false) Optional<String> version, @RequestBody V value) {
+        throw new UnsupportedOperationException("Create an entity not implemented");
+    }
+
+    // DELETE
+    @RequestMapping(path = "/{uuid}", method = RequestMethod.DELETE)
+    @ApiOperation(value = "Delete an entity", notes = "Requests that the server delete the resource identified by the Request-URI")
+    @ApiResponses(value = { //
+            @ApiResponse(code = 204, message = "Response entity body is empty")})
+    default ResponseEntity<Void> delete(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid) {
+        throw new UnsupportedOperationException("Delete an entity not implemented");
+    }
+
+    // GET
+    @RequestMapping(path = "/{uuid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Read an entity", notes = "Retrieve en entity identified by the Request-URI", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses(value = { //
+            @ApiResponse(code = 200, message = "Response entity in body"), //
+            @ApiResponse(code = 410, message = "No matching entity exists")})
+    default ResponseEntity<V> read(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
+                                   @ApiParam(name = "If-None-Match", value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false)
+                                           Optional<String> version) {
+        throw new UnsupportedOperationException("Get an entity not implemented");
+    }
+
+    // HEAD - Find Out When a Resource Was Last Modified
+    @RequestMapping(path = "/{uuid}", method = RequestMethod.HEAD, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Find Out When a Resource Was Last Modified", notes = "As per GET but do not return body", produces = MediaType
+            .APPLICATION_JSON_VALUE)
+    @ApiResponses(value = { //
+            @ApiResponse(code = 204, message = "Response entity body is empty"), //
+            @ApiResponse(code = 410, message = "No matching entity exists")})
+    default ResponseEntity<Void> head(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
+                                      @ApiParam(name = "If-None-Match", value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required =
+                                              false) Optional<String> version) {
+        throw new UnsupportedOperationException("Entity last modified not implemented");
+    }
+
     // PATCH (200) - https://tools.ietf.org/html/rfc6902 and https://tools.ietf.org/html/rfc7396
-    @RequestMapping(path = "/{uuid}", method = RequestMethod.PATCH, consumes = {"application/json-patch+json", "application/merge-patch+json"})
+    @RequestMapping(path = "/{uuid}", method = RequestMethod.PATCH, consumes = {"application/json-patch+json", "application/merge-patch+json"}, produces =
+            {"application/json-patch+json", "application/merge-patch+json"})
     @ApiOperation(value = "Request to modify an existing entity", notes = "Request to modify an existing entity")
     @ApiResponses(value = { //
             @ApiResponse(code = 200, message = "Response entity in body"), //
             @ApiResponse(code = 204, message = "Response entity body is empty"), //
-            @ApiResponse(code = 404, message = "No matching entity exists"), //
+            @ApiResponse(code = 410, message = "No matching entity exists"), //
             @ApiResponse(code = 412, message = "Precondition fail - CAS mismatch ?")})
     default ResponseEntity<Void> patch(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, @RequestHeader
             (value = HttpHeaders.ETAG, required = false) Optional<String> version) {
         throw new UnsupportedOperationException("Available options not implemented");
+    }
+
+    // PUT - Create or Update
+    @RequestMapping(path = "/{uuid}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Update or create an entity", notes = "Requests that the enclosed entity be stored under the supplied Request-URI", consumes =
+            MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses(value = { //
+            @ApiResponse(code = 200, message = "Response entity in body"), //
+            @ApiResponse(code = 201, message = "Entity body is the resource that was created"), //
+            @ApiResponse(code = 412, message = "Precondition fail - CAS mismatch ?")})
+    default ResponseEntity<V> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, @RequestHeader
+            (value = HttpHeaders.ETAG, required = false) Optional<String> version, @RequestBody V value) {
+        throw new UnsupportedOperationException("Update  or create an entity not implemented");
     }
 
     /**

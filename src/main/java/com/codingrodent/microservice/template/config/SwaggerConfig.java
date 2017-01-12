@@ -128,7 +128,8 @@ public class SwaggerConfig {
         addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.UNAUTHORIZED.value(), "The request requires user authentication", null, Collections
                 .emptyMap(), Collections.emptyList()));
         // 403
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.FORBIDDEN.value(), "User not authorized to perform the operation or the resource is " + "" + "" + "" + "" + "" + "" + "" + "" + "" + "" + "" + "" + "unavailable", null, Collections.emptyMap(), Collections.emptyList()));
+        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.FORBIDDEN.value(), "User not authorized to perform the operation or the resource is " +
+                "unavailable", null, Collections.emptyMap(), Collections.emptyList()));
         //
         // 404
         addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.NOT_FOUND.value(), "Resource not found", null, Collections.emptyMap(), Collections
@@ -152,25 +153,13 @@ public class SwaggerConfig {
         //
         // ... and now by request methods
         //
-        // 200
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.OK.value(), "Resource returned without error", null, Collections.emptyMap(), Collections.emptyList()), RequestMethod.GET, RequestMethod.HEAD, RequestMethod.POST, RequestMethod.TRACE);
-        //
-        // 201
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.CREATED.value(), "Resource created without error", null, Collections.emptyMap(), Collections.emptyList()), RequestMethod.POST, RequestMethod.PUT);
-        //
         // 304
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.NOT_MODIFIED.value(), "Not modified", null, Collections.emptyMap(), Collections
-                .emptyList()), RequestMethod.GET);
-        //
-        //
-        // 409
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.CONFLICT.value(), "Conflict", null, Collections.emptyMap(), Collections.emptyList())
-                , RequestMethod.PUT);
+        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.NOT_MODIFIED.value(), "Content not modified", null, Collections.emptyMap(),
+                                                              Collections.emptyList()), RequestMethod.GET, RequestMethod.HEAD);
         //
         // 418
         addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.I_AM_A_TEAPOT.value(), "Hyper Text Coffee Pot Control Protocol", null, Collections
                 .emptyMap(), Collections.emptyList()), RequestMethod.TRACE);
-
         //
         // update docket
         for (RequestMethod requestMethod : RequestMethod.values()) {

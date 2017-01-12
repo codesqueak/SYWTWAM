@@ -23,9 +23,7 @@ public class ExtraHeaderResultMatchers {
      * Assert the returned allowed options match those expected
      */
     public ResultMatcher options(final String required) {
-        return (result) -> {
-            assertEquals("Allowed header", pack(required), pack(result.getResponse().getHeader(HttpHeaders.ALLOW)));
-        };
+        return (result) -> assertEquals("Allowed header", pack(required), pack(result.getResponse().getHeader(HttpHeaders.ALLOW)));
     }
 
     private String pack(String options) {

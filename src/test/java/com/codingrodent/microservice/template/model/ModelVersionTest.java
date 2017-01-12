@@ -34,15 +34,15 @@ public class ModelVersionTest {
 
     @Test
     public void getModel() throws Exception {
-        ModelVersion<String> modelVersion = new ModelVersion<String>("abc123", Optional.of(12345L));
+        ModelVersion<String> modelVersion = new ModelVersion<>("abc123", Optional.of(12345L));
         assertEquals("abc123", modelVersion.getModel());
     }
 
     @Test
     public void getVersion() throws Exception {
-        ModelVersion<String> modelVersion = new ModelVersion<String>("abc123", Optional.of(12345L));
+        ModelVersion<String> modelVersion = new ModelVersion<>("abc123", Optional.of(12345L));
         assertEquals(12345L, modelVersion.getVersion().orElse(-1L).longValue());
-        modelVersion = new ModelVersion<String>("abc123", Optional.empty());
+        modelVersion = new ModelVersion<>("abc123", Optional.empty());
         assertEquals(-1L, modelVersion.getVersion().orElse(-1L).longValue());
     }
 

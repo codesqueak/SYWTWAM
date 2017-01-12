@@ -38,7 +38,7 @@ import org.springframework.http.HttpHeaders;
 
 import java.util.*;
 
-import static com.codingrodent.microservice.template.constants.SystemConstants.API_VERSION;
+import static com.codingrodent.microservice.template.constants.SystemConstants.*;
 import static com.codingrodent.microservice.template.matchers.ExtraHeaderResultMatchers.extra;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -67,60 +67,96 @@ public class ContactServiceTest extends BaseMVCTests {
 
     @Test
     public void getContact() throws Exception {
-        when(contactService.load(any())).thenReturn(Optional.of(modelVersion)).thenReturn(Optional.empty());
+        when(contactService.load(any())).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion), Optional.empty());
 
         // @formatter:off
         // Invalid UUID
-        performGet(controller, "/syncname/" + API_VERSION + "/" + BAD_UUID)
+        performGet(controller, "/syncname/" + API_VERSION + "/" + BAD_UUID, null)
                 .andExpect(status().isBadRequest())
                 .andReturn();
         // @formatter:on
 
         // @formatter:off
         // load - found
-        performGet(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID())
+        performGet(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), null)
                 .andExpect(status().isOk())
                 .andExpect(content().json(json))
                 .andExpect(header().string(HttpHeaders.ETAG, "\"12345\""))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE ))
+                .andReturn();
+        // @formatter:on
+
+        // @formatter:off
+        // load - found - non matching eTag
+        performGet(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), "\"2468\"")
+                .andExpect(status().isOk())
+                .andExpect(content().json(json))
+                .andExpect(header().string(HttpHeaders.ETAG, "\"12345\""))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE ))
+                .andReturn();
+        // @formatter:on
+
+        // @formatter:off
+        // load - found - matching eTag
+        performGet(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), "\"12345\"")
+                .andExpect(status().isNotModified())
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE ))
                 .andReturn();
         // @formatter:on
 
         // @formatter:off
         // load - not found
-        performGet(controller,"/syncname/" + API_VERSION + "/" + UUID.randomUUID())
-                .andExpect(status().isNotFound())
+        performGet(controller,"/syncname/" + API_VERSION + "/" + UUID.randomUUID(), null)
+                .andExpect(status().isGone())
                 .andReturn();
         // @formatter:on
-        verify(contactService, times(2)).load(any());
+        verify(contactService, times(4)).load(any());
     }
 
     @Test
     public void headContact() throws Exception {
-        when(contactService.load(any())).thenReturn(Optional.of(modelVersion)).thenReturn(Optional.empty());
+        when(contactService.load(any())).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion), Optional.empty());
 
         // @formatter:off
         // Invalid UUID
-        performHead(controller, "/syncname/" + API_VERSION + "/" + BAD_UUID)
+        performHead(controller, "/syncname/" + API_VERSION + "/" + BAD_UUID, null)
                 .andExpect(status().isBadRequest())
                 .andReturn();
         // @formatter:on
 
         // @formatter:off
         // load - found
-        performHead(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID())
-                .andExpect(status().isOk())
+        performHead(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), null)
+                .andExpect(status().isNoContent())
                 .andExpect(content().string("")) // Must be an empty body even if it is found
                 .andExpect(header().string(HttpHeaders.ETAG, "\"12345\""))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE))
                 .andReturn();
         // @formatter:on
 
         // @formatter:off
-        // load - not found
-        performHead(controller,"/syncname/" + API_VERSION + "/" + UUID.randomUUID())
-                .andExpect(status().isGone())
+        // load - found - non matching eTag
+        performHead(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), "\"2468\"")
+                .andExpect(status().isNoContent())
+                .andExpect(header().string(HttpHeaders.ETAG, "\"12345\""))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE ))
                 .andReturn();
         // @formatter:on
-        verify(contactService, times(2)).load(any());
+
+        // @formatter:off
+        // load - found - matching eTag
+        performHead(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), "\"12345\"")
+                .andExpect(status().isNotModified())
+                .andReturn();
+        // @formatter:on
+        // @formatter:off
+        // load - not found
+        performHead(controller,"/syncname/" + API_VERSION + "/" + UUID.randomUUID(), null)
+                .andExpect(status().isGone())
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE))
+                .andReturn();
+        // @formatter:on
+        verify(contactService, times(4)).load(any());
     }
 
     @Test
@@ -152,9 +188,10 @@ public class ContactServiceTest extends BaseMVCTests {
         // @formatter:off
         // Save
         performPut(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), "\"12345\"", json)
-                .andExpect(status().isOk())
+                .andExpect(status().isAccepted())
                 .andExpect(content().json(json))
-          //      .andExpect(header().string(HttpHeaders.ETAG, "\"12345\""))
+                .andExpect(header().string(HttpHeaders.ETAG, "\"12345\""))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE))
                 .andReturn();
         // @formatter:on
 
@@ -163,7 +200,8 @@ public class ContactServiceTest extends BaseMVCTests {
         performPut(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), null, json)
                 .andExpect(status().isCreated())
                 .andExpect(content().json(json))
-                .andExpect(header().doesNotExist(HttpHeaders.ETAG))
+                .andExpect(header().string(HttpHeaders.ETAG, "\"12345\""))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE))
                 .andReturn();
         // @formatter:on
 
@@ -197,6 +235,7 @@ public class ContactServiceTest extends BaseMVCTests {
                 .andExpect(status().isCreated())
                 .andExpect(content().json(json))
                 .andExpect(header().string(HttpHeaders.ETAG, "\"12345\""))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE))
                 .andReturn();
         // @formatter:on
 
@@ -206,6 +245,7 @@ public class ContactServiceTest extends BaseMVCTests {
                 .andExpect(status().isCreated())
                 .andExpect(content().json(json))
                 .andExpect(header().string(HttpHeaders.ETAG, "\""+version+"\""))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE))
                 .andReturn();
         // @formatter:on
 
