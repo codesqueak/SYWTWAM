@@ -57,6 +57,11 @@ public class RestAdvice extends ResponseEntityExceptionHandler {
         return getResponseEntity(req, ex, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(DocumentNeverFoundException.class)
+    public ResponseEntity<Object> fault(HttpServletRequest req, DocumentNeverFoundException ex) {
+        return getResponseEntity(req, ex, HttpStatus.GONE);
+    }
+
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<Object> fault(HttpServletRequest req, ConflictException ex) {
         return getResponseEntity(req, ex, HttpStatus.CONFLICT);

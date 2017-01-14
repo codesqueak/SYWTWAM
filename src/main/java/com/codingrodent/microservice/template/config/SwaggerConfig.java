@@ -122,22 +122,26 @@ public class SwaggerConfig {
         // Add response messages - globals first
         //
         // 400
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.BAD_REQUEST.value(), "The request cannot be fulfilled due to bad syntax", null, Collections.emptyMap(), Collections.emptyList()));
+        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.BAD_REQUEST.value(), "The request cannot be fulfilled due to bad syntax", null,
+                                                              Collections.emptyMap(), Collections.emptyList()));
         //
         // 401
         addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.UNAUTHORIZED.value(), "The request requires user authentication", null, Collections
                 .emptyMap(), Collections.emptyList()));
         // 403
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.FORBIDDEN.value(), "User not authorized to perform the operation or the resource is " +
-                "unavailable", null, Collections.emptyMap(), Collections.emptyList()));
+        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.FORBIDDEN.value(), "User not authorized to perform the operation or the resource is " + "" + "unavailable", null, Collections.emptyMap(), Collections.emptyList()));
         //
         // 404
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.NOT_FOUND.value(), "Resource not found", null, Collections.emptyMap(), Collections
-                .emptyList()));
+        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.NOT_FOUND.value(), "Document not found. This may be temporary or permanent", null,
+                                                              Collections.emptyMap(), Collections.emptyList()));
         //
         // 405
         addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.METHOD_NOT_ALLOWED.value(), "Method not allowed on resource", null, Collections
                 .emptyMap(), Collections.emptyList()));
+        //
+        // 410
+        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.GONE.value(), "Document not found. Considered permanent", null, Collections.emptyMap
+                (), Collections.emptyList()));
         //
         // 500
         addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.INTERNAL_SERVER_ERROR.value(), "A server fault has occurred", null, Collections

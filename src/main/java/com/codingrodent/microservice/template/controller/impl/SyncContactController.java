@@ -25,7 +25,7 @@
 package com.codingrodent.microservice.template.controller.impl;
 
 import com.codingrodent.microservice.template.controller.api.IREST;
-import com.codingrodent.microservice.template.exception.ApplicationFaultException;
+import com.codingrodent.microservice.template.exception.*;
 import com.codingrodent.microservice.template.model.Contact;
 import com.codingrodent.microservice.template.model.*;
 import com.codingrodent.microservice.template.service.api.IContactService;
@@ -57,7 +57,7 @@ public class SyncContactController implements IREST<UUID, Contact> {
         this.contactService = contactService;
     }
 
-    // GET (200)
+    // GET
     @Override
     public ResponseEntity<Contact> read(@ApiParam(name = "uuid", value = "Unique contact UUID", required = true) @PathVariable final UUID uuid, //
                                         @ApiParam(name = "If-None-Match", value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required =
@@ -66,12 +66,24 @@ public class SyncContactController implements IREST<UUID, Contact> {
         if (isNotModified(version, modelVersion)) {
             return new ResponseEntity<>(getContent(), HttpStatus.NOT_MODIFIED);
         } else {
-            return modelVersion.map(mv -> new ResponseEntity<>(mv.getModel(), getETag(mv), HttpStatus.OK)).orElse(new ResponseEntity<>(getContent(),
-                                                                                                                                       HttpStatus.GONE));
+            return modelVersion.map(mv -> new ResponseEntity<>(mv.getModel(), getETag(mv), HttpStatus.OK)).orElseThrow(() -> new DocumentNeverFoundException());
         }
     }
 
-    // PUT - Create (201) or Update  (200)
+    // HEAD
+    @Override
+    public ResponseEntity<Void> head(@ApiParam(name = "uuid", value = "Unique contact UUID", required = true) @PathVariable final UUID uuid, @ApiParam(name =
+            "If-None-Match", value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false) Optional<String> version) {
+        Optional<ModelVersion<Contact>> modelVersion = contactService.load(uuid);
+        if (isNotModified(version, modelVersion)) {
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        } else {
+            return modelVersion.map(mv -> new ResponseEntity<Void>(getETag(mv, HttpHeaders.CONTENT_TYPE, CONTENT_TYPE), HttpStatus.NO_CONTENT)).orElseThrow(
+                    () -> new DocumentNeverFoundException());
+        }
+    }
+
+    // PUT - Create or Update
     @Override
     public ResponseEntity<Contact> upsert(@ApiParam(name = "uuid", value = "Unique contact UUID", required = true) @PathVariable final UUID uuid, //
                                           @ApiParam(name = "If-None-Match", value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required =
@@ -86,7 +98,7 @@ public class SyncContactController implements IREST<UUID, Contact> {
                 .orElseThrow(() -> new ApplicationFaultException("PUT failed to return a document"));
     }
 
-    // POST - Create (201) - Return URL in location header
+    // POST - Create - Return URL in location header
     @Override
     public ResponseEntity<Contact> create(@ApiParam(name = "ETag", value = "CAS Value") @RequestHeader(value = HttpHeaders.ETAG, required = false)
                                                       Optional<String> version, //
@@ -104,18 +116,6 @@ public class SyncContactController implements IREST<UUID, Contact> {
     public ResponseEntity<Void> delete(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable final UUID uuid) {
         contactService.delete(uuid);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    // HEAD (200)
-    @Override
-    public ResponseEntity<Void> head(@ApiParam(name = "uuid", value = "Unique contact UUID", required = true) @PathVariable final UUID uuid, @ApiParam(name =
-            "If-None-Match", value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false) Optional<String> version) {
-        Optional<ModelVersion<Contact>> modelVersion = contactService.load(uuid);
-        if (isNotModified(version, modelVersion)) {
-            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-        } else {
-            return modelVersion.map(mv -> new ResponseEntity<Void>(getETag(mv, HttpHeaders.CONTENT_TYPE, CONTENT_TYPE), HttpStatus.NO_CONTENT)).orElse(new ResponseEntity<>(getContent(), HttpStatus.GONE));
-        }
     }
 
     /**

@@ -25,15 +25,15 @@
 package com.codingrodent.microservice.template.exception;
 
 /**
- * Thrown to indicate that a document could not be found (REST).
+ * Thrown to indicate that a document will never be found (REST).
  */
-public class DocumentNotFoundException extends RuntimeException {
+public class DocumentNeverFoundException extends RuntimeException {
 
     /**
      * Constructs an <code>DocumentNotFoundException</code> with no detail message.
      */
-    public DocumentNotFoundException() {
-        super("Document not found. This may be temporary or permanent");
+    public DocumentNeverFoundException() {
+        super("Document not found. Considered permanent");
     }
 
     /**
@@ -41,7 +41,7 @@ public class DocumentNotFoundException extends RuntimeException {
      *
      * @param message the detail message.
      */
-    public DocumentNotFoundException(String message) {
+    public DocumentNeverFoundException(String message) {
         super(message);
     }
 }
