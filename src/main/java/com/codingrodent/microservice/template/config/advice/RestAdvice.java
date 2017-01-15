@@ -62,6 +62,11 @@ public class RestAdvice extends ResponseEntityExceptionHandler {
         return getResponseEntity(req, ex, HttpStatus.GONE);
     }
 
+    @ExceptionHandler(PreconditionFailedException.class)
+    public ResponseEntity<Object> fault(HttpServletRequest req, PreconditionFailedException ex) {
+        return getResponseEntity(req, ex, HttpStatus.PRECONDITION_FAILED);
+    }
+
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<Object> fault(HttpServletRequest req, ConflictException ex) {
         return getResponseEntity(req, ex, HttpStatus.CONFLICT);
@@ -92,6 +97,11 @@ public class RestAdvice extends ResponseEntityExceptionHandler {
         return getResponseEntity(req, ex, HttpStatus.PRECONDITION_FAILED);
     }
 
+    @ExceptionHandler(ApplicationFaultException.class)
+    public ResponseEntity<Object> fault(HttpServletRequest req, ApplicationFaultException ex) {
+        return getResponseEntity(req, ex, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     /**
      * Fallback for all unhandled exceptions. Generates a 500 response
      *
@@ -114,8 +124,7 @@ public class RestAdvice extends ResponseEntityExceptionHandler {
      * @return a {@code ResponseEntity} instance
      */
     @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest
-            request) {
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         return getResponseEntity(request, ex, HttpStatus.BAD_REQUEST);
     }
 
@@ -129,8 +138,7 @@ public class RestAdvice extends ResponseEntityExceptionHandler {
      * @return a {@code ResponseEntity} instance
      */
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest
-            request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         return getResponseEntity(request, ex, HttpStatus.BAD_REQUEST);
     }
 

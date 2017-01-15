@@ -67,7 +67,7 @@ public class ContactServiceTest extends BaseMVCTests {
 
     @Test
     public void getContact() throws Exception {
-        when(contactService.load(any())).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion), Optional.empty());
+        when(contactService.load(any(UUID.class))).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion), Optional.empty());
 
         // @formatter:off
         // Invalid UUID
@@ -115,7 +115,7 @@ public class ContactServiceTest extends BaseMVCTests {
 
     @Test
     public void headContact() throws Exception {
-        when(contactService.load(any())).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion), Optional.empty());
+        when(contactService.load(any(UUID.class))).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion), Optional.empty());
 
         // @formatter:off
         // Invalid UUID
@@ -148,6 +148,7 @@ public class ContactServiceTest extends BaseMVCTests {
         performHead(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), "\"12345\"")
                 .andExpect(status().isNotModified())
                 .andReturn();
+
         // @formatter:on
         // @formatter:off
         // load - not found
@@ -161,7 +162,9 @@ public class ContactServiceTest extends BaseMVCTests {
 
     @Test
     public void putContact() throws Exception {
-        when(contactService.save(any(), any(), any())).thenThrow(OptimisticLockingFailureException.class).thenReturn(Optional.of(modelVersion));
+        when(contactService.load(any(UUID.class))).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion));
+        when(contactService.save(any(UUID.class), any(Contact.class), any(Optional.class))).thenThrow(OptimisticLockingFailureException.class).thenReturn(modelVersion,
+                                                                                                                                                          modelVersion, null);
 
         // @formatter:off
         // No body
@@ -186,6 +189,13 @@ public class ContactServiceTest extends BaseMVCTests {
         // @formatter:on
 
         // @formatter:off
+        // If-Match precondition fail
+        performPut(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), "\"246\"", json)
+                .andExpect(status().isPreconditionFailed())
+                .andReturn();
+        // @formatter:on
+
+        // @formatter:off
         // Save
         performPut(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), "\"12345\"", json)
                 .andExpect(status().isAccepted())
@@ -205,14 +215,22 @@ public class ContactServiceTest extends BaseMVCTests {
                 .andReturn();
         // @formatter:on
 
-        verify(contactService, times(3)).save(any(), any(), any());
+        // @formatter:off
+        // Save - null return value - fault
+        performPut(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), "\"12345\"", json)
+                .andExpect(status().isInternalServerError())
+                .andReturn();
+        // @formatter:on
+
+        verify(contactService, times(4)).load(any());
+        verify(contactService, times(4)).save(any(), any(), any());
     }
 
     @Test
     public void postContact() throws Exception {
         Long version = 789L;
-        when(contactService.create(any(), any())).thenThrow(DuplicateKeyException.class).thenReturn(Optional.of(modelVersion)).thenAnswer(inv -> Optional.of
-                (new ModelVersion<>(contact, (Optional) inv.getArguments()[1])));
+        when(contactService.create(any(Contact.class), any(Optional.class))).thenThrow(DuplicateKeyException.class).thenReturn(modelVersion).thenAnswer(inv -> new ModelVersion<>
+                (contact, (Optional) inv.getArguments()[1])).thenReturn(null);
 
         // @formatter:off
         // No body
@@ -249,27 +267,50 @@ public class ContactServiceTest extends BaseMVCTests {
                 .andReturn();
         // @formatter:on
 
-        verify(contactService, times(3)).create(any(), any());
+        // @formatter:off
+        // Create with eTag - null return value - fault
+        performPost(controller, "/syncname/" + API_VERSION , "\""+version+"\"", json)
+                .andExpect(status().isInternalServerError())
+                .andReturn();
+        // @formatter:on
+
+        verify(contactService, times(4)).create(any(), any());
     }
 
     @Test
     public void deleteContact() throws Exception {
+        when(contactService.load(any())).thenReturn(Optional.of(modelVersion));
 
         // @formatter:off
         // Invalid UUID
-        performDelete(controller, "/syncname/" + API_VERSION + "/" + BAD_UUID)
+        performDelete(controller, "/syncname/" + API_VERSION + "/" + BAD_UUID, "\"12345\"")
                 .andExpect(status().isBadRequest())
                 .andReturn();
         // @formatter:on
 
         // @formatter:off
-        // Save
-        performDelete(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(),json)
+        // Delete
+        performDelete(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), null)
                 .andExpect(status().isNoContent())
                 .andReturn();
         // @formatter:on
 
-        verify(contactService, times(1)).delete(any());
+        // @formatter:off
+        // Delete
+        performDelete(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), "\"12345\"")
+                .andExpect(status().isNoContent())
+                .andReturn();
+        // @formatter:on
+
+        // @formatter:off
+        // Delete - loaded etag doesn't match
+        performDelete(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), "\"246\"")
+                .andExpect(status().isPreconditionFailed())
+                .andReturn();
+        // @formatter:on
+
+        verify(contactService, times(2)).load(any());
+        verify(contactService, times(2)).delete(any());
     }
 
     @Test

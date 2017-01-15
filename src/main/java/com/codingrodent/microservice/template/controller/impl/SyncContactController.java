@@ -34,20 +34,19 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
-import javax.validation.Valid;
 import java.util.*;
 
-import static com.codingrodent.microservice.template.constants.SystemConstants.*;
+import static com.codingrodent.microservice.template.constants.SystemConstants.API_VERSION;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 import static org.springframework.http.HttpMethod.*;
 
 /**
- * Simple sync REST controller
+ * Simple sync REST controller for the Contact resource
  */
 @RestController
 @Api(tags = "sync", value = "synccontact", description = "Endpoint for contact management")
 @RequestMapping("/syncname/" + API_VERSION)
-public class SyncContactController implements IREST<UUID, Contact> {
+public class SyncContactController extends RestBase<Contact> implements IREST<UUID, Contact> {
 
     private final IContactService<Contact> contactService;
     private final static Set<HttpMethod> ALLOWED_OPTIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(GET, HEAD, POST, PUT, PATCH, DELETE)));
@@ -57,63 +56,116 @@ public class SyncContactController implements IREST<UUID, Contact> {
         this.contactService = contactService;
     }
 
-    // GET
+    /**
+     * GET - Requests data from a the Contact resource
+     *
+     * @param uuid    Identifier of contact to fetch
+     * @param version Contact version identifier
+     * @return Return selected contact or 'Not Modified' if version matched
+     */
     @Override
-    public ResponseEntity<Contact> read(@ApiParam(name = "uuid", value = "Unique contact UUID", required = true) @PathVariable final UUID uuid, //
-                                        @ApiParam(name = "If-None-Match", value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required =
-                                                false) Optional<String> version) {
+    public ResponseEntity<Contact> read(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
+                                        @ApiParam(name = HttpHeaders.IF_NONE_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false)
+                                                Optional<String> version) {
         Optional<ModelVersion<Contact>> modelVersion = contactService.load(uuid);
-        if (isNotModified(version, modelVersion)) {
+        if (!version.isPresent() || ifNoneMatch(version, modelVersion)) {
+            // Exec
+            return modelVersion.map(mv -> new ResponseEntity<>(mv.getModel(), getETag(mv), HttpStatus.OK)).orElseThrow(DocumentNeverFoundException::new);
+        } else {
             return new ResponseEntity<>(getContent(), HttpStatus.NOT_MODIFIED);
-        } else {
-            return modelVersion.map(mv -> new ResponseEntity<>(mv.getModel(), getETag(mv), HttpStatus.OK)).orElseThrow(() -> new DocumentNeverFoundException());
         }
     }
 
-    // HEAD
+    /**
+     * HEAD - As per get but no body returned
+     *
+     * @param uuid    Identifier of contact to fetch
+     * @param version Contact version identifier
+     * @return Return Empty result or 'Not Modified' if version matched
+     */
     @Override
-    public ResponseEntity<Void> head(@ApiParam(name = "uuid", value = "Unique contact UUID", required = true) @PathVariable final UUID uuid, @ApiParam(name =
-            "If-None-Match", value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false) Optional<String> version) {
+    public ResponseEntity<Optional> head(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
+                                         @ApiParam(name = HttpHeaders.IF_NONE_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false)
+                                                 Optional<String> version) {
         Optional<ModelVersion<Contact>> modelVersion = contactService.load(uuid);
-        if (isNotModified(version, modelVersion)) {
-            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        if (!version.isPresent() || ifNoneMatch(version, modelVersion)) {
+            // Exec
+            return modelVersion.map(mv -> new ResponseEntity<Optional>(Optional.empty(), getETag(mv), HttpStatus.NO_CONTENT)).orElseThrow(DocumentNeverFoundException::new);
         } else {
-            return modelVersion.map(mv -> new ResponseEntity<Void>(getETag(mv, HttpHeaders.CONTENT_TYPE, CONTENT_TYPE), HttpStatus.NO_CONTENT)).orElseThrow(
-                    () -> new DocumentNeverFoundException());
+            return new ResponseEntity<>(getContent(), HttpStatus.NOT_MODIFIED);
         }
     }
 
-    // PUT - Create or Update
+    /**
+     * PUT - Create or update a contact
+     *
+     * @param uuid    Identifier of contact to write
+     * @param version Contact version identifier
+     * @param contact Contact to write
+     * @return Written contact
+     */
     @Override
-    public ResponseEntity<Contact> upsert(@ApiParam(name = "uuid", value = "Unique contact UUID", required = true) @PathVariable final UUID uuid, //
-                                          @ApiParam(name = "If-None-Match", value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required =
-                                                  false) Optional<String> version, //
-                                          @Valid @RequestBody final Contact contact) {
-        Optional<ModelVersion<Contact>> modelVersion = contactService.save(uuid, contact, version.map(extractETag));
-        //
-        // The spring data couchbase component doesn't expose 'replace()' so that we can't tell if a document already exists. Calling exists() doesn't help
-        // doesn't solve this as we are not in a transactional system and the database may change
+    public ResponseEntity<Contact> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
+                                          @ApiParam(name = HttpHeaders.IF_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false)
+                                                  Optional<String> version, //
+                                          @ApiParam(name = "Entity", value = "Contact Value", required = true) @RequestBody Contact contact) {
+
+        if (version.isPresent()) {
+            // Only need  to check if record exists when doing an If-Match
+            Optional<ModelVersion<Contact>> modelVersion = contactService.load(uuid);
+            if (!ifMatch(version, modelVersion))
+                throw new PreconditionFailedException("PUT If-Match");
+        }
+        ModelVersion<Contact> written = contactService.save(uuid, contact, version.map(extractETag));
         // As a workaround we will take the version to signify if this is a create or update
-        return modelVersion.map(mv -> new ResponseEntity<>(mv.getModel(), getETag(mv), version.map(e -> HttpStatus.ACCEPTED).orElse(HttpStatus.CREATED)))
-                .orElseThrow(() -> new ApplicationFaultException("PUT failed to return a document"));
+        if (null == written) {
+            throw new ApplicationFaultException("PUT failed to return a document");
+        } else {
+            return new ResponseEntity<>(written.getModel(), getETag(written), version.map(e -> HttpStatus.ACCEPTED).orElse(HttpStatus.CREATED));
+        }
     }
 
-    // POST - Create - Return URL in location header
+    /**
+     * POST - Submits contact data to be processed to a specified resource (Return URL in location header etag)
+     * <p>
+     * Note: Not usually used in REST applications
+     *
+     * @param version Contact version identifier. Match forces overwrite else create (if contact doesn't exist)
+     * @param contact Contact to write
+     * @return Contact entity
+     */
     @Override
-    public ResponseEntity<Contact> create(@ApiParam(name = "ETag", value = "CAS Value") @RequestHeader(value = HttpHeaders.ETAG, required = false)
+    public ResponseEntity<Contact> create(@ApiParam(name = HttpHeaders.IF_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false)
                                                       Optional<String> version, //
-                                          @Valid @RequestBody final Contact contact) {
-        Optional<ModelVersion<Contact>> modelVersion = contactService.create(contact, version.map(extractETag));
-        return modelVersion.map(mv -> {
-            HttpHeaders headers = getETag(mv);
-            headers.setLocation(linkTo(methodOn(SyncContactController.class).read(UUID.randomUUID(), Optional.empty())).toUri());
-            return new ResponseEntity<>(mv.getModel(), headers, HttpStatus.CREATED);
-        }).orElseThrow(() -> new ApplicationFaultException("POST failed to return a document"));
+                                          @ApiParam(name = "Entity", value = "Contact Value", required = true) @RequestBody Contact contact) {
+        // Not doing If-Match test as we can guarantee record does not exists due to uuid creation
+        ModelVersion<Contact> written = contactService.create(contact, version.map(extractETag));
+        if (null == written) {
+            throw new ApplicationFaultException("POST failed to return a document");
+        } else {
+            String location = linkTo(methodOn(SyncContactController.class).read(UUID.randomUUID(), Optional.empty())).toUri().toASCIIString();
+            return new ResponseEntity<>(written.getModel(), getETag(written, HttpHeaders.LOCATION, location), HttpStatus.CREATED);
+        }
     }
 
-    // DELETE = Delete (200)
+    /**
+     * DELETE - Delete an existing contact
+     *
+     * @param uuid    Identifier of contact to delete
+     * @param version Contact version identifier
+     * @return No body
+     */
     @Override
-    public ResponseEntity<Void> delete(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable final UUID uuid) {
+    public ResponseEntity<Void> delete(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
+                                       @ApiParam(name = HttpHeaders.IF_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false)
+                                               Optional<String> version) {
+
+        if (version.isPresent()) {
+            // Only need  to check if record exists when doing an If-Match
+            Optional<ModelVersion<Contact>> modelVersion = contactService.load(uuid);
+            if (!ifMatch(version, modelVersion))
+                throw new PreconditionFailedException("DELETE If-Match");
+        }
         contactService.delete(uuid);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

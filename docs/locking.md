@@ -1,4 +1,4 @@
-#Optimistic Locking With ETags
+# ETags and Optimistic Locking
 
 The ETag response-header field provides the current value of the entity. This may be used in conjunction with If-Match and If-None-Match headers to implement
  an optimistic locking process.
@@ -17,6 +17,7 @@ The ETag response-header field provides the current value of the entity. This ma
 | OPTIONS       |                 |                    |                         |
 | PATCH         | Y               | Y                  | Y                       |
 
+For full information on the exact useage see [RFC-7232](https://tools.ietf.org/html/rfc7232#section-3.1)
 
 ##How to Evaluate If-Match
 ````
@@ -57,8 +58,7 @@ Make mandatory if efficient retrieval required (304)
 
 | Header          | Precondition | Entity Exists | Action                |
 |-----------------|--------------|---------------|-----------------------|
-| If-None-Match   | True         | N             | 404                   |
-| If-None-Match   | True         | Y             | Exec                  |  
+| If-None-Match   | True         | -             | Exec                  |  
 | If-None-Match   | False        | -             | 304                   |
 
 ### Exec
@@ -85,8 +85,7 @@ Make mandatory if efficient retrieval required (304)
 
 | Header          | Precondition | Entity Exists | Action                |
 |-----------------|--------------|---------------|-----------------------|
-| If-None-Match   | True         | N             | 404                   |
-| If-None-Match   | True         | Y             | Exec                  |  
+| If-None-Match   | True         | -             | Exec                  |  
 | If-None-Match   | False        | -             | 304                   |
 
 ### Exec
@@ -94,7 +93,7 @@ Make mandatory if efficient retrieval required (304)
 | Header          | Precondition | Entity Exists | Action                |
 |-----------------|--------------|---------------|-----------------------|
 | -               | -            | N             | 404                   |
-| -               | -            | Y             | Return Entity/200     |
+| -               | -            | Y             | 204     |
 
 
 ##POST
@@ -114,8 +113,7 @@ Make If-Match mandatory if optimistic locking is in use
 
 | Header          | Precondition | Entity Exists | Action                |
 |-----------------|--------------|---------------|-----------------------|
-| If-None-Match   | True         | N             | 204                   |
-| If-None-Match   | True         | Y             | Exec                  |  
+| If-None-Match   | True         | -             | Exec                  |  
 | If-None-Match   | False        | -             | 412                   |
 
 ### Exec
@@ -148,8 +146,7 @@ Make If-Match mandatory if optimistic locking is in use
 
 | Header          | Precondition | Entity Exists | Action                |
 |-----------------|--------------|---------------|-----------------------|
-| If-None-Match   | True         | N             | 204                   |
-| If-None-Match   | True         | Y             | Exec                  |  
+| If-None-Match   | True         | -             | Exec                  |  
 | If-None-Match   | False        | -             | 412                   |
 
 ### Exec
@@ -178,8 +175,7 @@ Make If-Match mandatory if optimistic locking is in use
 
 | Header          | Precondition | Entity Exists | Action                |
 |-----------------|--------------|---------------|-----------------------|
-| If-None-Match   | True         | N             | 409                   |
-| If-None-Match   | True         | Y             | Exec                  |  
+| If-None-Match   | True         | -             | Exec                  |  
 | If-None-Match   | False        | -             | 412                   |
 
 ### Exec
@@ -209,8 +205,7 @@ Make If-Match mandatory if optimistic locking is in use
 
 | Header          | Precondition | Entity Exists | Action                |
 |-----------------|--------------|---------------|-----------------------|
-| If-None-Match   | True         | N             | 204                   |
-| If-None-Match   | True         | Y             | Exec                  |  
+| If-None-Match   | True         | -             | Exec                  |  
 | If-None-Match   | False        | -             | 412                   |
 
 ### Exec

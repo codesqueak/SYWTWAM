@@ -39,9 +39,9 @@ public interface IContactService<M> {
     Observable<M> loadAsync(UUID uuid);
 
     // Sync
-    Optional<ModelVersion<M>> save(UUID uuid, M model, Optional<Long> version);
+    ModelVersion<M> save(UUID uuid, M model, Optional<Long> version);
 
-    Optional<ModelVersion<M>> create(M mode, Optional<Long> version);
+    ModelVersion<M> create(M mode, Optional<Long> version);
 
     Optional<ModelVersion<M>> load(UUID uuid);
 

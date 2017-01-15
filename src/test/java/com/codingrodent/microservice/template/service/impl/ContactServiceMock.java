@@ -50,7 +50,7 @@ public class ContactServiceMock implements IContactService<Contact> {
     }
 
     @Override
-    public Optional<ModelVersion<Contact>> save(final UUID uuid, final Contact model, final Optional<Long> version) {
+    public ModelVersion<Contact> save(final UUID uuid, final Contact model, final Optional<Long> version) {
         ModelVersion<Contact> modelVersion;
         if (version.isPresent()) {
             if ((data.containsKey(uuid))) {
@@ -72,12 +72,12 @@ public class ContactServiceMock implements IContactService<Contact> {
             }
         }
         data.put(uuid, modelVersion);
-        return Optional.of(modelVersion);
+        return modelVersion;
     }
 
     @Override
-    public Optional<ModelVersion<Contact>> create(final Contact contact, final Optional<Long> version) {
-        return Optional.empty();
+    public ModelVersion<Contact> create(final Contact contact, final Optional<Long> version) {
+        return null;
     }
 
     @Override

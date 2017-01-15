@@ -67,16 +67,16 @@ public class ContactService implements IContactService<Contact> {
     }
 
     @Override
-    public Optional<ModelVersion<Contact>> save(final UUID uuid, final Contact contact, Optional<Long> version) {
+    public ModelVersion<Contact> save(final UUID uuid, final Contact contact, Optional<Long> version) {
 
         ContactEntity entity = repository.save(toNameEntity.convert(uuid, contact, version));
-        return Optional.of(new ModelVersion<>(toNameModel.convert(entity), Optional.ofNullable(entity.getVersion())));
+        return new ModelVersion<>(toNameModel.convert(entity), Optional.ofNullable(entity.getVersion()));
     }
 
     @Override
-    public Optional<ModelVersion<Contact>> create(final Contact contact, final Optional<Long> version) {
+    public ModelVersion<Contact> create(final Contact contact, final Optional<Long> version) {
         ContactEntity entity = repository.save(toNameEntity.convert(UUID.randomUUID(), contact, version));
-        return Optional.of(new ModelVersion<>(toNameModel.convert(entity), Optional.ofNullable(entity.getVersion())));
+        return new ModelVersion<>(toNameModel.convert(entity), Optional.ofNullable(entity.getVersion()));
     }
 
     @Override

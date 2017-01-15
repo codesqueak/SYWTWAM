@@ -36,7 +36,7 @@ import java.util.UUID;
  * <p>
  * https://en.wikipedia.org/wiki/Representational_state_transfer
  */
-public interface IAsyncREST<K, V> extends RESTBase {
+public interface IAsyncREST<K, V> {
 
     // GET (200)
     @RequestMapping(path = "/{uuid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -50,15 +50,14 @@ public interface IAsyncREST<K, V> extends RESTBase {
 
     // PUT - Create (201) or Update (200)
     @RequestMapping(path = "/{uuid}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Update or create an entity", notes = "Requests that the enclosed entity be stored under the supplied Request-URI", produces =
-            MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Update or create an entity", notes = "Requests that the enclosed entity be stored under the supplied Request-URI", produces = MediaType
+            .APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = { //
             @ApiResponse(code = 200, message = "Response entity in body"), //
             @ApiResponse(code = 201, message = "Entity body is the resource that was created"), //
             @ApiResponse(code = 204, message = "Response entity body is empty"), //
             @ApiResponse(code = 404, message = "No matching entity exists")})
-    default DeferredResult<ResponseEntity<Void>> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid,
-                                                        @RequestBody V value) {
+    default DeferredResult<ResponseEntity<Void>> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, @RequestBody V value) {
         throw new UnsupportedOperationException("Update an entity not implemented");
     }
 

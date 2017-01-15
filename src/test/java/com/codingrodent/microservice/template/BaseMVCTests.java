@@ -67,8 +67,7 @@ public abstract class BaseMVCTests {
      * @return The mocked environment
      */
     private MockMvc getMockMvc(IREST<UUID, Contact> controller) {
-        return MockMvcBuilders.standaloneSetup(controller).setControllerAdvice(new RestAdvice()).setMessageConverters(mappingJackson2HttpMessageConverter)
-                .build();
+        return MockMvcBuilders.standaloneSetup(controller).setControllerAdvice(new RestAdvice()).setMessageConverters(mappingJackson2HttpMessageConverter).build();
     }
 
     /**
@@ -117,21 +116,20 @@ public abstract class BaseMVCTests {
      *
      * @param controller  Controller under test
      * @param urlTemplate URL to be called
-     * @param ifNoneMatch eTag value (May be null)
+     * @param ifMatch     eTag value (May be null)
      * @param bodyJson    Body (May be null for tests)
      * @param urlVars     Zero or more URL variables
      * @return Execution result
      * @throws Exception Thrown on any error
      */
-    protected ResultActions performPut(IREST<UUID, Contact> controller, String urlTemplate, String ifNoneMatch, String bodyJson, Object... urlVars) throws
-            Exception {
+    protected ResultActions performPut(IREST<UUID, Contact> controller, String urlTemplate, String ifMatch, String bodyJson, Object... urlVars) throws Exception {
         // @formatter:off
         MockHttpServletRequestBuilder builder = put(urlTemplate, urlVars)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .characterEncoding(CHAR_ENCODING);
-        if (null != ifNoneMatch)
-            builder.header(HttpHeaders.IF_NONE_MATCH, ifNoneMatch);
+        if (null != ifMatch)
+            builder.header(HttpHeaders.IF_MATCH, ifMatch);
         if (null != bodyJson)
             builder.content(bodyJson);
         return getMockMvc(controller).perform(builder);
@@ -143,20 +141,20 @@ public abstract class BaseMVCTests {
      *
      * @param controller  Controller under test
      * @param urlTemplate URL to be called
-     * @param eTag        eTag value (May be null)
+     * @param ifMatch     eTag value (May be null)
      * @param bodyJson    Body (May be null for tests)
      * @param urlVars     Zero or more URL variables
      * @return Execution result
      * @throws Exception Thrown on any error
      */
-    protected ResultActions performPost(IREST<UUID, Contact> controller, String urlTemplate, String eTag, String bodyJson, Object... urlVars) throws Exception {
+    protected ResultActions performPost(IREST<UUID, Contact> controller, String urlTemplate, String ifMatch, String bodyJson, Object... urlVars) throws Exception {
         // @formatter:off
         MockHttpServletRequestBuilder builder = post(urlTemplate, urlVars)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .characterEncoding(CHAR_ENCODING);
-        if (null != eTag)
-            builder.header(HttpHeaders.ETAG, eTag);
+        if (null != ifMatch)
+            builder.header(HttpHeaders.IF_MATCH, ifMatch);
         if (null != bodyJson)
             builder.content(bodyJson);
         return getMockMvc(controller).perform(builder);
@@ -168,14 +166,17 @@ public abstract class BaseMVCTests {
      *
      * @param controller  Controller under test
      * @param urlTemplate URL to be called
+     * @param ifMatch     eTag value (May be null)
      * @param urlVars     Zero or more URL variables
      * @return Execution result
      * @throws Exception Thrown on any error
      */
-    protected ResultActions performDelete(IREST<UUID, Contact> controller, String urlTemplate, Object... urlVars) throws Exception {
+    protected ResultActions performDelete(IREST<UUID, Contact> controller, String urlTemplate, String ifMatch, Object... urlVars) throws Exception {
         // @formatter:off
         MockHttpServletRequestBuilder builder = delete(urlTemplate, urlVars)
                 .characterEncoding(CHAR_ENCODING);
+        if (null != ifMatch)
+            builder.header(HttpHeaders.IF_MATCH, ifMatch);
         return getMockMvc(controller).perform(builder);
         // @formatter:on
     }

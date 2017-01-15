@@ -22,29 +22,19 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.model;
-
-import java.util.Optional;
+package com.codingrodent.microservice.template.exception;
 
 /**
- * Container class for versioned model objects
+ * Thrown to indicate that a request caused an internal conflict (REST).
  */
-public class ModelVersion<M> {
+public class PreconditionFailedException extends RuntimeException {
 
-    private final M model;
-    private final Optional<Long> version;
-
-    public ModelVersion(final M model, final Optional<Long> version) {
-        this.model = model;
-        this.version = version;
+    /**
+     * Constructs an <code>ConflictException</code> with the specified detail message.
+     *
+     * @param message the detail message.
+     */
+    public PreconditionFailedException(String message) {
+        super(message);
     }
-
-    public M getModel() {
-        return model;
-    }
-
-    public Optional<Long> getVersion() {
-        return version;
-    }
-
 }
