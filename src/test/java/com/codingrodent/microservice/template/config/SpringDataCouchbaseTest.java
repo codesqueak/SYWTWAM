@@ -22,26 +22,16 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.exception;
+package com.codingrodent.microservice.template.config;
 
-/**
- * Thrown to indicate that a document could not be found (REST).
- */
-public class DocumentNotFoundException extends RuntimeException {
+import org.junit.Test;
 
-    /**
-     * Constructs an <code>DocumentNotFoundException</code> with no detail message.
-     */
-    public DocumentNotFoundException() {
-        super("Document not found. This may be temporary or permanent");
-    }
+import static org.junit.Assert.assertNotNull;
 
-    /**
-     * Constructs an <code>DocumentNotFoundException</code> with the specified detail message.
-     *
-     * @param message the detail message.
-     */
-    public DocumentNotFoundException(String message) {
-        super(message);
+public class SpringDataCouchbaseTest {
+
+    @Test
+    public void basicTest() {
+        assertNotNull(new SpringDataCouchbase());
     }
 }

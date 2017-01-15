@@ -22,25 +22,28 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.controller.api;
+package com.codingrodent.microservice.template.model;
 
-import com.codingrodent.microservice.template.model.ModelVersion;
-import org.springframework.http.HttpHeaders;
+import org.junit.Test;
 
-/**
- * Useful utility code potentially used by many REST operations
- */
-public interface RESTBase {
-    /**
-     * Generate ETag header from version resource version (if it exists)
-     *
-     * @param modelVersion Source of version information
-     * @return Headers with ETag set (if available)
-     */
-    default HttpHeaders getETag(ModelVersion<?> modelVersion) {
-        HttpHeaders headers = new HttpHeaders();
-        modelVersion.getVersion().ifPresent(version -> headers.setETag("\"" + version + "\""));
-        return headers;
+import java.util.Optional;
+
+import static org.junit.Assert.assertEquals;
+
+public class ModelVersionTest {
+
+    @Test
+    public void getModel() throws Exception {
+        ModelVersion<String> modelVersion = new ModelVersion<>("abc123", Optional.of(12345L));
+        assertEquals("abc123", modelVersion.getModel());
+    }
+
+    @Test
+    public void getVersion() throws Exception {
+        ModelVersion<String> modelVersion = new ModelVersion<>("abc123", Optional.of(12345L));
+        assertEquals(12345L, modelVersion.getVersion().orElse(-1L).longValue());
+        modelVersion = new ModelVersion<>("abc123", Optional.empty());
+        assertEquals(-1L, modelVersion.getVersion().orElse(-1L).longValue());
     }
 
 }

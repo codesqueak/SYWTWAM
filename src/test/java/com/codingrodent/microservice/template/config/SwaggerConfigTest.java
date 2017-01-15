@@ -22,26 +22,35 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.exception;
+package com.codingrodent.microservice.template.config;
 
-/**
- * Thrown to indicate that a document could not be found (REST).
- */
-public class DocumentNotFoundException extends RuntimeException {
+import com.fasterxml.classmate.TypeResolver;
+import org.junit.*;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger.web.UiConfiguration;
 
-    /**
-     * Constructs an <code>DocumentNotFoundException</code> with no detail message.
-     */
-    public DocumentNotFoundException() {
-        super("Document not found. This may be temporary or permanent");
+import static org.junit.Assert.*;
+
+public class SwaggerConfigTest {
+
+    private SwaggerConfig swaggerConfig;
+
+    @Before
+    public void init() {
+        swaggerConfig = new SwaggerConfig(new TypeResolver());
     }
 
-    /**
-     * Constructs an <code>DocumentNotFoundException</code> with the specified detail message.
-     *
-     * @param message the detail message.
-     */
-    public DocumentNotFoundException(String message) {
-        super(message);
+    @Test
+    public void panopticonApi() throws Exception {
+        Docket docket = swaggerConfig.panopticonApi();
+        assertEquals("template-api", docket.getGroupName());
     }
+
+    @Test
+    public void uiConfig() throws Exception {
+        UiConfiguration uiConfig = swaggerConfig.uiConfig();
+        assertEquals(60000L, uiConfig.getRequestTimeout().longValue());
+        assertArrayEquals(new String[]{"get", "post", "put", "delete", "patch", "head", "options"}, uiConfig.getSupportedSubmitMethods());
+    }
+
 }

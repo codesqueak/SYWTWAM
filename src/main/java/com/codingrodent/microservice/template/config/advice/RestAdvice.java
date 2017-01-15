@@ -28,7 +28,7 @@ package com.codingrodent.microservice.template.config.advice;
 import com.codingrodent.microservice.template.exception.*;
 import com.codingrodent.microservice.template.utility.RestCallErrorInfo;
 import com.netflix.hystrix.exception.HystrixRuntimeException;
-import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.dao.*;
 import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -57,8 +57,23 @@ public class RestAdvice extends ResponseEntityExceptionHandler {
         return getResponseEntity(req, ex, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(DocumentNeverFoundException.class)
+    public ResponseEntity<Object> fault(HttpServletRequest req, DocumentNeverFoundException ex) {
+        return getResponseEntity(req, ex, HttpStatus.GONE);
+    }
+
+    @ExceptionHandler(PreconditionFailedException.class)
+    public ResponseEntity<Object> fault(HttpServletRequest req, PreconditionFailedException ex) {
+        return getResponseEntity(req, ex, HttpStatus.PRECONDITION_FAILED);
+    }
+
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<Object> fault(HttpServletRequest req, ConflictException ex) {
+        return getResponseEntity(req, ex, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(DuplicateKeyException.class)
+    public ResponseEntity<Object> fault(HttpServletRequest req, DuplicateKeyException ex) {
         return getResponseEntity(req, ex, HttpStatus.CONFLICT);
     }
 
@@ -80,6 +95,11 @@ public class RestAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler(OptimisticLockingFailureException.class)
     public ResponseEntity<Object> fault(HttpServletRequest req, OptimisticLockingFailureException ex) {
         return getResponseEntity(req, ex, HttpStatus.PRECONDITION_FAILED);
+    }
+
+    @ExceptionHandler(ApplicationFaultException.class)
+    public ResponseEntity<Object> fault(HttpServletRequest req, ApplicationFaultException ex) {
+        return getResponseEntity(req, ex, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -104,8 +124,7 @@ public class RestAdvice extends ResponseEntityExceptionHandler {
      * @return a {@code ResponseEntity} instance
      */
     @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest
-            request) {
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         return getResponseEntity(request, ex, HttpStatus.BAD_REQUEST);
     }
 
@@ -119,8 +138,7 @@ public class RestAdvice extends ResponseEntityExceptionHandler {
      * @return a {@code ResponseEntity} instance
      */
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest
-            request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         return getResponseEntity(request, ex, HttpStatus.BAD_REQUEST);
     }
 

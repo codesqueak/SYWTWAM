@@ -45,7 +45,8 @@ If you just want to see the microservice built and running, head over to the [qu
 | Authorization / JWT | [Spring Security](http://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/) | ![alt text](docs/images/cross.png "Not Implemented") |
 | JSON | [Jackson](https://github.com/FasterXML/jackson) / [gson](https://github.com/google/gson) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Persistence | [Spring Data](http://projects.spring.io/spring-data/) | ![alt text](docs/images/cross.png "Not Implemented") |
-| Web caching | Cache control headers (ETag etc) | ![alt text](docs/images/cross.png "Not Implemented") |
+| Locking | ETag's etc  | ![alt text](docs/images/tick.png "Implemented") | [Locking](docs/locking.md) |
+| Web Caching | Cache control headers (ETag etc) & Locking | ![alt text](docs/images/cross.png "Not Implemented") |
 
 
 

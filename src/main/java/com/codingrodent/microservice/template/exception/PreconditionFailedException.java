@@ -25,23 +25,16 @@
 package com.codingrodent.microservice.template.exception;
 
 /**
- * Thrown to indicate that a document could not be found (REST).
+ * Thrown to indicate that a request caused an internal conflict (REST).
  */
-public class DocumentNotFoundException extends RuntimeException {
+public class PreconditionFailedException extends RuntimeException {
 
     /**
-     * Constructs an <code>DocumentNotFoundException</code> with no detail message.
-     */
-    public DocumentNotFoundException() {
-        super("Document not found. This may be temporary or permanent");
-    }
-
-    /**
-     * Constructs an <code>DocumentNotFoundException</code> with the specified detail message.
+     * Constructs an <code>ConflictException</code> with the specified detail message.
      *
      * @param message the detail message.
      */
-    public DocumentNotFoundException(String message) {
+    public PreconditionFailedException(String message) {
         super(message);
     }
 }

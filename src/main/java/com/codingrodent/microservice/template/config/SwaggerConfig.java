@@ -52,7 +52,8 @@ public class SwaggerConfig {
                 // Sets information to be displayed in the API resource listing
                 .apiInfo(apiInfo())
                 // Tags used to identify components - purely documentation
-                .tags(new Tag("sync", "Synch demo interface"), new Tag("async", "Asynch demo interface"))
+                .tags(new Tag("sync", "Synch demo interface"), //
+                      new Tag("async", "Asynch demo interface"))
                 // Model substitution rule
                 .directModelSubstitute(LocalDate.class, String.class)
                 //
@@ -60,12 +61,12 @@ public class SwaggerConfig {
                 // The type resolver is resolving DeferredResult<ResponseEntity<?>> to ?
                 // The rule  maps DeferredResult<ResponseEntity<?>> to ? for the model
                 .alternateTypeRules(newRule(//
-                        typeResolver.resolve(DeferredResult.class, typeResolver.resolve(ResponseEntity.class, WildcardType.class)), //
-                        typeResolver.resolve(WildcardType.class)))
+                                            typeResolver.resolve(DeferredResult.class, typeResolver.resolve(ResponseEntity.class, WildcardType.class)), //
+                                            typeResolver.resolve(WildcardType.class)))
                 //
                 .alternateTypeRules(newRule(//
-                        typeResolver.resolve(Optional.class, String.class), //
-                        typeResolver.resolve(String.class)))
+                                            typeResolver.resolve(Optional.class, String.class), //
+                                            typeResolver.resolve(String.class)))
                 //
                 //  	Sets up the security schemes used to protect the apis. Can be ApiKey, BasicAuth and OAuth -- not used at the moment
                 .securitySchemes(Collections.singletonList(new ApiKey("ApiKey", "api_key", "header")));
@@ -82,12 +83,12 @@ public class SwaggerConfig {
      */
     private ApiInfo apiInfo() {
         return new ApiInfo("Template Core Server API", //
-                "Standard REST API template", //
-                "0.1", //
-                null, //
-                new Contact("admin", "https://github.com/codesqueak/SYWTWAM", "codesqueak@gmail.com"), //
-                "The MIT License (MIT)", //
-                "https://opensource.org/licenses/MIT");
+                           "Standard REST API template", //
+                           "0.1", //
+                           null, //
+                           new Contact("admin", "https://github.com/codesqueak/SYWTWAM", "codesqueak@gmail.com"), //
+                           "The MIT License (MIT)", //
+                           "https://opensource.org/licenses/MIT");
     }
 
     /**
@@ -98,13 +99,13 @@ public class SwaggerConfig {
     @Bean
     UiConfiguration uiConfig() {
         return new UiConfiguration(null,// url - switch off validation
-                "none",       // docExpansion          => none | list
-                "alpha",      // apiSorter             => alpha
-                "schema",     // defaultModelRendering => schema
-                new String[]{"get", "post", "put", "delete", "patch", "head", "options"}, // add head and options as not set by default
-                false,        // enableJsonEditor      => true | false
-                true,         // showRequestHeaders    => true | false
-                60000L);      // requestTimeout => in milliseconds, defaults to null (uses jquery xh timeout)
+                                   "none",       // docExpansion          => none | list
+                                   "alpha",      // apiSorter             => alpha
+                                   "schema",     // defaultModelRendering => schema
+                                   new String[]{"get", "post", "put", "delete", "patch", "head", "options"}, // add head and options as not set by default
+                                   false,        // enableJsonEditor      => true | false
+                                   true,         // showRequestHeaders    => true | false
+                                   60000L);      // requestTimeout => in milliseconds, defaults to null (uses jquery xh timeout)
     }
 
     /**
@@ -122,22 +123,25 @@ public class SwaggerConfig {
         //
         // 400
         addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.BAD_REQUEST.value(), "The request cannot be fulfilled due to bad syntax", null,
-                Collections.emptyMap(), Collections.emptyList()));
+                                                              Collections.emptyMap(), Collections.emptyList()));
         //
         // 401
         addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.UNAUTHORIZED.value(), "The request requires user authentication", null, Collections
                 .emptyMap(), Collections.emptyList()));
         // 403
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.FORBIDDEN.value(), "User not authorized to perform the operation or the resource is " +
-                "" + "" + "" + "" + "" + "" + "" + "" + "" + "" + "" + "unavailable", null, Collections.emptyMap(), Collections.emptyList()));
+        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.FORBIDDEN.value(), "User not authorized to perform the operation or the resource is " + "" + "unavailable", null, Collections.emptyMap(), Collections.emptyList()));
         //
         // 404
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.NOT_FOUND.value(), "Resource not found", null, Collections.emptyMap(), Collections
-                .emptyList()));
+        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.NOT_FOUND.value(), "Document not found. This may be temporary or permanent", null,
+                                                              Collections.emptyMap(), Collections.emptyList()));
         //
         // 405
         addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.METHOD_NOT_ALLOWED.value(), "Method not allowed on resource", null, Collections
                 .emptyMap(), Collections.emptyList()));
+        //
+        // 410
+        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.GONE.value(), "Document not found. Considered permanent", null, Collections.emptyMap
+                (), Collections.emptyList()));
         //
         // 500
         addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.INTERNAL_SERVER_ERROR.value(), "A server fault has occurred", null, Collections
@@ -153,27 +157,13 @@ public class SwaggerConfig {
         //
         // ... and now by request methods
         //
-        // 200
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.OK.value(), "Resource returned without error", null, Collections.emptyMap(),
-                Collections.emptyList()), RequestMethod.GET, RequestMethod.HEAD, RequestMethod.POST, RequestMethod.TRACE);
-        //
-        // 201
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.CREATED.value(), "Resource created without error", null, Collections.emptyMap(),
-                Collections.emptyList()), RequestMethod.POST, RequestMethod.PUT);
-        //
         // 304
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.NOT_MODIFIED.value(), "Not modified", null, Collections.emptyMap(), Collections
-                .emptyList()), RequestMethod.GET);
-        //
-        //
-        // 409
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.CONFLICT.value(), "Conflict", null, Collections.emptyMap(), Collections.emptyList())
-                , RequestMethod.PUT);
+        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.NOT_MODIFIED.value(), "Content not modified", null, Collections.emptyMap(),
+                                                              Collections.emptyList()), RequestMethod.GET, RequestMethod.HEAD);
         //
         // 418
         addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.I_AM_A_TEAPOT.value(), "Hyper Text Coffee Pot Control Protocol", null, Collections
                 .emptyMap(), Collections.emptyList()), RequestMethod.TRACE);
-
         //
         // update docket
         for (RequestMethod requestMethod : RequestMethod.values()) {

@@ -24,6 +24,8 @@
  */
 package com.codingrodent.microservice.template.constants;
 
+import org.springframework.http.MediaType;
+
 /**
  * Various application wide constants
  */
@@ -40,4 +42,6 @@ public class SystemConstants {
     public final static String API_VERSION = "V1";
     //Encoding
     public final static String CHAR_ENCODING = "UTF-8";
+    public final static String CONTENT_TYPE = MediaType.APPLICATION_JSON_VALUE + ";charset=" + CHAR_ENCODING;
+
 }

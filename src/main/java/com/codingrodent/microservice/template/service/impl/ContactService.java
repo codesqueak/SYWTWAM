@@ -35,8 +35,7 @@ import rx.Observable;
 import javax.inject.Inject;
 import java.util.*;
 
-import static com.codingrodent.microservice.template.converter.Converter.toNameEntity;
-import static com.codingrodent.microservice.template.converter.Converter.toNameModel;
+import static com.codingrodent.microservice.template.converter.Converter.*;
 
 /**
  * Business logic for Contact information
@@ -57,8 +56,8 @@ public class ContactService implements IContactService<Contact> {
     }
 
     @Override
-    public Observable<Contact> saveAsync(final UUID uuid, final Contact model) {
-        return asyncRepository.saveAsync(toNameEntity.convert(uuid, model, Optional.empty())).map(toNameModel::convert);
+    public Observable<Contact> saveAsync(final UUID uuid, final Contact contact) {
+        return asyncRepository.saveAsync(toNameEntity.convert(uuid, contact, Optional.empty())).map(toNameModel::convert);
 
     }
 
@@ -68,16 +67,16 @@ public class ContactService implements IContactService<Contact> {
     }
 
     @Override
-    public Optional<ModelVersion<Contact>> save(final UUID uuid, final Contact modelVersion, Optional<Long> version) {
+    public ModelVersion<Contact> save(final UUID uuid, final Contact contact, Optional<Long> version) {
 
-        ContactEntity entity = repository.save(toNameEntity.convert(uuid, modelVersion, version));
-        return Optional.of(new ModelVersion<>(toNameModel.convert(entity), Optional.ofNullable(entity.getVersion())));
+        ContactEntity entity = repository.save(toNameEntity.convert(uuid, contact, version));
+        return new ModelVersion<>(toNameModel.convert(entity), Optional.ofNullable(entity.getVersion()));
     }
 
     @Override
-    public Optional<ModelVersion<Contact>> create(final Contact modelVersion) {
-        ContactEntity entity = repository.save(toNameEntity.convert(UUID.randomUUID(), modelVersion, Optional.empty()));
-        return Optional.of(new ModelVersion<>(toNameModel.convert(entity), Optional.ofNullable(entity.getVersion())));
+    public ModelVersion<Contact> create(final Contact contact, final Optional<Long> version) {
+        ContactEntity entity = repository.save(toNameEntity.convert(UUID.randomUUID(), contact, version));
+        return new ModelVersion<>(toNameModel.convert(entity), Optional.ofNullable(entity.getVersion()));
     }
 
     @Override
