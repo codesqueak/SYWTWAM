@@ -28,6 +28,7 @@ import com.codingrodent.microservice.template.entity.ContactEntity;
 import com.codingrodent.microservice.template.model.*;
 import com.codingrodent.microservice.template.repository.api.*;
 import com.codingrodent.microservice.template.service.api.IContactService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import rx.Observable;
@@ -50,9 +51,10 @@ public class ContactService implements IContactService<Contact> {
     private final IAsync<ContactEntity, UUID> asyncRepository;
 
     @Inject
-    public ContactService(ISyncNameRepository repository, IAsync<ContactEntity, UUID> asyncRepository) {
+    public ContactService(ISyncNameRepository repository, IAsync<ContactEntity, UUID> asyncRepository, @Value("${xyzzy}") String config) {
         this.repository = repository;
         this.asyncRepository = asyncRepository;
+        System.out.println("***" + config + "***");
     }
 
     @Override
