@@ -16,7 +16,6 @@ Consul supplies:
 - Scalability 
 - Key / Value Storage (*The bit we are interested in ...* :smile: )
 
-
 ## Install
 
 Download [Consul](https://www.consul.io/) from Hashicorp and unpack where you want to run it from.  This is a simple executable file.
@@ -26,9 +25,9 @@ cluster setup and clients.  To make life simple, the server can be brought up on
 documentation on how to configure a cluster look [here](https://www.consul.io/intro/getting-started/install.html)
 
 To start, use this command:
-
+```
 consul agent  -server -ui -data-dir=data -config-dir=config  -bind 127.0.0.1 -bootstrap -log-level=debug
-
+```
 - agent - start the agent
 - -server - start the server
 - -ui - enable support of the management UI
@@ -78,21 +77,21 @@ The value of 'xyzzy' would be held under the following path:
 ```
 /v1/kv/config/sywtwam/
 ```
-If a Spring Profile is active, then this is added as an addition to the application name.  For example, if the profile ~prod~ was being used, the paths searched would be:
+If a Spring Profile is active, then this is added as an addition to the application name.  For example, if the profile *prod* was being used, the paths searched would be:
 
 
 ```
 /v1/kv/config/sywtwam,prod/
 /v1/kv/config/sywtwam/
 ```
-If multiple profiles are used, for example ~prod,zzz~ then the paths searched would be:
+If multiple profiles are used, for example *prod,zzz* then the paths searched would be:
 
 ```
 /v1/kv/config/sywtwam,zzz/
 /v1/kv/config/sywtwam,prod/
 /v1/kv/config/sywtwam/
 ```
-It is also possible to store values which are globally available. After searching the ~sywtwam~ paths, the following paths are consulted:
+It is also possible to store values which are globally available. After searching the *sywtwam* paths, the following paths are consulted:
 
 ```
 /v1/kv/config/application,zzz/
@@ -108,7 +107,7 @@ It is possible to set custom values for parts of the paths. Paths are defined as
 ```
 If profiles are being used, the name seperator can be defined using spring.cloud.consul.config.profileSeparator
 
-## Example Configuration
+## Example Configuration - bootstrap.properties
 
 ```
 spring.application.name=sywtwam
