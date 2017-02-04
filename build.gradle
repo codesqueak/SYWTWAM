@@ -37,7 +37,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.1.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.4.RELEASE")
         classpath('se.transmode.gradle:gradle-docker:1.2')
     }
 }
@@ -191,11 +191,11 @@ repositories {
 // In this section you declare the dependencies for your production and test code
 dependencies {
     // Spring boot
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.5.1.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow', version: '1.5.1.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '1.5.1.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.5.1.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '1.5.1.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.4.4.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow', version: '1.4.4.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '1.4.4.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.4.4.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '1.4.4.RELEASE'
     // Cloud extensions
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter', version: '1.1.7.RELEASE'
     compile group: 'org.springframework.cloud', name: 'spring-cloud-commons', version: '1.1.7.RELEASE'

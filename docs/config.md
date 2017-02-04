@@ -24,7 +24,7 @@ Consul can be run in two modes. As a client (which must be present on any node w
 cluster setup and clients.  To make life simple, the server can be brought up on its own to support applications on the same node.  For full 
 documentation on how to configure a cluster look [here](https://www.consul.io/intro/getting-started/install.html)
 
-To start, use this command:
+To start, make sure you have a */config* directory where you unpacked consul (empty is fine), and then use this command:
 ```
 consul agent  -server -ui -data-dir=data -config-dir=config  -bind 127.0.0.1 -bootstrap -log-level=debug
 ```
