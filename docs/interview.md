@@ -18,8 +18,8 @@ The illustrious uniform of the digerati. The click of mice, the bagginess of the
 
 CTO: I think that's enough.
 
-Developer: But sir, the danger, and the glory of failure. A young and dashing career gone up in flames. Contractors laughing. To fail for one’s project.  To 
-set forth with a silver macbook pro to joust with the forces of product ownership.
+Developer: But sir, the danger, and the glory of failure. A young and dashing career gone up in flames. Overpaid contractors laughing. To fail for one’s project.  To 
+set forth with a silver MacBook Pro to joust with the forces of product ownership.
 
 CTO: Projects don’t always fail you know.
 
@@ -45,13 +45,13 @@ CTO: Well what’s that diagram that looks like a punched card? Is that a pictur
 
 Developer: All right.  I can see it's no good lying to you.  I confess.  It is Cobol.  Only a little bit.
 
-CTO: What on Earth for?
+CTO: What on earth for?
 
 Developer: It's for my mother sir.
 
 CTO: Your mother?
 
-Developer: You see my mother was the first woman to port an application to a VAX.
+Developer: You see my mother was the first woman to port an application to a [VAX](https://en.wikipedia.org/wiki/VAX).
 
 CTO: A VAX ?
 
@@ -59,7 +59,7 @@ Developer: An idea of my father’s invention. You see he was too much of a prof
 
 CTO: What happened?
 
-Developer: It … crashed. The mounted disk pack was spun down and the code was never seen again. They found only her 80 column fanfold by her terminal. And so, 
+Developer: It … crashed. The mounted [disk pack](https://en.wikipedia.org/wiki/Disk_pack) was spun down and the code was never seen again. They found only her 132 column fanfold by her [DEC Writer](http://www.johnmiranda.com/dec.htm). And so, 
 you see, ever since I have worn this T-shirt in her sacred memory.
 
 CTO: I see.
@@ -69,7 +69,7 @@ Developer: Well sir. Do I get a VM?
 CTO: In view of the confession you have just made, which must have taken a great deal of 
 courage, I consider you an ideal type for the job.  There's a VM waiting for you in our cloud. 
 
-CTO: A devop will give you a readme.md on the way out.  Start Monday. Oh, and by the way, 
+CTO: A DevOp will give you a readme.md on the way out.  Start Monday. Oh, and by the way, 
 
 Developer: Sir?
 
