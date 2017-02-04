@@ -1,39 +1,69 @@
+/**
+ * MIT License
+ *
+ * Copyright (c) 2017
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ * Application build script
+ *
+ * Standard compile & test
+ *
+ * ./gradlew clean build test
+ *
+ */
+
 buildscript {
+    // These are for the build, not the application
     repositories {
         mavenCentral()
         mavenLocal()
         jcenter()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.3.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.1.RELEASE")
         classpath('se.transmode.gradle:gradle-docker:1.2')
     }
-
 }
 
+// ant taskdef for simple component to identify the operating system being used
 import org.apache.tools.ant.taskdefs.condition.Os
 
-plugins {
-    id 'org.detoeuf.swagger-codegen' version '1.6.3'
-}
-
+// various plugins to add required functinality
 apply plugin: 'org.springframework.boot'
 apply plugin: 'idea'
 apply plugin: 'java'
 apply plugin: 'jacoco'
 apply plugin: 'findbugs'
-apply plugin: 'maven-publish'
 apply plugin: 'docker'
 apply plugin: 'application'
-apply plugin: 'org.detoeuf.swagger-codegen'
 
 
+// various global project settings
+description = "So You Want To Write A Microservice"
+group = projectGroup
+
+// set the java version
 sourceCompatibility = javaVersion
 targetCompatibility = javaVersion
 
-
-group = projectGroup
-
+// task to generate a version number based on contents of gradle.properties OR a system environment variable for the build number
 task setVersion {
     if (System.env.BUILD_NUMBER) {
         version = projectVersionMajor + '.' + projectVersionMinor + '.' + System.env.BUILD_NUMBER + '-SNAPSHOT'
@@ -42,8 +72,21 @@ task setVersion {
     }
 }
 
+// put source into a jar
+task sourceJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+// put javadoc into a jar
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+// generate a jar file [Uses version, format will be SYWTBAM-0.0.1-SNAPSHOT.jar for example)
 jar {
-    dependsOn setVersion
+    dependsOn = [sourceJar, javadocJar]
     baseName = projectName
     manifest
             {
@@ -53,34 +96,13 @@ jar {
             }
 }
 
-
-task sourceJar(type: Jar) {
-    from sourceSets.main.allJava
-}
-
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-
-            artifact sourceJar {
-                classifier 'sources'
-            }
-        }
-    }
-}
-
-publishToMavenLocal {
-    dependsOn build
-}
-
-
+// execute code covergae analysis
 jacoco {
     toolVersion = "0.7+"
     reportsDir = file("$buildDir/customJacocoReportDir")
 }
 
+// generate jacoco reports
 jacocoTestReport {
     reports {
         xml.enabled true
@@ -89,9 +111,17 @@ jacocoTestReport {
     }
 }
 
+// execute junit tests - add extra infor to the test task
 test {
-    dependsOn javadoc
     maxParallelForks = 1
+
+    // set heap size for the test JVM(s)
+    minHeapSize = "256m"
+    maxHeapSize = "256m"
+
+    // and limit metaspace (no more max perm gen in Java 8)
+    jvmArgs '-XX:MaxMetaspaceSize=256m'
+
     filter
             {
                 includeTestsMatching "com.codingrodent.microservice.template.*"
@@ -103,7 +133,7 @@ test {
     }
 }
 
-
+// run static analysis on the code base
 findbugs {
     toolVersion = "3.0.1"
     sourceSets = [sourceSets.main]
@@ -113,6 +143,7 @@ findbugs {
     ignoreFailures = true
 }
 
+// add reporting to the static analysis tests
 tasks.withType(FindBugs) {
     reports {
         xml.enabled = true
@@ -120,6 +151,8 @@ tasks.withType(FindBugs) {
     }
 }
 
+// manually build a docker container - at the time of writing, the plugin was having issues ...
+// Don't use for now ...
 task buildDocker(type: Exec) {
     doFirst {
         copy {
@@ -140,11 +173,12 @@ task buildDocker(type: Exec) {
     }
 }
 
-task myJavadocs(type: Javadoc) {
-    source = sourceSets.main.allJava
-    classpath = configurations.compile
+// add verification tasks to the project - Only jacoco at the moment. Findbugs adds itself into the test task ...
+check {
+    dependsOn jacocoTestReport
 }
 
+// repos to find components in
 repositories {
     mavenCentral()
     mavenLocal()
@@ -154,51 +188,14 @@ repositories {
     }
 }
 
-check {
-    dependsOn jacocoTestReport
-}
-
-sourceSets {
-    swagger {
-        java {
-            srcDir file("${project.buildDir.path}/src/main/java/com/codingrodent/microservice/template/controller")
-        }
-    }
-}
-
-
-swagger {
-//    inputSpec = 'http://petstore.swagger.io/v2/swagger.json'
-//    outputDir = 'build/swagger'
-//    lang = 'spring-mvc'
-
-//    additionalProperties = [
-//            'invokerPackage'   : 'io.swagger.petstore.client.jersey1',
-//            'modelPackage'     : 'io.swagger.petstore.client.jersey1.model',
-//            'apiPackage'       : 'io.swagger.petstore.client.jersey1.api',
-//            'dateLibrary'      : 'java8'
-//    ]
-//    systemProperties = [
-//            'apis' : '',
-//            'models' = ''
-//    ]
-}
-
-
-
-
-
-
-
-
 // In this section you declare the dependencies for your production and test code
 dependencies {
     // Spring boot
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.4.3.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow', version: '1.4.3.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '1.4.3.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.4.3.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '1.4.3.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.5.1.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow', version: '1.5.1.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '1.5.1.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.5.1.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '1.5.1.RELEASE'
     // Cloud extensions
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter', version: '1.1.7.RELEASE'
     compile group: 'org.springframework.cloud', name: 'spring-cloud-commons', version: '1.1.7.RELEASE'
@@ -226,13 +223,14 @@ dependencies {
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.8.6'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.8.6'
     // Lots of observable goodies
-    compile group: 'io.reactivex', name: 'rxjava', version: '1.2.5'
+    compile group: 'io.reactivex', name: 'rxjava', version: '1.2.6'
     // Couchbase client side driver
-    compile group: 'com.couchbase.client', name: 'java-client', version: '2.4.0'
+    compile group: 'com.couchbase.client', name: 'java-client', version: '2.4.1'
     // Subprojects
     compile project(':subproj1')
 }
 
+// ... and finally,  the gradle version to use
 task wrapper(type: Wrapper) {
     gradleVersion = '3.3'
 }

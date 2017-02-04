@@ -22,7 +22,7 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.com.codingrodent.microservice.template.controller;
+package com.codingrodent.microservice.template.controller;
 
 import com.codingrodent.microservice.template.BaseMVCTests;
 import com.codingrodent.microservice.template.controller.impl.SyncContactController;
