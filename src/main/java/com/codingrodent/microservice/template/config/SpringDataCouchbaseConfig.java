@@ -9,4 +9,4 @@ import org.springframework.data.couchbase.repository.config.EnableCouchbaseRepos
 @Profile("prod")
 @Configuration
 @EnableCouchbaseRepositories(basePackages = "com.codingrodent.microservice.template.repository")
-public class SpringDataCouchbase {}
+public class SpringDataCouchbaseConfig {}

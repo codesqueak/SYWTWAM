@@ -22,16 +22,24 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.config;
+package com.codingrodent.microservice.template.metrics;
 
-import org.junit.Test;
+import org.springframework.stereotype.Service;
 
-import static org.junit.Assert.assertNotNull;
+/**
+ * Service to handle custom application metrics
+ */
+@Service
+public class TemplateMetrics {
 
-public class SpringDataCouchbaseTest {
+    private final AppMetricsRegistry registry;
 
-    @Test
-    public void basicTest() {
-        assertNotNull(new SpringDataCouchbaseConfig());
+    public TemplateMetrics(final AppMetricsRegistry registry) {
+        this.registry = registry;
     }
+
+    public void inc(final String name) {
+        registry.counter(name).inc();
+    }
+
 }
