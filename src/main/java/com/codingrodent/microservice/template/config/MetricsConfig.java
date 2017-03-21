@@ -27,9 +27,15 @@ package com.codingrodent.microservice.template.config;
 import com.codahale.metrics.MetricRegistry;
 import com.codingrodent.microservice.template.metrics.*;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.actuate.autoconfigure.*;
 import org.springframework.boot.actuate.metrics.export.*;
+import org.springframework.boot.actuate.metrics.jmx.JmxMetricWriter;
 import org.springframework.boot.actuate.metrics.reader.MetricRegistryMetricReader;
+import org.springframework.boot.actuate.metrics.writer.MetricWriter;
+import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.context.annotation.*;
+import org.springframework.jmx.export.MBeanExporter;
+import org.springframework.jmx.export.annotation.AnnotationMBeanExporter;
 
 /**
  * Metrics configuration.  Basic chain of events is:
@@ -50,22 +56,41 @@ public class MetricsConfig {
         return new DefaultMetricRegistry();
     }
 
+    /**
+     * Generate a metrics reader to read from the registry
+     *
+     * @param registry Registry to read from
+     * @return Metrics reader
+     */
     @Bean
     @Primary
+    @ExportMetricReader
     public MetricRegistryMetricReader metricReaderDefault(final MetricRegistry registry) {
         return new MetricRegistryMetricReader(registry);
     }
 
+    /**
+     * Export default registry metrics to JMX. The use of @ExportMetricWriter
+     *
+     * @param exporter Exporter for MBeans
+     * @return Metrics writer
+     */
     @Bean
-    @Primary
-    public TemplateMetricsWriter getMetricsWriterDefault() {
-        return new TemplateMetricsWriter("Default");
+    @ExportMetricWriter
+    public MetricWriter metricWriter(MBeanExporter exporter) {
+        return new JmxMetricWriter(exporter);
     }
 
+    /**
+     * Should not need this but intellij is convinced the exporter doesn't exist ... go figure ...
+     *
+     * @return MBean exporter
+     */
     @Bean
-    @Primary
-    public Exporter exporterDefault(final MetricRegistryMetricReader reader, final TemplateMetricsWriter writer) {
-        return new MetricCopyExporter(reader, writer);
+    @ConditionalOnMissingClass({"org.springframework.jmx.export.annotation.AnnotationMBeanExporter"})
+    @ConditionalOnMissingBean(AnnotationMBeanExporter.class)
+    public MBeanExporter mbeanExporter() {
+        return new AnnotationMBeanExporter();
     }
 
     // Export metrics - application specific
@@ -73,7 +98,7 @@ public class MetricsConfig {
     /**
      * Generate a new registry to store custom metrics in
      *
-     * @return Metrics registryó
+     * @return Metrics registry
      */
     @Bean("reg")
     public AppMetricsRegistry getRegistry() {
@@ -81,9 +106,10 @@ public class MetricsConfig {
     }
 
     /**
-     * Reader for example custom metrics.  Reads from metrics put into a metrics registry
+     * Generate a metrics reader to read from the custom metrics registry
      *
-     * @return Reader for the custom metrics registry
+     * @param registry Registry to read from
+     * @return Metrics reader
      */
     @Bean(name = "reader")
     public MetricRegistryMetricReader metricReader(final AppMetricsRegistry registry) {
@@ -96,7 +122,7 @@ public class MetricsConfig {
     }
 
     /**
-     * This class defines the mechanism for moving metrics values from reader to writer.  This may implement custom functionality such as buffereing
+     * This class defines the mechanism for moving metrics values from reader to writer.  This may implement custom functionality such as buffering
      *
      * @param reader Metrics source
      * @param writer Metrics target

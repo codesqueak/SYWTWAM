@@ -27,7 +27,7 @@ package com.codingrodent.microservice.template.metrics;
 import com.codahale.metrics.MetricRegistry;
 
 /**
- * Generate custom metrics set
+ * Metrics registry to hold custom metrics for the application
  */
 public class AppMetricsRegistry extends MetricRegistry {
 

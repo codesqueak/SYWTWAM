@@ -28,9 +28,9 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.jvm.*;
 
 /**
- * Generate a metrics registry for holding default metrics
+ * Metrics registry to hold framework metrics
  * <p>
- * This holds both teh spring boot metrics set and additional metrics via dropwizard
+ * This holds both the spring boot metrics set and additional metrics via dropwizard
  */
 public class DefaultMetricRegistry extends MetricRegistry {
 

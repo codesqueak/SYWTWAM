@@ -32,7 +32,7 @@ import org.springframework.boot.actuate.metrics.writer.*;
  */
 public class TemplateMetricsWriter implements MetricWriter {
 
-    private String token;
+    private final String token;
 
     public TemplateMetricsWriter(final String name) {
         this.token = name;
@@ -41,20 +41,17 @@ public class TemplateMetricsWriter implements MetricWriter {
     @Override
     public void increment(final Delta<?> delta) {
         String name = delta.getName();
-        if (name.contains("codingrodent"))
-            System.out.println(token + ":" + name + "(increment) " + delta.getValue());
+        System.out.println(token + ":" + name + "(increment) " + delta.getValue());
     }
 
     @Override
     public void reset(final String metricName) {
-        if (metricName.contains("codingrodent"))
-            System.out.println(token + ":" + "Reset metric: " + metricName);
+        System.out.println(token + ":" + "Reset metric: " + metricName);
     }
 
     @Override
     public void set(final Metric<?> value) {
-        if (value.getName().contains("codingrodent"))
-            System.out.println(token + ":" + value.getName() + "(set) " + value.getValue());
+        System.out.println(token + ":" + value.getName() + "(set) " + value.getValue());
 
     }
 }

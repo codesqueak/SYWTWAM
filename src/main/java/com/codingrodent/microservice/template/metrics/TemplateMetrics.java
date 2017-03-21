@@ -38,6 +38,11 @@ public class TemplateMetrics {
         this.registry = registry;
     }
 
+    /**
+     * Increment a named counter metric.  Create if necessary
+     *
+     * @param name Name of metric
+     */
     public void inc(final String name) {
         registry.counter(name).inc();
     }
