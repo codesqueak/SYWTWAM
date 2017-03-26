@@ -39,6 +39,7 @@ If you just want to see the microservice built and running, head over to the [qu
 | Fail Fast | [Hystrix](https://github.com/Netflix/Hystrix) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Bulkhead | [Hystrix](https://github.com/Netflix/Hystrix) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Logging | [logback](http://logback.qos.ch/) / [log4j](http://logging.apache.org/log4j/2.x/) | ![alt text](docs/images/tick.png "Implemented") |
+| Metrics | [Dropwizard](http://www.dropwizard.io/) | ![alt text](docs/images/tick.png "Implemented") | [Metrics](docs/metrics.md)
 | Crypto /JCA | [Spring Security](http://docs.oracle.com/javase/7/docs/technotes/guides/security/crypto/CryptoSpec.html) | ![alt text](docs/images/cross.png "Not Implemented") |
 | SSL / x509 handling | [Spring Security](http://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/) | ![alt text](docs/images/cross.png "Not Implemented") |
 | HATEOAS | [Spring HATEOAS](http://docs.spring.io/autorepo/docs/spring-hateoas/0.20.x/reference/html/) | ![alt text](docs/images/cross.png "Not Implemented") |

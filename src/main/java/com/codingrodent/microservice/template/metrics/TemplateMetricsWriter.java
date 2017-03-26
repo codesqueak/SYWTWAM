@@ -40,8 +40,7 @@ public class TemplateMetricsWriter implements MetricWriter {
 
     @Override
     public void increment(final Delta<?> delta) {
-        String name = delta.getName();
-        System.out.println(token + ":" + name + "(increment) " + delta.getValue());
+        System.out.println(token + ":" + delta.getName() + "(increment) " + delta.getValue());
     }
 
     @Override
@@ -52,6 +51,5 @@ public class TemplateMetricsWriter implements MetricWriter {
     @Override
     public void set(final Metric<?> value) {
         System.out.println(token + ":" + value.getName() + "(set) " + value.getValue());
-
     }
 }

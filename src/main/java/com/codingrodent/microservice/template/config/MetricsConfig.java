@@ -100,7 +100,7 @@ public class MetricsConfig {
      *
      * @return Metrics registry
      */
-    @Bean("reg")
+    @Bean
     public AppMetricsRegistry getRegistry() {
         return new AppMetricsRegistry();
     }
