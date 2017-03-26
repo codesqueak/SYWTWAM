@@ -1,6 +1,6 @@
-#Continuous Integration
+# Continuous Integration
 
-##Required Jenkins Plugins
+## Required Jenkins Plugins
 
 * FindBugs
 * GitHub

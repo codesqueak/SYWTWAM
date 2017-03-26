@@ -1,6 +1,6 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 
-#So You Want To Write A Microservice
+# So You Want To Write A Microservice
 
 *...in Java !*
 
@@ -20,11 +20,12 @@ using [Spring](https://spring.io/) / [Java](https://www.java.com/en/) and [AWS](
 * Are these recommended tools & technologies? - No, just possible examples. Use whatever floats your boat.
 * Do I need everything here? - No, but it makes a useful initial checklist to see if you have left anything out.
 
-##Quick Start
+## Quick Start
 
 If you just want to see the microservice built and running, head over to the [quick start guide](docs/quick.md)
 
-##Implementation Technology
+## Implementation Technology
+
 | Task            | Possible Implementation Technology  | Status | Doc |
 |-----------------|---------------------|:---------------------:|:---------------------:|
 | Basic framework | [SpringBoot](http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)| ![alt text](docs/images/tick.png "Implemented") | [Framework](docs/framework.md) |
@@ -39,6 +40,7 @@ If you just want to see the microservice built and running, head over to the [qu
 | Fail Fast | [Hystrix](https://github.com/Netflix/Hystrix) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Bulkhead | [Hystrix](https://github.com/Netflix/Hystrix) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Logging | [logback](http://logback.qos.ch/) / [log4j](http://logging.apache.org/log4j/2.x/) | ![alt text](docs/images/tick.png "Implemented") |
+| Metrics | [Dropwizard](http://www.dropwizard.io/) | ![alt text](docs/images/tick.png "Implemented") | [Metrics](docs/metrics.md)
 | Crypto /JCA | [Spring Security](http://docs.oracle.com/javase/7/docs/technotes/guides/security/crypto/CryptoSpec.html) | ![alt text](docs/images/cross.png "Not Implemented") |
 | SSL / x509 handling | [Spring Security](http://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/) | ![alt text](docs/images/cross.png "Not Implemented") |
 | HATEOAS | [Spring HATEOAS](http://docs.spring.io/autorepo/docs/spring-hateoas/0.20.x/reference/html/) | ![alt text](docs/images/cross.png "Not Implemented") |
@@ -50,7 +52,7 @@ If you just want to see the microservice built and running, head over to the [qu
 
 
 
-##Test Test Test ... !
+## Test Test Test ... !
 | Task            | Possible Implementation Technology  | Status | Doc |
 |-----------------|---------------------|:---------------------:|:---------------------:|
 | Build | [Maven](https://maven.apache.org/) / [Gradle](https://gradle.org/)  | ![alt text](docs/images/tick.png "Implemented") |

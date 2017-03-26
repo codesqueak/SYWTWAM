@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016
+ * Copyright (c) 2017
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,16 +22,16 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.config;
+package com.codingrodent.microservice.template.metrics;
 
-import org.junit.Test;
+import com.codahale.metrics.MetricRegistry;
 
-import static org.junit.Assert.assertNotNull;
+/**
+ * Metrics registry to hold custom metrics for the application
+ */
+public class AppMetricsRegistry extends MetricRegistry {
 
-public class SpringDataCouchbaseTest {
-
-    @Test
-    public void basicTest() {
-        assertNotNull(new SpringDataCouchbaseConfig());
+    public AppMetricsRegistry() {
+        super();
     }
 }

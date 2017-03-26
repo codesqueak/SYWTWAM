@@ -24,31 +24,33 @@
  */
 package com.codingrodent.microservice.template.controller.impl;
 
+import com.codingrodent.microservice.template.metrics.TemplateMetrics;
 import io.swagger.annotations.*;
 import org.springframework.core.SpringVersion;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+import javax.inject.Inject;
 import java.util.*;
 
 import static com.codingrodent.microservice.template.constants.SystemConstants.API_VERSION;
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.OPTIONS;
+import static org.springframework.http.HttpMethod.*;
 
 /**
  * Simple sync REST controller to return version information
  */
 @RestController
-@Api(tags = "version", value = "version", description = "Endpoint for version Information - Don't do this in a production system as it gives away too much "
-        + "information")
+@Api(tags = "version", value = "version", description = "Endpoint for version Information - Don't do this in a production system as it gives away too much " + "information")
 @RequestMapping("/version/" + API_VERSION)
 public class SyncVersionController {
 
     private final static Set<HttpMethod> ALLOWED_OPTIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(GET, OPTIONS)));
 
-    private static final Map<String, String> versions;
-    private static final ResponseEntity<Map<String, String>> getResponse;
-    private static final ResponseEntity<Void> optionsResponse;
+    private final static Map<String, String> versions;
+    private final static ResponseEntity<Map<String, String>> getResponse;
+    private final static ResponseEntity<Void> optionsResponse;
+
+    private final TemplateMetrics metrics;
 
     static {
         versions = new HashMap<>();
@@ -63,13 +65,19 @@ public class SyncVersionController {
         optionsResponse = new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
+    @Inject
+    public SyncVersionController(final TemplateMetrics metrics) {
+        this.metrics = metrics;
+    }
+
     // GET (200) - Recover version information
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Read version information", notes = "Version Information - For Demo Only -  Don't do this in a production system as it gives away "
-            + "too much information")
+    @ApiOperation(value = "Read version information", notes = "Version Information - For Demo Only -  Don't do this in a production system as it gives away " + "too much " +
+            "information")
     @ApiResponses(value = { //
             @ApiResponse(code = 200, message = "Version information in body")})
     public ResponseEntity<Map<String, String>> read() {
+        metrics.inc("com.codingrodent.microservice.template.get");
         return getResponse;
     }
 
@@ -77,6 +85,7 @@ public class SyncVersionController {
     @RequestMapping(method = RequestMethod.OPTIONS)
     @ApiOperation(value = "Querying the Available Operations", notes = "Request for information about the communication options available")
     public ResponseEntity<Void> options() {
+        metrics.inc("com.codingrodent.microservice.template.options");
         return optionsResponse;
     }
 }

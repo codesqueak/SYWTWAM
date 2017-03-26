@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016
+ * Copyright (c) 2017
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,16 +22,21 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.config;
+package com.codingrodent.microservice.template.metrics;
 
-import org.junit.Test;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.jvm.*;
 
-import static org.junit.Assert.assertNotNull;
+/**
+ * Metrics registry to hold framework metrics
+ * <p>
+ * This holds both the spring boot metrics set and additional metrics via dropwizard
+ */
+public class DefaultMetricRegistry extends MetricRegistry {
 
-public class SpringDataCouchbaseTest {
-
-    @Test
-    public void basicTest() {
-        assertNotNull(new SpringDataCouchbaseConfig());
+    public DefaultMetricRegistry() {
+        super();
+        register("jvm.memory", new MemoryUsageGaugeSet());
+        register("jvm.garbage-collector", new GarbageCollectorMetricSet());
     }
 }

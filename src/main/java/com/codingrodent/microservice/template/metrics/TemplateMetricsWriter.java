@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2016
+ * Copyright (c) 2017
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,16 +22,34 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.config;
+package com.codingrodent.microservice.template.metrics;
 
-import org.junit.Test;
+import org.springframework.boot.actuate.metrics.Metric;
+import org.springframework.boot.actuate.metrics.writer.*;
 
-import static org.junit.Assert.assertNotNull;
+/**
+ * Example metrics writer - writes to stdout
+ */
+public class TemplateMetricsWriter implements MetricWriter {
 
-public class SpringDataCouchbaseTest {
+    private final String token;
 
-    @Test
-    public void basicTest() {
-        assertNotNull(new SpringDataCouchbaseConfig());
+    public TemplateMetricsWriter(final String name) {
+        this.token = name;
+    }
+
+    @Override
+    public void increment(final Delta<?> delta) {
+        System.out.println(token + ":" + delta.getName() + "(increment) " + delta.getValue());
+    }
+
+    @Override
+    public void reset(final String metricName) {
+        System.out.println(token + ":" + "Reset metric: " + metricName);
+    }
+
+    @Override
+    public void set(final Metric<?> value) {
+        System.out.println(token + ":" + value.getName() + "(set) " + value.getValue());
     }
 }
