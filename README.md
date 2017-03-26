@@ -25,6 +25,7 @@ using [Spring](https://spring.io/) / [Java](https://www.java.com/en/) and [AWS](
 If you just want to see the microservice built and running, head over to the [quick start guide](docs/quick.md)
 
 ##Implementation Technology
+
 | Task            | Possible Implementation Technology  | Status | Doc |
 |-----------------|---------------------|:---------------------:|:---------------------:|
 | Basic framework | [SpringBoot](http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)| ![alt text](docs/images/tick.png "Implemented") | [Framework](docs/framework.md) |
