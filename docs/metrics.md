@@ -1,4 +1,4 @@
-#Application Metrics
+# Application Metrics
 
 Spring Boot, out of the box, supplies a set of counter and guage metrics with which to monitor the executing application in near real time.
 
@@ -8,7 +8,7 @@ Most users will find that either these are sufficient for basic monitoring or gi
 
 However, as an example, a process for adding your own independent metrics is detailed below
 
-#Metrics In Spring Boot
+# Metrics In Spring Boot
 
 To set up a mechanism to handle metrics in the Spring Boot environment, you need to configure a number of components
 
@@ -17,7 +17,7 @@ To set up a mechanism to handle metrics in the Spring Boot environment, you need
 * Writer - A sink of metrics data
 * Exporter - A controller to mediate the flow of information from a Reader to a Writer
 
-##Metrics Registry
+## Metrics Registry
 
 The simplest way to build a registry is to extend an existing class without adding further features.
 
@@ -35,7 +35,7 @@ public class AppMetricsRegistry extends MetricRegistry {
 
 This may be extended with any custom functionality required.
 
-##Reader
+## Reader
 
 Now we have a repository for our metrics, we need to be able to read them.  Fortunately Spring Boot supplies a predefined Reader that can read a registry, so all we need is:
 
@@ -46,7 +46,7 @@ public MetricRegistryMetricReader metricReader(final AppMetricsRegistry registry
     }
 ```
 
-##Writer
+## Writer
 
 Next, we need a sink for the metrics data.  This is done by implementing the MetricsWriter interface:
 
@@ -84,7 +84,7 @@ In a real world scenario, the data output probably would be sent to your applica
 
 It should be noted that most of these (all?) supply pre-build libraries to interface to Spring Boot, thus removing the need to write a MetricsWriter.
 
-##Exporter
+## Exporter
 
 The simplest way to obtain an exporter is to use one of the Spring Boot defaults.  The MetricCopyExporter will move data from Reader to Writer every 5 seconds. If a custom exporter is required, 
 an AbstractMetricExporter is available which makes a good base on which to build.
@@ -96,7 +96,7 @@ an AbstractMetricExporter is available which makes a good base on which to build
     }
     
 ```
-#DropWizard
+# DropWizard
 
 A large set of pre-built metrics are available via [DropWizard](http://www.dropwizard.io)
 
@@ -107,7 +107,7 @@ These can be easily used by adding them to a registry.
        register("jvm.garbage-collector", new GarbageCollectorMetricSet());
 ```
 
-#Gotchas
+# Gotchas
 
 Things to look out for:
 

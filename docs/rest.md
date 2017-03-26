@@ -1,6 +1,4 @@
-
-
-#HTTP METHODS
+# HTTP METHODS
 
 | HTTP Verb     | CRUD             | Singleton / Collection | Idempotent | Safe  | Action                                                                         |
 | ------------- |------------------|------------------------|------------|-------|--------------------------------------------------------------------------------|
@@ -26,7 +24,7 @@ Idempotent :  In that (aside from error or expiration issues) the side-effects o
 
 Patch :  [JSON Patch](https://tools.ietf.org/html/rfc6902) or [JSON Merge Patch](https://tools.ietf.org/html/rfc7396)
 
-##GET 
+## GET 
 
 Retrieve en entity identified by the Request-URI
 
@@ -35,7 +33,7 @@ Retrieve en entity identified by the Request-URI
 | 200      | OK          | Response entity in body                                 |
 | 404      | NOT FOUND   | No matching entity exists                               | 
                                                                    |
-##HEAD
+## HEAD
 
 Retrieves the header information of a resource. As per GET but do not return body
 
@@ -44,7 +42,7 @@ Retrieves the header information of a resource. As per GET but do not return bod
 | 204      | NO CONTENT  | Response entity body *MUST* be empty                    |
 | 404      | NOT FOUND   | No matching entity exists                               | 
                                                                  
-##POST
+## POST
 
 Most often utilized to create new resources. E.g. adding items to a collection.  **NOT IDEMPOTENT** 
 
@@ -54,7 +52,7 @@ Most often utilized to create new resources. E.g. adding items to a collection. 
 | 404      | NOT FOUND   | No matching entity exists, e.g. collection being added to |
 | 409      | CONFLICT    | The resource already exists                               |
                                                                 
-##PUT
+## PUT
 
 Can be used to:
 
@@ -69,7 +67,7 @@ Can be used to:
 | 404      | NOT FOUND   | No matching entity exists                               | 
 | 412      | PRECON FAIL | For example, "if-Match" is invalid                               | 
 
-##DELETE
+## DELETE
 
 Delete a resource
 
@@ -85,19 +83,19 @@ Delete a resource
 Note: The exact semantics of delete can lead to various opinions.  For example, [this discussion](http://leedavis81.github.io/is-a-http-delete-requests-idempotent/)
 
 
-##TRACE
+## TRACE
 
 Invoke a remote, application-layer loop-back of the request message
 
-##CONNECT
+## CONNECT
 
 Reserved
 
-##OPTIONS
+## OPTIONS
 
 A request for information about the communication options available
 
-##PATCH
+## PATCH
 
  The PATCH request only needs to contain the changes to the resource, not the complete resource.
  The body contains a patch description [JSON Patch](https://tools.ietf.org/html/rfc6902) or [JSON Merge Patch](https://tools.ietf.org/html/rfc7396)

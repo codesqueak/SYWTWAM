@@ -1,4 +1,4 @@
-#Configuration
+# Configuration
 
 One problem with applications executing in a cloud type environment is separating the application away from its configuration.  With a typical Spring application, configuration is 
 obtained from the application.properties.  What happens when configuration information is not available at build time ? The solution is to hold this information in the 

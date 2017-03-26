@@ -19,14 +19,14 @@ The ETag response-header field provides the current value of the entity. This ma
 
 For full information on the exact useage see [RFC-7232](https://tools.ietf.org/html/rfc7232#section-3.1)
 
-##How to Evaluate If-Match
+## How to Evaluate If-Match
 ````
 if (field=='*') and (record does not exist) return false;
 if (field doesn't match record) return false;
 return true
 ````
 
-##How to Evaluate If-None-Match
+## How to Evaluate If-None-Match
 ````
 if (field=='*') and (record exists) return false;
 if (field matches record) return false;
@@ -41,7 +41,7 @@ return true
 | ![alt text](images/if-match.png "If-Match") | ![alt text](images/if-none-match.png "If-None-Match") |
 
 
-##GET
+## GET
 
 Retrieve en entity identified by the Request-URI
 
@@ -68,7 +68,7 @@ Make mandatory if efficient retrieval required (304)
 | -               | -            | N             | 404                   |
 | -               | -            | Y             | Return Entity/200     |
 
-##HEAD
+## HEAD
 
 Retrieves the header information of a resource. As per GET but do not return body
 
@@ -96,7 +96,7 @@ Make mandatory if efficient retrieval required (304)
 | -               | -            | Y             | 204     |
 
 
-##POST
+## POST
 
 Most often utilized to create new resources. E.g. adding items to a collection.  **NOT IDEMPOTENT** 
 
@@ -126,7 +126,7 @@ Make If-Match mandatory if optimistic locking is in use
 (*) Dependent on result of POST operation to the resource  
 
 
-##PUT
+## PUT
 
 Can be used to:
 
@@ -158,7 +158,7 @@ Make If-Match mandatory if optimistic locking is in use
 
 (*) Dependent on result of PUT operation to the reosurce  
 
-##PATCH
+## PATCH
 
 Used to update an existing resource
 
@@ -188,7 +188,7 @@ Make If-Match mandatory if optimistic locking is in use
 (*) Dependent on result of POST operation to the reosurce  
 
 
-##DELETE
+## DELETE
 
 Delete a resource
 

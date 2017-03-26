@@ -1,6 +1,6 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 
-#So You Want To Write A Microservice
+# So You Want To Write A Microservice
 
 *...in Java !*
 
@@ -20,11 +20,11 @@ using [Spring](https://spring.io/) / [Java](https://www.java.com/en/) and [AWS](
 * Are these recommended tools & technologies? - No, just possible examples. Use whatever floats your boat.
 * Do I need everything here? - No, but it makes a useful initial checklist to see if you have left anything out.
 
-##Quick Start
+## Quick Start
 
 If you just want to see the microservice built and running, head over to the [quick start guide](docs/quick.md)
 
-##Implementation Technology
+## Implementation Technology
 
 | Task            | Possible Implementation Technology  | Status | Doc |
 |-----------------|---------------------|:---------------------:|:---------------------:|
@@ -52,7 +52,7 @@ If you just want to see the microservice built and running, head over to the [qu
 
 
 
-##Test Test Test ... !
+## Test Test Test ... !
 | Task            | Possible Implementation Technology  | Status | Doc |
 |-----------------|---------------------|:---------------------:|:---------------------:|
 | Build | [Maven](https://maven.apache.org/) / [Gradle](https://gradle.org/)  | ![alt text](docs/images/tick.png "Implemented") |
