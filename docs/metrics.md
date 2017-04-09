@@ -1,8 +1,8 @@
 # Application Metrics
 
-Spring Boot, out of the box, supplies a set of counter and guage metrics with which to monitor the executing application in near real time.
+Spring Boot, out of the box, supplies a set of counter and gauge metrics with which to monitor the executing application in near real time.
 
-Full details are give in the [Spring Boot](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-metrics.html) documentation.
+Full details are given in the [Spring Boot](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-metrics.html) documentation.
 
 Most users will find that either these are sufficient for basic monitoring or give a framework where additional metrics can be added.
 
@@ -79,8 +79,12 @@ public class TemplateMetricsWriter implements MetricWriter {
 }
 ```
 
-In a real world scenario, the data output probably would be sent to your application monitoring software of choice, for example, [AppDynamics](https://www.appdynamics.com/), [Datadog](https://www.datadoghq.com/),
-[New Relic](https://newrelic.com/), [LogicMonitor](https://www.logicmonitor.com/) amongst many more
+In a real world scenario, the data output probably would be sent to your application monitoring software of choice, for example,
+* [AppDynamics](https://www.appdynamics.com/) 
+* [Datadog](https://www.datadoghq.com/)
+* [New Relic](https://newrelic.com/)
+* [LogicMonitor](https://www.logicmonitor.com/) 
+* ... amongst many more
 
 It should be noted that most of these (all?) supply pre-build libraries to interface to Spring Boot, thus removing the need to write a MetricsWriter.
 
