@@ -123,7 +123,7 @@ available if you are using Dropwizard metrics
 
 * Use Java 8 if possible, as the metrics are a lot faster due to use of atomic in-memory buffers
 
-* The default metrics are visible via http://localhost:<port>/metrics
+* The default metrics are visible via http://localhost:port/metrics
 
 
 
