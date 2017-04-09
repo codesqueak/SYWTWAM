@@ -95,7 +95,8 @@ an AbstractMetricExporter is available which makes a good base on which to build
 
 ```java
     @Bean
-    public Exporter exporter(@Qualifier("reader") final MetricRegistryMetricReader reader, @Qualifier("writer") final TemplateMetricsWriter writer) {
+    public Exporter exporter(@Qualifier("reader") final MetricRegistryMetricReader reader,
+                             @Qualifier("writer") final TemplateMetricsWriter writer) {
         return new MetricCopyExporter(reader, writer);
     }
     
