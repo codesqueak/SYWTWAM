@@ -222,6 +222,7 @@ dependencies {
     // Java / json twiddling
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.8.8'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.8.8'
+    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.8.8'
     // Lots of observable goodies
     compile group: 'io.reactivex', name: 'rxjava', version: '1.2.9'
     // Couchbase client side driver

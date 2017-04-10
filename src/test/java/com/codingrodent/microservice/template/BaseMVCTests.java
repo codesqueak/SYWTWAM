@@ -27,7 +27,7 @@ package com.codingrodent.microservice.template;
 import com.codingrodent.microservice.template.config.advice.RestAdvice;
 import com.codingrodent.microservice.template.constants.SystemConstants;
 import com.codingrodent.microservice.template.controller.api.IREST;
-import com.codingrodent.microservice.template.model.Contact;
+import com.codingrodent.microservice.template.model.Fortune;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.BeforeClass;
 import org.springframework.http.*;
@@ -66,7 +66,7 @@ public abstract class BaseMVCTests {
      * @param controller The controller under test
      * @return The mocked environment
      */
-    private MockMvc getMockMvc(IREST<UUID, Contact> controller) {
+    private MockMvc getMockMvc(IREST<UUID, Fortune> controller) {
         return MockMvcBuilders.standaloneSetup(controller).setControllerAdvice(new RestAdvice()).setMessageConverters(mappingJackson2HttpMessageConverter).build();
     }
 
@@ -80,7 +80,7 @@ public abstract class BaseMVCTests {
      * @return Execution result
      * @throws Exception Thrown on any error
      */
-    protected ResultActions performGet(IREST<UUID, Contact> controller, String urlTemplate, String ifNoneMatch, Object... urlVars) throws Exception {
+    protected ResultActions performGet(IREST<UUID, Fortune> controller, String urlTemplate, String ifNoneMatch, Object... urlVars) throws Exception {
         // @formatter:off
         MockHttpServletRequestBuilder builder = get(urlTemplate, urlVars)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -101,7 +101,7 @@ public abstract class BaseMVCTests {
      * @return Execution result
      * @throws Exception Thrown on any error
      */
-    protected ResultActions performHead(IREST<UUID, Contact> controller, String urlTemplate, String ifNoneMatch, Object... urlVars) throws Exception {
+    protected ResultActions performHead(IREST<UUID, Fortune> controller, String urlTemplate, String ifNoneMatch, Object... urlVars) throws Exception {
         // @formatter:off
         MockHttpServletRequestBuilder builder = head(urlTemplate, urlVars)
                 .characterEncoding(CHAR_ENCODING);
@@ -122,7 +122,7 @@ public abstract class BaseMVCTests {
      * @return Execution result
      * @throws Exception Thrown on any error
      */
-    protected ResultActions performPut(IREST<UUID, Contact> controller, String urlTemplate, String ifMatch, String bodyJson, Object... urlVars) throws Exception {
+    protected ResultActions performPut(IREST<UUID, Fortune> controller, String urlTemplate, String ifMatch, String bodyJson, Object... urlVars) throws Exception {
         // @formatter:off
         MockHttpServletRequestBuilder builder = put(urlTemplate, urlVars)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -147,7 +147,7 @@ public abstract class BaseMVCTests {
      * @return Execution result
      * @throws Exception Thrown on any error
      */
-    protected ResultActions performPost(IREST<UUID, Contact> controller, String urlTemplate, String ifMatch, String bodyJson, Object... urlVars) throws Exception {
+    protected ResultActions performPost(IREST<UUID, Fortune> controller, String urlTemplate, String ifMatch, String bodyJson, Object... urlVars) throws Exception {
         // @formatter:off
         MockHttpServletRequestBuilder builder = post(urlTemplate, urlVars)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -171,7 +171,7 @@ public abstract class BaseMVCTests {
      * @return Execution result
      * @throws Exception Thrown on any error
      */
-    protected ResultActions performDelete(IREST<UUID, Contact> controller, String urlTemplate, String ifMatch, Object... urlVars) throws Exception {
+    protected ResultActions performDelete(IREST<UUID, Fortune> controller, String urlTemplate, String ifMatch, Object... urlVars) throws Exception {
         // @formatter:off
         MockHttpServletRequestBuilder builder = delete(urlTemplate, urlVars)
                 .characterEncoding(CHAR_ENCODING);
@@ -190,7 +190,7 @@ public abstract class BaseMVCTests {
      * @return Execution result
      * @throws Exception Thrown on any error
      */
-    protected ResultActions performOptions(IREST<UUID, Contact> controller, String urlTemplate, Object... urlVars) throws Exception {
+    protected ResultActions performOptions(IREST<UUID, Fortune> controller, String urlTemplate, Object... urlVars) throws Exception {
         // @formatter:off
         MockHttpServletRequestBuilder builder = options(urlTemplate, urlVars)
                 .characterEncoding(CHAR_ENCODING);

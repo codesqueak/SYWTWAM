@@ -24,10 +24,10 @@
  */
 package com.codingrodent.microservice.template.service.impl;
 
-import com.codingrodent.microservice.template.entity.ContactEntity;
+import com.codingrodent.microservice.template.entity.FortuneEntity;
 import com.codingrodent.microservice.template.model.*;
 import com.codingrodent.microservice.template.repository.api.*;
-import com.codingrodent.microservice.template.service.api.IContactService;
+import com.codingrodent.microservice.template.service.api.IFortuneService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import rx.Observable;
@@ -38,50 +38,49 @@ import java.util.*;
 import static com.codingrodent.microservice.template.converter.Converter.*;
 
 /**
- * Business logic for Contact information
+ * Business logic for Fortune information
  */
 @Service
 @Profile("prod")
-public class ContactService implements IContactService<Contact> {
+public class FortuneService implements IFortuneService<Fortune> {
 
     // Both sync and async implementations
     // Normally use only one but this is for demo purposes
-    private final ISyncNameRepository repository;
-    private final IAsync<ContactEntity, UUID> asyncRepository;
+    private final ISyncFortuneRepository repository;
+    private final IAsync<FortuneEntity, UUID> asyncRepository;
 
     @Inject
-    public ContactService(ISyncNameRepository repository, IAsync<ContactEntity, UUID> asyncRepository) {
+    public FortuneService(ISyncFortuneRepository repository, IAsync<FortuneEntity, UUID> asyncRepository) {
         this.repository = repository;
         this.asyncRepository = asyncRepository;
     }
 
     @Override
-    public Observable<Contact> saveAsync(final UUID uuid, final Contact contact) {
-        return asyncRepository.saveAsync(toNameEntity.convert(uuid, contact, Optional.empty())).map(toNameModel::convert);
-
+    public Observable<Fortune> saveAsync(final UUID uuid, final Fortune fortune) {
+        return asyncRepository.saveAsync(toNameEntity.convert(uuid, fortune, Optional.empty())).map(toNameModel::convert);
     }
 
     @Override
-    public Observable<Contact> loadAsync(final UUID uuid) {
+    public Observable<Fortune> loadAsync(final UUID uuid) {
         return asyncRepository.findOneAsync(uuid).map(toNameModel::convert);
     }
 
     @Override
-    public ModelVersion<Contact> save(final UUID uuid, final Contact contact, Optional<Long> version) {
+    public ModelVersion<Fortune> save(final UUID uuid, final Fortune fortune, Optional<Long> version) {
 
-        ContactEntity entity = repository.save(toNameEntity.convert(uuid, contact, version));
+        FortuneEntity entity = repository.save(toNameEntity.convert(uuid, fortune, version));
         return new ModelVersion<>(toNameModel.convert(entity), Optional.ofNullable(entity.getVersion()));
     }
 
     @Override
-    public ModelVersion<Contact> create(final Contact contact, final Optional<Long> version) {
-        ContactEntity entity = repository.save(toNameEntity.convert(UUID.randomUUID(), contact, version));
+    public ModelVersion<Fortune> create(final Fortune fortune, final Optional<Long> version) {
+        FortuneEntity entity = repository.save(toNameEntity.convert(UUID.randomUUID(), fortune, version));
         return new ModelVersion<>(toNameModel.convert(entity), Optional.ofNullable(entity.getVersion()));
     }
 
     @Override
-    public Optional<ModelVersion<Contact>> load(final UUID uuid) {
-        ContactEntity entity = repository.findOne(uuid);
+    public Optional<ModelVersion<Fortune>> load(final UUID uuid) {
+        FortuneEntity entity = repository.findOne(uuid);
         if (null == entity)
             return Optional.empty();
         else

@@ -22,24 +22,42 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.converter;
+package com.codingrodent.microservice.template.model;
 
-import com.codingrodent.microservice.template.entity.FortuneEntity;
-import com.codingrodent.microservice.template.model.Fortune;
+import com.fasterxml.jackson.annotation.*;
+import io.swagger.annotations.*;
 
-import java.util.*;
+import javax.validation.constraints.*;
+import java.util.Optional;
 
 /**
- * Converters to allow entity and model objects to be interchanged
+ * Fortune model class
  */
-public class Converter {
+@ApiModel(description = "Sample fortune model item")
+public class Fortune {
 
-    private Converter() {
-        // Do not instantiate.
+    @JsonProperty("text")
+    @NotNull
+    @Size(min = 5, max = 250)
+    private final String text;
+
+    @JsonProperty("author")
+    private final Optional<String> author;
+
+    @JsonCreator
+    public Fortune(@JsonProperty("text") final String text, @JsonProperty("author") final Optional<String> author) {
+        this.text = text;
+        this.author = author;
     }
 
-    public final static IConvertToEntity<Fortune, FortuneEntity, UUID, Optional<Long>> toNameEntity = (id, m, v) -> new FortuneEntity(id.toString(), m.getText(), m.getAuthor(),
-                                                                                                                                      v.orElse(null));
-    public final static IConvertToModel<FortuneEntity, Fortune> toNameModel = entity -> new Fortune(entity.getText(), entity.getAuthor());
+    @ApiModelProperty(required = true, value = "Fortune cookie text")
+    public String getText() {
+        return text;
+    }
+
+    @ApiModelProperty(required = true, value = "Author (if available)")
+    public Optional<String> getAuthor() {
+        return author;
+    }
 
 }

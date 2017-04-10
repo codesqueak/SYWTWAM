@@ -22,35 +22,28 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.entity;
+package com.codingrodent.microservice.template.service.api;
 
-import org.junit.Test;
+import com.codingrodent.microservice.template.model.*;
+import rx.Observable;
 
-import java.util.UUID;
+import java.util.*;
 
-import static org.junit.Assert.assertEquals;
+/**
+ * Business logic for Fortune information
+ */
+public interface IFortuneService<M> {
+    // Async
+    Observable<M> saveAsync(UUID uuid, Fortune fortune);
 
-public class ContactEntityTest {
+    Observable<M> loadAsync(UUID uuid);
 
-    @Test
-    public void basicTest() {
-        UUID id = UUID.randomUUID();
-        Long version = 12345L;
-        String firstName = "first";
-        String lastName = "last";
-        Integer age = 100;
-        String phone = "1-2-3-4-5";
-        String mobile = "6-7-8-9";
-        String country = "US";
-        ContactEntity contactEntity = new ContactEntity(id.toString(), firstName, lastName, age, phone, mobile, country, version);
-        //
-        assertEquals(id, contactEntity.getId());
-        assertEquals(version, contactEntity.getVersion());
-        assertEquals(firstName, contactEntity.getFirstName());
-        assertEquals(lastName, contactEntity.getLastName());
-        assertEquals(age, contactEntity.getAge());
-        assertEquals(phone, contactEntity.getPhone());
-        assertEquals(mobile, contactEntity.getMobile());
-        assertEquals(country, contactEntity.getCountry());
-    }
+    // Sync
+    ModelVersion<M> save(UUID uuid, M model, Optional<Long> version);
+
+    ModelVersion<M> create(M mode, Optional<Long> version);
+
+    Optional<ModelVersion<M>> load(UUID uuid);
+
+    void delete(UUID uuid);
 }

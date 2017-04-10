@@ -24,57 +24,43 @@
  */
 package com.codingrodent.microservice.template.entity;
 
-
 import com.couchbase.client.java.repository.annotation.*;
 import com.fasterxml.jackson.annotation.*;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.couchbase.core.mapping.Document;
 
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Contact persistence class
  */
 @Document
-public class ContactEntity {
+public class FortuneEntity {
 
     @Id
     private final UUID id;
     @Version
     private Long version;
     @Field
-    private final String firstName;
+    private final String text;
     @Field
-    private final String lastName;
-    @Field
-    private final Integer age;
-    @Field
-    private final String phone;
-    @Field
-    private final String mobile;
-    @Field
-    private final String country;
+    private final String author;
 
     @JsonCreator
-    public ContactEntity(@JsonProperty("id") final String id, @JsonProperty("firstName") final String firstName, @JsonProperty("lastName") final String
-            lastName, @JsonProperty("age") final Integer age, @JsonProperty("phone") final String phone, @JsonProperty("mobile") final String mobile,
-                         @JsonProperty("country") final String country, @JsonProperty("version") final Long version) {
+    public FortuneEntity(@JsonProperty("id") final String id, @JsonProperty("text") final String text, @JsonProperty("author") final Optional<String> author, @JsonProperty
+            ("version") final Long version) {
         this.id = UUID.fromString(id);
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.age = age;
-        this.phone = phone;
-        this.mobile = mobile;
-        this.country = country;
+        this.text = text;
+        this.author = author.orElse("");
         this.version = version;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getText() {
+        return text;
     }
 
-    public String getLastName() {
-        return lastName;
+    public Optional<String> getAuthor() {
+        return (author.equals("")) ? Optional.empty() : Optional.of(author);
     }
 
     public Long getVersion() {
@@ -85,19 +71,4 @@ public class ContactEntity {
         return id;
     }
 
-    public Integer getAge() {
-        return age;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public String getMobile() {
-        return mobile;
-    }
-
-    public String getCountry() {
-        return country;
-    }
 }

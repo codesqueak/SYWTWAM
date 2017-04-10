@@ -25,9 +25,9 @@
 package com.codingrodent.microservice.template.controller;
 
 import com.codingrodent.microservice.template.BaseMVCTests;
-import com.codingrodent.microservice.template.controller.impl.SyncContactController;
+import com.codingrodent.microservice.template.controller.impl.SyncFortuneController;
 import com.codingrodent.microservice.template.model.*;
-import com.codingrodent.microservice.template.service.api.IContactService;
+import com.codingrodent.microservice.template.service.api.IFortuneService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -47,27 +47,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Controller unit tests
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ContactServiceTest extends BaseMVCTests {
+public class FortuneServiceTest extends BaseMVCTests {
 
     private String json;
-    private ModelVersion<Contact> modelVersion;
-    private SyncContactController controller;
-    private Contact contact;
+    private ModelVersion<Fortune> modelVersion;
+    private SyncFortuneController controller;
+    private Fortune fortune;
 
     @Mock
-    private IContactService<Contact> contactService;
+    private IFortuneService<Fortune> fortuneService;
 
     @Before
     public void init() throws JsonProcessingException {
-        contact = new Contact("Firstname", "Lastname", 1, "000 000 000", "001 001 001", "AZ");
-        json = mapper.writeValueAsString(contact);
-        modelVersion = new ModelVersion<>(contact, Optional.of(12345L));
-        controller = new SyncContactController(contactService);
+        fortune = new Fortune("A fortune", Optional.of("An author"));
+        json = mapper.writeValueAsString(fortune);
+        modelVersion = new ModelVersion<>(fortune, Optional.of(12345L));
+        controller = new SyncFortuneController(fortuneService);
     }
 
     @Test
-    public void getContact() throws Exception {
-        when(contactService.load(any(UUID.class))).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion), Optional.empty());
+    public void getFortune() throws Exception {
+        when(fortuneService.load(any(UUID.class))).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion), Optional.empty());
 
         // @formatter:off
         // Invalid UUID
@@ -110,12 +110,12 @@ public class ContactServiceTest extends BaseMVCTests {
                 .andExpect(status().isGone())
                 .andReturn();
         // @formatter:on
-        verify(contactService, times(4)).load(any());
+        verify(fortuneService, times(4)).load(any());
     }
 
     @Test
-    public void headContact() throws Exception {
-        when(contactService.load(any(UUID.class))).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion), Optional.empty());
+    public void headFortune() throws Exception {
+        when(fortuneService.load(any(UUID.class))).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion), Optional.empty());
 
         // @formatter:off
         // Invalid UUID
@@ -157,13 +157,13 @@ public class ContactServiceTest extends BaseMVCTests {
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE))
                 .andReturn();
         // @formatter:on
-        verify(contactService, times(4)).load(any());
+        verify(fortuneService, times(4)).load(any());
     }
 
     @Test
-    public void putContact() throws Exception {
-        when(contactService.load(any(UUID.class))).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion));
-        when(contactService.save(any(UUID.class), any(Contact.class), any(Optional.class))).thenThrow(OptimisticLockingFailureException.class).thenReturn(modelVersion,
+    public void putFortune() throws Exception {
+        when(fortuneService.load(any(UUID.class))).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion));
+        when(fortuneService.save(any(UUID.class), any(Fortune.class), any(Optional.class))).thenThrow(OptimisticLockingFailureException.class).thenReturn(modelVersion,
                                                                                                                                                           modelVersion, null);
 
         // @formatter:off
@@ -222,15 +222,15 @@ public class ContactServiceTest extends BaseMVCTests {
                 .andReturn();
         // @formatter:on
 
-        verify(contactService, times(4)).load(any());
-        verify(contactService, times(4)).save(any(), any(), any());
+        verify(fortuneService, times(4)).load(any());
+        verify(fortuneService, times(4)).save(any(), any(), any());
     }
 
     @Test
-    public void postContact() throws Exception {
+    public void postFortune() throws Exception {
         Long version = 789L;
-        when(contactService.create(any(Contact.class), any(Optional.class))).thenThrow(DuplicateKeyException.class).thenReturn(modelVersion).thenAnswer(inv -> new ModelVersion<>
-                (contact, (Optional) inv.getArguments()[1])).thenReturn(null);
+        when(fortuneService.create(any(Fortune.class), any(Optional.class))).thenThrow(DuplicateKeyException.class).thenReturn(modelVersion).thenAnswer(inv -> new ModelVersion<>
+                (fortune, (Optional) inv.getArguments()[1])).thenReturn(null);
 
         // @formatter:off
         // No body
@@ -274,12 +274,12 @@ public class ContactServiceTest extends BaseMVCTests {
                 .andReturn();
         // @formatter:on
 
-        verify(contactService, times(4)).create(any(), any());
+        verify(fortuneService, times(4)).create(any(), any());
     }
 
     @Test
-    public void deleteContact() throws Exception {
-        when(contactService.load(any())).thenReturn(Optional.of(modelVersion));
+    public void deleteFortune() throws Exception {
+        when(fortuneService.load(any())).thenReturn(Optional.of(modelVersion));
 
         // @formatter:off
         // Invalid UUID
@@ -309,12 +309,12 @@ public class ContactServiceTest extends BaseMVCTests {
                 .andReturn();
         // @formatter:on
 
-        verify(contactService, times(2)).load(any());
-        verify(contactService, times(2)).delete(any());
+        verify(fortuneService, times(2)).load(any());
+        verify(fortuneService, times(2)).delete(any());
     }
 
     @Test
-    public void optionsContact() throws Exception {
+    public void optionsFortune() throws Exception {
 
         // @formatter:off
         // Save

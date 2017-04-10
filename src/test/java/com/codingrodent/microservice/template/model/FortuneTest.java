@@ -22,28 +22,29 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.service.api;
+package com.codingrodent.microservice.template.model;
 
-import com.codingrodent.microservice.template.model.*;
-import rx.Observable;
+import com.codingrodent.microservice.template.entity.FortuneEntity;
+import org.junit.Test;
 
 import java.util.*;
 
-/**
- * Business logic for Contact information
- */
-public interface IContactService<M> {
-    // Async
-    Observable<M> saveAsync(UUID uuid, Contact contact);
+import static org.junit.Assert.assertEquals;
 
-    Observable<M> loadAsync(UUID uuid);
+public class FortuneTest {
 
-    // Sync
-    ModelVersion<M> save(UUID uuid, M model, Optional<Long> version);
+    @Test
+    public void basicTest() {
+        UUID id = UUID.randomUUID();
+        Long version = 12345L;
+        String text = "A fortune";
+        Optional<String> author = Optional.of("An author");
 
-    ModelVersion<M> create(M mode, Optional<Long> version);
-
-    Optional<ModelVersion<M>> load(UUID uuid);
-
-    void delete(UUID uuid);
+        FortuneEntity fortuneEntity = new FortuneEntity(id.toString(), text, author, version);
+        //
+        assertEquals(id, fortuneEntity.getId());
+        assertEquals(version, fortuneEntity.getVersion());
+        assertEquals(text, fortuneEntity.getText());
+        assertEquals(author, fortuneEntity.getAuthor());
+    }
 }

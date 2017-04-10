@@ -24,12 +24,13 @@
  */
 package com.codingrodent.microservice.template.repository.impl;
 
-import com.codingrodent.microservice.template.entity.ContactEntity;
+import com.codingrodent.microservice.template.entity.FortuneEntity;
 import com.codingrodent.microservice.template.repository.api.IAsync;
 import com.couchbase.client.java.*;
 import com.couchbase.client.java.document.*;
 import com.couchbase.client.java.document.json.JsonObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.stereotype.Service;
@@ -44,14 +45,15 @@ import java.util.function.Function;
  */
 @Service
 @Profile("prod")
-public class ContactRepository implements IAsync<ContactEntity, UUID> {
+public class FortuneRepository implements IAsync<FortuneEntity, UUID> {
 
     private final Cluster cluster = CouchbaseCluster.create("localhost");
     private final Bucket bucket = cluster.openBucket("template", "password");
 
+    private ObjectMapper mapper = new ObjectMapper().registerModule(new Jdk8Module());
+
     @Override
-    public Observable<ContactEntity> saveAsync(final ContactEntity entity) {
-        ObjectMapper mapper = new ObjectMapper();
+    public Observable<FortuneEntity> saveAsync(final FortuneEntity entity) {
         JsonObject name;
         try {
             name = JsonObject.fromJson(mapper.writeValueAsString(entity));
@@ -63,16 +65,15 @@ public class ContactRepository implements IAsync<ContactEntity, UUID> {
     }
 
     @Override
-    public Observable<ContactEntity> findOneAsync(final UUID uuid) {
+    public Observable<FortuneEntity> findOneAsync(final UUID uuid) {
         return Observable.empty();
     }
 
-    private final Function<Document, ContactEntity> docToEntity = doc -> {
+    private final Function<Document, FortuneEntity> docToEntity = doc -> {
         String json = doc.content().toString();
-        ObjectMapper mapper = new ObjectMapper();
-        ContactEntity zz = null;
+        FortuneEntity zz = null;
         try {
-            return mapper.readValue(json, ContactEntity.class);
+            return mapper.readValue(json, FortuneEntity.class);
         } catch (IOException e) {
             throw new InvalidDataAccessResourceUsageException("JSON deerialization failed", e);
         }

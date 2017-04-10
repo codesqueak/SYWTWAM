@@ -22,16 +22,25 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.repository.api;
+package com.codingrodent.microservice.template.entity;
 
-import com.codingrodent.microservice.template.entity.ContactEntity;
-import org.springframework.data.repository.CrudRepository;
+import com.codingrodent.microservice.template.model.Fortune;
+import org.junit.Test;
 
-import java.util.UUID;
+import java.util.Optional;
 
-/**
- * Let spring build basic repository - we don't have to supply a body for this
- */
-public interface ISyncNameRepository extends CrudRepository<ContactEntity, UUID> {
+import static org.junit.Assert.assertEquals;
 
+public class FortuneEntityTest {
+    @Test
+    public void basicTest() {
+        String text = "A fortune";
+        Optional<String> author = Optional.of("An author");
+
+        Fortune fortune = new Fortune(text, author);
+        //
+        assertEquals(text, fortune.getText());
+        assertEquals(author, fortune.getAuthor());
+
+    }
 }

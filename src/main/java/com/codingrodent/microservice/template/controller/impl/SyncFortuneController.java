@@ -26,9 +26,8 @@ package com.codingrodent.microservice.template.controller.impl;
 
 import com.codingrodent.microservice.template.controller.api.IREST;
 import com.codingrodent.microservice.template.exception.*;
-import com.codingrodent.microservice.template.model.Contact;
 import com.codingrodent.microservice.template.model.*;
-import com.codingrodent.microservice.template.service.api.IContactService;
+import com.codingrodent.microservice.template.service.api.IFortuneService;
 import io.swagger.annotations.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -41,33 +40,33 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 import static org.springframework.http.HttpMethod.*;
 
 /**
- * Simple sync REST controller for the Contact resource
+ * Simple sync REST controller for the Fortune resource
  */
 @RestController
-@Api(tags = "sync", value = "synccontact", description = "Endpoint for contact management")
-@RequestMapping("/syncname/" + API_VERSION)
-public class SyncContactController extends RestBase<Contact> implements IREST<UUID, Contact> {
+@Api(tags = "sync", value = "syncfortune", description = "Endpoint for fortune management")
+@RequestMapping("/sync/fortune/" + API_VERSION)
+public class SyncFortuneController extends RestBase<Fortune> implements IREST<UUID, Fortune> {
 
-    private final IContactService<Contact> contactService;
+    private final IFortuneService<Fortune> fortuneService;
     private final static Set<HttpMethod> ALLOWED_OPTIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(GET, HEAD, POST, PUT, PATCH, DELETE)));
 
     @Inject
-    public SyncContactController(final IContactService<Contact> contactService) {
-        this.contactService = contactService;
+    public SyncFortuneController(final IFortuneService<Fortune> fortuneService) {
+        this.fortuneService = fortuneService;
     }
 
     /**
-     * GET - Requests data from a the Contact resource
+     * GET - Requests data from a the Fortune resource
      *
-     * @param uuid    Identifier of contact to fetch
-     * @param version Contact version identifier
-     * @return Return selected contact or 'Not Modified' if version matched
+     * @param uuid    Identifier of fortune to fetch
+     * @param version Fortune version identifier
+     * @return Return selected fortune or 'Not Modified' if version matched
      */
     @Override
-    public ResponseEntity<Contact> read(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
+    public ResponseEntity<Fortune> read(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
                                         @ApiParam(name = HttpHeaders.IF_NONE_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false)
                                                 Optional<String> version) {
-        Optional<ModelVersion<Contact>> modelVersion = contactService.load(uuid);
+        Optional<ModelVersion<Fortune>> modelVersion = fortuneService.load(uuid);
         if (!version.isPresent() || ifNoneMatch(version, modelVersion)) {
             // Exec
             return modelVersion.map(mv -> new ResponseEntity<>(mv.getModel(), getETag(mv), HttpStatus.OK)).orElseThrow(DocumentNeverFoundException::new);
@@ -79,15 +78,15 @@ public class SyncContactController extends RestBase<Contact> implements IREST<UU
     /**
      * HEAD - As per get but no body returned
      *
-     * @param uuid    Identifier of contact to fetch
-     * @param version Contact version identifier
+     * @param uuid    Identifier of fortune to fetch
+     * @param version Fortune version identifier
      * @return Return Empty result or 'Not Modified' if version matched
      */
     @Override
     public ResponseEntity<Optional> head(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
                                          @ApiParam(name = HttpHeaders.IF_NONE_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false)
                                                  Optional<String> version) {
-        Optional<ModelVersion<Contact>> modelVersion = contactService.load(uuid);
+        Optional<ModelVersion<Fortune>> modelVersion = fortuneService.load(uuid);
         if (!version.isPresent() || ifNoneMatch(version, modelVersion)) {
             // Exec
             return modelVersion.map(mv -> new ResponseEntity<Optional>(Optional.empty(), getETag(mv), HttpStatus.NO_CONTENT)).orElseThrow(DocumentNeverFoundException::new);
@@ -97,26 +96,26 @@ public class SyncContactController extends RestBase<Contact> implements IREST<UU
     }
 
     /**
-     * PUT - Create or update a contact
+     * PUT - Create or update a fortune
      *
-     * @param uuid    Identifier of contact to write
-     * @param version Contact version identifier
-     * @param contact Contact to write
-     * @return Written contact
+     * @param uuid    Identifier of fortune to write
+     * @param version Fortune version identifier
+     * @param fortune Fortune to write
+     * @return Written fortune
      */
     @Override
-    public ResponseEntity<Contact> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
+    public ResponseEntity<Fortune> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
                                           @ApiParam(name = HttpHeaders.IF_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false)
                                                   Optional<String> version, //
-                                          @ApiParam(name = "Entity", value = "Contact Value", required = true) @RequestBody Contact contact) {
+                                          @ApiParam(name = "Entity", value = "Fortune Value", required = true) @RequestBody Fortune fortune) {
 
         if (version.isPresent()) {
             // Only need  to check if record exists when doing an If-Match
-            Optional<ModelVersion<Contact>> modelVersion = contactService.load(uuid);
+            Optional<ModelVersion<Fortune>> modelVersion = fortuneService.load(uuid);
             if (!ifMatch(version, modelVersion))
                 throw new PreconditionFailedException("PUT If-Match");
         }
-        ModelVersion<Contact> written = contactService.save(uuid, contact, version.map(extractETag));
+        ModelVersion<Fortune> written = fortuneService.save(uuid, fortune, version.map(extractETag));
         // As a workaround we will take the version to signify if this is a create or update
         if (null == written) {
             throw new ApplicationFaultException("PUT failed to return a document");
@@ -126,33 +125,33 @@ public class SyncContactController extends RestBase<Contact> implements IREST<UU
     }
 
     /**
-     * POST - Submits contact data to be processed to a specified resource (Return URL in location header etag)
+     * POST - Submits fortune data to be processed to a specified resource (Return URL in location header etag)
      * <p>
      * Note: Not usually used in REST applications
      *
-     * @param version Contact version identifier. Match forces overwrite else create (if contact doesn't exist)
-     * @param contact Contact to write
-     * @return Contact entity
+     * @param version Fortune version identifier. Match forces overwrite else create (if fortune doesn't exist)
+     * @param fortune Fortune to write
+     * @return Fortune entity
      */
     @Override
-    public ResponseEntity<Contact> create(@ApiParam(name = HttpHeaders.IF_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false)
+    public ResponseEntity<Fortune> create(@ApiParam(name = HttpHeaders.IF_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false)
                                                       Optional<String> version, //
-                                          @ApiParam(name = "Entity", value = "Contact Value", required = true) @RequestBody Contact contact) {
+                                          @ApiParam(name = "Entity", value = "Fortune Value", required = true) @RequestBody Fortune fortune) {
         // Not doing If-Match test as we can guarantee record does not exists due to uuid creation
-        ModelVersion<Contact> written = contactService.create(contact, version.map(extractETag));
+        ModelVersion<Fortune> written = fortuneService.create(fortune, version.map(extractETag));
         if (null == written) {
             throw new ApplicationFaultException("POST failed to return a document");
         } else {
-            String location = linkTo(methodOn(SyncContactController.class).read(UUID.randomUUID(), Optional.empty())).toUri().toASCIIString();
+            String location = linkTo(methodOn(SyncFortuneController.class).read(UUID.randomUUID(), Optional.empty())).toUri().toASCIIString();
             return new ResponseEntity<>(written.getModel(), getETag(written, HttpHeaders.LOCATION, location), HttpStatus.CREATED);
         }
     }
 
     /**
-     * DELETE - Delete an existing contact
+     * DELETE - Delete an existing fortune
      *
-     * @param uuid    Identifier of contact to delete
-     * @param version Contact version identifier
+     * @param uuid    Identifier of fortune to delete
+     * @param version Fortune version identifier
      * @return No body
      */
     @Override
@@ -162,11 +161,11 @@ public class SyncContactController extends RestBase<Contact> implements IREST<UU
 
         if (version.isPresent()) {
             // Only need  to check if record exists when doing an If-Match
-            Optional<ModelVersion<Contact>> modelVersion = contactService.load(uuid);
+            Optional<ModelVersion<Fortune>> modelVersion = fortuneService.load(uuid);
             if (!ifMatch(version, modelVersion))
                 throw new PreconditionFailedException("DELETE If-Match");
         }
-        contactService.delete(uuid);
+        fortuneService.delete(uuid);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
