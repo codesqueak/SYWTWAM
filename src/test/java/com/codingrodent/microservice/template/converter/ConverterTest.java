@@ -18,7 +18,7 @@ public class ConverterTest {
         String text = "A fortune";
         Optional<String> author = Optional.of("An author");
 
-        FortuneEntity fortuneEntity = new FortuneEntity(id.toString(), text, author, version);
+        FortuneEntity fortuneEntity = new FortuneEntity(id.toString(), text, author.orElse(""));
         //
         // Convert to model and check
         Fortune model = toNameModel.convert(fortuneEntity);
@@ -29,7 +29,7 @@ public class ConverterTest {
         // Convert back to entity and check
         fortuneEntity = toNameEntity.convert(id, model, Optional.of(version));
         assertEquals(id, fortuneEntity.getId());
-        assertEquals(version, fortuneEntity.getVersion());
+        assertEquals(version.longValue(), fortuneEntity.getVersion());
         assertEquals(text, fortuneEntity.getText());
         assertEquals(author, fortuneEntity.getAuthor());
 

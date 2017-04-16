@@ -27,12 +27,15 @@ package com.codingrodent.microservice.template.service.impl;
 import com.codingrodent.microservice.template.entity.FortuneEntity;
 import com.codingrodent.microservice.template.model.*;
 import com.codingrodent.microservice.template.repository.api.*;
-import com.codingrodent.microservice.template.service.api.IFortuneService;
+import com.codingrodent.microservice.template.service.api.*;
+import com.codingrodent.microservice.template.utility.Utility;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import rx.Observable;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import java.io.*;
 import java.util.*;
 
 import static com.codingrodent.microservice.template.converter.Converter.*;
@@ -48,12 +51,55 @@ public class FortuneService implements IFortuneService<Fortune> {
     // Normally use only one but this is for demo purposes
     private final ISyncFortuneRepository repository;
     private final IAsync<FortuneEntity, UUID> asyncRepository;
+    private final ILogger logger;
 
     @Inject
-    public FortuneService(ISyncFortuneRepository repository, IAsync<FortuneEntity, UUID> asyncRepository) {
+    public FortuneService(final ILogger logger, final ISyncFortuneRepository repository, final IAsync<FortuneEntity, UUID> asyncRepository) {
         this.repository = repository;
         this.asyncRepository = asyncRepository;
+        this.logger = logger;
     }
+
+    @PostConstruct
+    public void fill() {
+        // Load default records
+        InputStream s = getClass().getClassLoader().getResourceAsStream("fortune.json");
+        FortuneElement[] fortunes = null;
+        try {
+            fortunes = Utility.getObjectMapper().readValue(s, FortuneElement[].class);
+            for (FortuneElement element : fortunes) {
+                if (!repository.exists(element.getKey().toString())) {
+                    logger.info(element.getKey().toString() + " " + element.getText());
+                    repository.save(new FortuneEntity(element.getKey().toString(), element.getText(), element.getAuthor().orElse("")));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        logger.info("Preloaded fortunes:" + fortunes.length);
+    }
+
+    @Override
+    public ModelVersion<Fortune> create(final Fortune fortune, final Optional<Long> version) {
+        FortuneEntity entity = repository.save(toNameEntity.convert(UUID.randomUUID(), fortune, version));
+        return new ModelVersion<>(toNameModel.convert(entity), Optional.ofNullable(entity.getVersion()));
+    }
+
+    @Override
+    public Optional<ModelVersion<Fortune>> load(final String uuid) {
+        FortuneEntity entity = repository.findOne(uuid);
+        if (null == entity)
+            return Optional.empty();
+        else
+            return Optional.of(new ModelVersion<>(toNameModel.convert(entity), Optional.ofNullable(entity.getVersion())));
+    }
+
+    @Override
+    public void delete(String uuid) {
+        repository.delete(uuid);
+    }
+
+    // ASync Implementations
 
     @Override
     public Observable<Fortune> saveAsync(final UUID uuid, final Fortune fortune) {
@@ -70,25 +116,5 @@ public class FortuneService implements IFortuneService<Fortune> {
 
         FortuneEntity entity = repository.save(toNameEntity.convert(uuid, fortune, version));
         return new ModelVersion<>(toNameModel.convert(entity), Optional.ofNullable(entity.getVersion()));
-    }
-
-    @Override
-    public ModelVersion<Fortune> create(final Fortune fortune, final Optional<Long> version) {
-        FortuneEntity entity = repository.save(toNameEntity.convert(UUID.randomUUID(), fortune, version));
-        return new ModelVersion<>(toNameModel.convert(entity), Optional.ofNullable(entity.getVersion()));
-    }
-
-    @Override
-    public Optional<ModelVersion<Fortune>> load(final UUID uuid) {
-        FortuneEntity entity = repository.findOne(uuid);
-        if (null == entity)
-            return Optional.empty();
-        else
-            return Optional.of(new ModelVersion<>(toNameModel.convert(entity), Optional.ofNullable(entity.getVersion())));
-    }
-
-    @Override
-    public void delete(UUID uuid) {
-        repository.delete(uuid);
     }
 }

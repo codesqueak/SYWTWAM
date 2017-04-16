@@ -27,11 +27,9 @@ package com.codingrodent.microservice.template.repository.api;
 import com.codingrodent.microservice.template.entity.FortuneEntity;
 import org.springframework.data.repository.CrudRepository;
 
-import java.util.UUID;
-
 /**
  * Let spring build basic repository - we don't have to supply a body for this
  */
-public interface ISyncFortuneRepository extends CrudRepository<FortuneEntity, UUID> {
+public interface ISyncFortuneRepository extends CrudRepository<FortuneEntity, String> {
 
 }

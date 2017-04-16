@@ -66,7 +66,7 @@ public class SyncFortuneController extends RestBase<Fortune> implements IREST<UU
     public ResponseEntity<Fortune> read(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
                                         @ApiParam(name = HttpHeaders.IF_NONE_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false)
                                                 Optional<String> version) {
-        Optional<ModelVersion<Fortune>> modelVersion = fortuneService.load(uuid);
+        Optional<ModelVersion<Fortune>> modelVersion = fortuneService.load(uuid.toString());
         if (!version.isPresent() || ifNoneMatch(version, modelVersion)) {
             // Exec
             return modelVersion.map(mv -> new ResponseEntity<>(mv.getModel(), getETag(mv), HttpStatus.OK)).orElseThrow(DocumentNeverFoundException::new);
@@ -86,7 +86,7 @@ public class SyncFortuneController extends RestBase<Fortune> implements IREST<UU
     public ResponseEntity<Optional> head(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
                                          @ApiParam(name = HttpHeaders.IF_NONE_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false)
                                                  Optional<String> version) {
-        Optional<ModelVersion<Fortune>> modelVersion = fortuneService.load(uuid);
+        Optional<ModelVersion<Fortune>> modelVersion = fortuneService.load(uuid.toString());
         if (!version.isPresent() || ifNoneMatch(version, modelVersion)) {
             // Exec
             return modelVersion.map(mv -> new ResponseEntity<Optional>(Optional.empty(), getETag(mv), HttpStatus.NO_CONTENT)).orElseThrow(DocumentNeverFoundException::new);
@@ -111,7 +111,7 @@ public class SyncFortuneController extends RestBase<Fortune> implements IREST<UU
 
         if (version.isPresent()) {
             // Only need  to check if record exists when doing an If-Match
-            Optional<ModelVersion<Fortune>> modelVersion = fortuneService.load(uuid);
+            Optional<ModelVersion<Fortune>> modelVersion = fortuneService.load(uuid.toString());
             if (!ifMatch(version, modelVersion))
                 throw new PreconditionFailedException("PUT If-Match");
         }
@@ -161,11 +161,11 @@ public class SyncFortuneController extends RestBase<Fortune> implements IREST<UU
 
         if (version.isPresent()) {
             // Only need  to check if record exists when doing an If-Match
-            Optional<ModelVersion<Fortune>> modelVersion = fortuneService.load(uuid);
+            Optional<ModelVersion<Fortune>> modelVersion = fortuneService.load(uuid.toString());
             if (!ifMatch(version, modelVersion))
                 throw new PreconditionFailedException("DELETE If-Match");
         }
-        fortuneService.delete(uuid);
+        fortuneService.delete(uuid.toString());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

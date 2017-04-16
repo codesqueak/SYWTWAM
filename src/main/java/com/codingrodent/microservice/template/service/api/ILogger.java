@@ -22,28 +22,14 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.model;
+package com.codingrodent.microservice.template.service.api;
 
-import com.codingrodent.microservice.template.entity.FortuneEntity;
-import org.junit.Test;
+/**
+ * Centralized logging controller
+ */
+public interface ILogger {
 
-import java.util.*;
+    void warn(String message);
 
-import static org.junit.Assert.assertEquals;
-
-public class FortuneTest {
-
-    @Test
-    public void basicTest() {
-        UUID id = UUID.randomUUID();
-        Long version = 12345L;
-        String text = "A fortune";
-        Optional<String> author = Optional.of("An author");
-
-        FortuneEntity fortuneEntity = new FortuneEntity(id.toString(), text, author.orElse(""));
-        //
-        assertEquals(id, fortuneEntity.getId());
-        assertEquals(text, fortuneEntity.getText());
-        assertEquals(author, fortuneEntity.getAuthor());
-    }
+    void info(String message);
 }

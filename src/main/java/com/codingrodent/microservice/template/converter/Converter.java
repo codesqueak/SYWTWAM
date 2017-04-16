@@ -38,8 +38,8 @@ public class Converter {
         // Do not instantiate.
     }
 
-    public final static IConvertToEntity<Fortune, FortuneEntity, UUID, Optional<Long>> toNameEntity = (id, m, v) -> new FortuneEntity(id.toString(), m.getText(), m.getAuthor(),
-                                                                                                                                      v.orElse(null));
-    public final static IConvertToModel<FortuneEntity, Fortune> toNameModel = entity -> new Fortune(entity.getText(), entity.getAuthor());
+    public final static IConvertToEntity<Fortune, FortuneEntity, UUID, Optional<Long>> toNameEntity = (id, m, v) -> new FortuneEntity(id.toString(), m.getText(), m.getAuthor()
+            .orElse(""));
+    public final static IConvertToModel<FortuneEntity, Fortune> toNameModel = entity -> new Fortune(entity.getText(), Optional.of(entity.getAuthor()));
 
 }

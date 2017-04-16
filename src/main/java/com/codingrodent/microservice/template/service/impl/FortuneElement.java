@@ -22,28 +22,44 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.model;
+package com.codingrodent.microservice.template.service.impl;
 
-import com.codingrodent.microservice.template.entity.FortuneEntity;
-import org.junit.Test;
+import com.fasterxml.jackson.annotation.*;
 
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
+/**
+ * Fortune data record from initialization array
+ */
 
-public class FortuneTest {
+public class FortuneElement {
 
-    @Test
-    public void basicTest() {
-        UUID id = UUID.randomUUID();
-        Long version = 12345L;
-        String text = "A fortune";
-        Optional<String> author = Optional.of("An author");
+    @JsonProperty("key")
+    private final UUID key;
 
-        FortuneEntity fortuneEntity = new FortuneEntity(id.toString(), text, author.orElse(""));
-        //
-        assertEquals(id, fortuneEntity.getId());
-        assertEquals(text, fortuneEntity.getText());
-        assertEquals(author, fortuneEntity.getAuthor());
+    @JsonProperty("text")
+    private final String text;
+
+    @JsonProperty("author")
+    private final Optional<String> author;
+
+    @JsonCreator
+    public FortuneElement(@JsonProperty("key") final UUID key, @JsonProperty("text") final String text, @JsonProperty("author") final Optional<String> author) {
+        this.key = key;
+        this.text = text;
+        this.author = author;
     }
+
+    public UUID getKey() {
+        return key;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public Optional<String> getAuthor() {
+        return author;
+    }
+
 }

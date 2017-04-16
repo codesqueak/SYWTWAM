@@ -22,28 +22,24 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.model;
+package com.codingrodent.microservice.template.utility;
 
-import com.codingrodent.microservice.template.entity.FortuneEntity;
-import org.junit.Test;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
-import java.util.*;
+/**
+ * Various utility functions
+ */
+public class Utility {
 
-import static org.junit.Assert.assertEquals;
+    private final static ObjectMapper objectMapper = new ObjectMapper().registerModule(new Jdk8Module());
 
-public class FortuneTest {
-
-    @Test
-    public void basicTest() {
-        UUID id = UUID.randomUUID();
-        Long version = 12345L;
-        String text = "A fortune";
-        Optional<String> author = Optional.of("An author");
-
-        FortuneEntity fortuneEntity = new FortuneEntity(id.toString(), text, author.orElse(""));
-        //
-        assertEquals(id, fortuneEntity.getId());
-        assertEquals(text, fortuneEntity.getText());
-        assertEquals(author, fortuneEntity.getAuthor());
+    private Utility() {
+        // Stop instantiation
     }
+
+    public static ObjectMapper getObjectMapper() {
+        return objectMapper;
+    }
+
 }

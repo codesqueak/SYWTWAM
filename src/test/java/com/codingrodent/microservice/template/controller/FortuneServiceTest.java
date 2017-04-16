@@ -67,7 +67,7 @@ public class FortuneServiceTest extends BaseMVCTests {
 
     @Test
     public void getFortune() throws Exception {
-        when(fortuneService.load(any(UUID.class))).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion), Optional.empty());
+        when(fortuneService.load(any(String.class))).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion), Optional.empty());
 
         // @formatter:off
         // Invalid UUID
@@ -115,7 +115,7 @@ public class FortuneServiceTest extends BaseMVCTests {
 
     @Test
     public void headFortune() throws Exception {
-        when(fortuneService.load(any(UUID.class))).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion), Optional.empty());
+        when(fortuneService.load(any(String.class))).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion), Optional.empty());
 
         // @formatter:off
         // Invalid UUID
@@ -162,7 +162,7 @@ public class FortuneServiceTest extends BaseMVCTests {
 
     @Test
     public void putFortune() throws Exception {
-        when(fortuneService.load(any(UUID.class))).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion));
+        when(fortuneService.load(any(String.class))).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion));
         when(fortuneService.save(any(UUID.class), any(Fortune.class), any(Optional.class))).thenThrow(OptimisticLockingFailureException.class).thenReturn(modelVersion,
                                                                                                                                                           modelVersion, null);
 

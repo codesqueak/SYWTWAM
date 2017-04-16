@@ -29,8 +29,6 @@ import com.fasterxml.jackson.annotation.*;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.couchbase.core.mapping.Document;
 
-import java.util.*;
-
 /**
  * Contact persistence class
  */
@@ -38,36 +36,34 @@ import java.util.*;
 public class FortuneEntity {
 
     @Id
-    private final UUID id;
+    private final String id;
     @Version
-    private Long version;
+    private long version;
     @Field
     private final String text;
     @Field
     private final String author;
 
     @JsonCreator
-    public FortuneEntity(@JsonProperty("id") final String id, @JsonProperty("text") final String text, @JsonProperty("author") final Optional<String> author, @JsonProperty
-            ("version") final Long version) {
-        this.id = UUID.fromString(id);
+    public FortuneEntity(@JsonProperty("id") final String id, @JsonProperty("text") final String text, @JsonProperty("author") final String author) {
+        this.id = id;
         this.text = text;
-        this.author = author.orElse("");
-        this.version = version;
+        this.author = author;
     }
 
     public String getText() {
         return text;
     }
 
-    public Optional<String> getAuthor() {
-        return (author.equals("")) ? Optional.empty() : Optional.of(author);
+    public String getAuthor() {
+        return author;
     }
 
-    public Long getVersion() {
+    public long getVersion() {
         return version;
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 

@@ -81,7 +81,7 @@ public class FortuneServiceMock implements IFortuneService<Fortune> {
     }
 
     @Override
-    public Optional<ModelVersion<Fortune>> load(final UUID uuid) {
+    public Optional<ModelVersion<Fortune>> load(final String uuid) {
         if (data.containsKey(uuid)) {
             return Optional.of(data.get(uuid));
         } else
@@ -89,7 +89,7 @@ public class FortuneServiceMock implements IFortuneService<Fortune> {
     }
 
     @Override
-    public void delete(final UUID uuid) {
+    public void delete(final String uuid) {
 
     }
 }

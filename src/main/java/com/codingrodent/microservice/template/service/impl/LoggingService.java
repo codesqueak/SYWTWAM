@@ -22,28 +22,27 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.model;
+package com.codingrodent.microservice.template.service.impl;
 
-import com.codingrodent.microservice.template.entity.FortuneEntity;
-import org.junit.Test;
+import com.codingrodent.microservice.template.service.api.ILogger;
+import org.slf4j.*;
+import org.springframework.stereotype.Service;
 
-import java.util.*;
+/**
+ *
+ */
+@Service
+public class LoggingService implements ILogger {
 
-import static org.junit.Assert.assertEquals;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-public class FortuneTest {
+    @Override
+    public void warn(final String msg) {
+        logger.warn(msg);
+    }
 
-    @Test
-    public void basicTest() {
-        UUID id = UUID.randomUUID();
-        Long version = 12345L;
-        String text = "A fortune";
-        Optional<String> author = Optional.of("An author");
-
-        FortuneEntity fortuneEntity = new FortuneEntity(id.toString(), text, author.orElse(""));
-        //
-        assertEquals(id, fortuneEntity.getId());
-        assertEquals(text, fortuneEntity.getText());
-        assertEquals(author, fortuneEntity.getAuthor());
+    @Override
+    public void info(final String msg) {
+        logger.info(msg);
     }
 }

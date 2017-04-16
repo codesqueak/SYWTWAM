@@ -26,11 +26,10 @@ package com.codingrodent.microservice.template.repository.impl;
 
 import com.codingrodent.microservice.template.entity.FortuneEntity;
 import com.codingrodent.microservice.template.repository.api.IAsync;
+import com.codingrodent.microservice.template.utility.Utility;
 import com.couchbase.client.java.*;
 import com.couchbase.client.java.document.*;
 import com.couchbase.client.java.document.json.JsonObject;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.stereotype.Service;
@@ -50,13 +49,11 @@ public class FortuneRepository implements IAsync<FortuneEntity, UUID> {
     private final Cluster cluster = CouchbaseCluster.create("localhost");
     private final Bucket bucket = cluster.openBucket("template", "password");
 
-    private ObjectMapper mapper = new ObjectMapper().registerModule(new Jdk8Module());
-
     @Override
     public Observable<FortuneEntity> saveAsync(final FortuneEntity entity) {
         JsonObject name;
         try {
-            name = JsonObject.fromJson(mapper.writeValueAsString(entity));
+            name = JsonObject.fromJson(Utility.getObjectMapper().writeValueAsString(entity));
             Document document = JsonDocument.create(entity.getId().toString(), name);
             return Observable.just(document).<Document>flatMap(d -> bucket.async().upsert(d)).map(docToEntity::apply);
         } catch (IOException e) {
@@ -73,7 +70,7 @@ public class FortuneRepository implements IAsync<FortuneEntity, UUID> {
         String json = doc.content().toString();
         FortuneEntity zz = null;
         try {
-            return mapper.readValue(json, FortuneEntity.class);
+            return Utility.getObjectMapper().readValue(json, FortuneEntity.class);
         } catch (IOException e) {
             throw new InvalidDataAccessResourceUsageException("JSON deerialization failed", e);
         }

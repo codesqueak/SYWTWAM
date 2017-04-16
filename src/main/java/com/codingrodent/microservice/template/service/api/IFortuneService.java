@@ -43,7 +43,7 @@ public interface IFortuneService<M> {
 
     ModelVersion<M> create(M mode, Optional<Long> version);
 
-    Optional<ModelVersion<M>> load(UUID uuid);
+    Optional<ModelVersion<M>> load(String uuid);
 
-    void delete(UUID uuid);
+    void delete(String uuid);
 }
