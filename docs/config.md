@@ -37,7 +37,7 @@ consul agent  -server -ui -data-dir=data -config-dir=config  -bind 127.0.0.1 -bo
 - -boostrap - enable boostrap mode. Allows a single node to be brought up
 - -log-level - recommend 'debug' at first as allows for easy application debug as the message flowing back and forth are visible
 
-Once startup has completed, opne http://localhost:8500 to access the management UI
+Once startup has completed, open http://localhost:8500 to access the management UI
 
 ## Spring Boot
 
@@ -137,4 +137,77 @@ Gives the following set of search paths:
 /v1/kv/config/apps::prod/
 /v1/kv/config/apps/
 ```
+
+# Consul as a Service
+
+Out of the box, Consul supplies little in the way of how to install it as a service.  The following steps have been used on Ubuntu 16.04 and Centos .
+
+
+## Basic Update
+
+```
+sudo yum update -y
+sudo yum install -y unzip wget
+
+or
+
+sudo apt-get update -y
+sudo apt-get install -y unzip wget
+```
+
+
+## Create Required Files
+
+Don't forget to update the version to the latest available !
+```
+cd /tmp
+wget https://releases.hashicorp.com/consul/0.8.1/consul_0.8.1_linux_amd64.zip -O consul.zip
+
+unzip consul.zip >/dev/null
+chmod +x consul
+sudo mv consul /usr/local/bin/consul
+```
+
+Make a file called *consul.service* with the following contents:
+```
+[Unit]
+Description=consul agent
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+EnvironmentFile=-/etc/sysconfig/consul
+Restart=on-failure
+ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target
+```
+## Setup the Service
+
+```
+sudo mkdir -p /opt/consul/data
+sudo chown root:root /tmp/consul.service
+sudo mv /tmp/consul.service /etc/systemd/system/consul.service
+sudo chmod 0644 /etc/systemd/system/consul.service
+```
+
+## Run and Install
+
+The service shoud now be able to be started using:
+```
+systemctl start  consul.service
+```
+Check it is running by opening a browser on [http://localhost:8500](http://localhost:8500)
+
+### Other useful commands ...
+```
+sudo journalctl -f -u consul (Use to show logs files)
+
+sudo systemctl enable consul (Make the service start at boot)
+```
+
+
+
+
 
