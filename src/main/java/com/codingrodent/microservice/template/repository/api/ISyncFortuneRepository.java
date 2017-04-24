@@ -25,11 +25,36 @@
 package com.codingrodent.microservice.template.repository.api;
 
 import com.codingrodent.microservice.template.entity.FortuneEntity;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.couchbase.core.query.View;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.PagingAndSortingRepository;
+
+import java.util.List;
 
 /**
  * Let spring build basic repository - we don't have to supply a body for this
  */
-public interface ISyncFortuneRepository extends CrudRepository<FortuneEntity, String> {
+public interface ISyncFortuneRepository extends PagingAndSortingRepository<FortuneEntity, String> {
 
+    /**
+     * Returns a {@link List} of entities meeting the paging restriction provided in the {@code Pageable} object.
+     * <p>
+     * This returns entities from the 'named' view
+     *
+     * @param pageable
+     * @return a list of entities
+     */
+    @View(viewName = "named")
+    List<FortuneEntity> findAllNamed(Pageable pageable);
+
+    /**
+     * Returns a {@link List} of entities meeting the paging restriction provided in the {@code Pageable} object.
+     * <p>
+     * This returns entities from the 'anon' view
+     *
+     * @param pageable
+     * @return a list of entities
+     */
+    @View(viewName = "anon")
+    List<FortuneEntity> findAllAnon(Pageable pageable);
 }

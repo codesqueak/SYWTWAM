@@ -168,7 +168,7 @@ public interface IREST<K, V> {
     /**
      * OPTIONS - Querying the Available Operations on a Resource
      *
-     * @return Options list for this resource
+     * @return Options listAll for this resource
      */
     @RequestMapping(method = RequestMethod.OPTIONS)
     @ApiOperation(value = "Querying the Available Operations on a Resource", notes = "Request for information about the communication options available")
@@ -176,6 +176,65 @@ public interface IREST<K, V> {
         HttpHeaders headers = new HttpHeaders();
         headers.setAllow(getOptions());
         return new ResponseEntity<>(headers, HttpStatus.OK);
+    }
+
+    // Collections
+
+    /**
+     * GET - Requests data from a specified resource
+     *
+     * @param page Data page to read
+     * @param size Size of page
+     * @return Return selected entity or 'Not Modified' if version matched
+     */
+    @RequestMapping(path = "/listall", params = {"page", "size"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Read all entities", notes = "Retrieve all entities in a paged manner if required", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses(value = { //
+            @ApiResponse(code = 200, message = "Ok, response entity in body"), //
+            @ApiResponse(code = 304, message = "Not modified"), //
+            @ApiResponse(code = 410, message = "No matching entity exists"), //
+            @ApiResponse(code = 412, message = "Precondition Failed")})
+    default ResponseEntity<List<V>> listAll(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
+                                            @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
+        throw new UnsupportedOperationException("Get an entity not implemented");
+    }
+
+    /**
+     * GET - Requests data from a specified resource
+     *
+     * @param page Data page to read
+     * @param size Size of page
+     * @return Return selected entity or 'Not Modified' if version matched
+     */
+    @RequestMapping(path = "/listnamed", params = {"page", "size"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Read all entities", notes = "Retrieve all entities in a paged manner if required", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses(value = { //
+            @ApiResponse(code = 200, message = "Ok, response entity in body"), //
+            @ApiResponse(code = 304, message = "Not modified"), //
+            @ApiResponse(code = 410, message = "No matching entity exists"), //
+            @ApiResponse(code = 412, message = "Precondition Failed")})
+    default ResponseEntity<List<V>> listNamed(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
+                                              @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
+        throw new UnsupportedOperationException("Get an entity not implemented");
+    }
+
+    /**
+     * GET - Requests data from a specified resource
+     *
+     * @param page Data page to read
+     * @param size Size of page
+     * @return Return selected entity or 'Not Modified' if version matched
+     */
+    @RequestMapping(path = "/listanon", params = {"page", "size"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Read all entities", notes = "Retrieve all entities in a paged manner if required", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses(value = { //
+            @ApiResponse(code = 200, message = "Ok, response entity in body"), //
+            @ApiResponse(code = 304, message = "Not modified"), //
+            @ApiResponse(code = 410, message = "No matching entity exists"), //
+            @ApiResponse(code = 412, message = "Precondition Failed")})
+    default ResponseEntity<List<V>> listAnon(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
+                                             @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
+        throw new UnsupportedOperationException("Get an entity not implemented");
     }
 
     /**

@@ -24,7 +24,7 @@
  */
 package com.codingrodent.microservice.template.controller.impl;
 
-import com.codingrodent.microservice.template.controller.api.IREST;
+import com.codingrodent.microservice.template.controller.api.IFortune;
 import com.codingrodent.microservice.template.exception.*;
 import com.codingrodent.microservice.template.model.*;
 import com.codingrodent.microservice.template.service.api.IFortuneService;
@@ -42,10 +42,12 @@ import static org.springframework.http.HttpMethod.*;
 /**
  * Simple sync REST controller for the Fortune resource
  */
+
 @RestController
 @Api(tags = "sync", value = "syncfortune", description = "Endpoint for fortune management")
 @RequestMapping("/sync/fortune/" + API_VERSION)
-public class SyncFortuneController extends RestBase<Fortune> implements IREST<UUID, Fortune> {
+
+public class SyncFortuneController extends RestBase<Fortune> implements IFortune<UUID, Fortune> {
 
     private final IFortuneService<Fortune> fortuneService;
     private final static Set<HttpMethod> ALLOWED_OPTIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(GET, HEAD, POST, PUT, PATCH, DELETE)));
@@ -176,6 +178,47 @@ public class SyncFortuneController extends RestBase<Fortune> implements IREST<UU
      */
     public Set<HttpMethod> getOptions() {
         return ALLOWED_OPTIONS;
+    }
+
+    // Collections
+
+    /**
+     * GET - Requests data from a specified resource
+     *
+     * @param page Data page to read
+     * @param size Size of page
+     * @return Return selected entity or 'Not Modified' if version matched
+     */
+    @Override
+    public ResponseEntity<List<Fortune>> listAll(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
+                                                 @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
+        return new ResponseEntity<>(fortuneService.listAll(page, size), HttpStatus.OK);
+    }
+
+    /**
+     * GET - Requests data from a specified resource
+     *
+     * @param page Data page to read
+     * @param size Size of page
+     * @return Return selected entity or 'Not Modified' if version matched
+     */
+    @Override
+    public ResponseEntity<List<Fortune>> listNamed(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
+                                                   @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
+        return new ResponseEntity<>(fortuneService.listNamed(page, size), HttpStatus.OK);
+    }
+
+    /**
+     * GET - Requests data from a specified resource
+     *
+     * @param page Data page to read
+     * @param size Size of page
+     * @return Return selected entity or 'Not Modified' if version matched
+     */
+    @Override
+    public ResponseEntity<List<Fortune>> listAnon(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
+                                                  @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
+        return new ResponseEntity<>(fortuneService.listAnon(page, size), HttpStatus.OK);
     }
 
 }

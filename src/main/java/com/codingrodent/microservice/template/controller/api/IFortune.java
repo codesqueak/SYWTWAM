@@ -22,24 +22,11 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.converter;
-
-import com.codingrodent.microservice.template.entity.FortuneEntity;
-import com.codingrodent.microservice.template.model.Fortune;
-
-import java.util.*;
+package com.codingrodent.microservice.template.controller.api;
 
 /**
- * Converters to allow entity and model objects to be interchanged
+ * Specific implementation methods for the fortune service
  */
-public class Converter {
-
-    private Converter() {
-        // Do not instantiate.
-    }
-
-    public final static IConvertToEntity<Fortune, FortuneEntity, UUID, Optional<Long>> toFortuneEntity = (id, m, v) -> new FortuneEntity(id.toString(), m.getText(), m.getAuthor()
-            .orElse(""));
-    public final static IConvertToModel<FortuneEntity, Fortune> toFortuneModel = entity -> new Fortune(entity.getText(), Optional.of(entity.getAuthor()));
+public interface IFortune<K, V> extends IREST<K, V> {
 
 }

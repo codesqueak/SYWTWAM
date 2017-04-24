@@ -22,24 +22,23 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.converter;
+package com.codingrodent.microservice.template.config;
 
-import com.codingrodent.microservice.template.entity.FortuneEntity;
-import com.codingrodent.microservice.template.model.Fortune;
-
-import java.util.*;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * Converters to allow entity and model objects to be interchanged
+ * Validation configuration.
  */
-public class Converter {
+@Configuration
+public class ValidationConfig {
+    //
+    //    @Bean
+    //    public LocalValidatorFactoryBean validator() {
+    //        return new LocalValidatorFactoryBean();
+    //    }
 
-    private Converter() {
-        // Do not instantiate.
-    }
-
-    public final static IConvertToEntity<Fortune, FortuneEntity, UUID, Optional<Long>> toFortuneEntity = (id, m, v) -> new FortuneEntity(id.toString(), m.getText(), m.getAuthor()
-            .orElse(""));
-    public final static IConvertToModel<FortuneEntity, Fortune> toFortuneModel = entity -> new Fortune(entity.getText(), Optional.of(entity.getAuthor()));
-
+    //    @Bean
+    //    public MethodValidationPostProcessor methodValidationPostProcessor() {
+    //        return new MethodValidationPostProcessor();
+    //    }
 }

@@ -39,11 +39,65 @@ public interface IFortuneService<M> {
     Observable<M> loadAsync(UUID uuid);
 
     // Sync
+
+    /**
+     * Create an entity
+     *
+     * @param uuid    UUID of model object to save
+     * @param model   Model to create as an entity
+     * @param version Version (if required)
+     * @return Saved model
+     */
     ModelVersion<M> save(UUID uuid, M model, Optional<Long> version);
 
-    ModelVersion<M> create(M mode, Optional<Long> version);
+    /**
+     * Create an entity
+     *
+     * @param model   Model object to create
+     * @param version Version (if required)
+     * @return Saved model
+     */
+    ModelVersion<M> create(M model, Optional<Long> version);
 
+    /**
+     * Load an entity by its key
+     *
+     * @param uuid Key
+     * @return The entity or an empty optional
+     */
     Optional<ModelVersion<M>> load(String uuid);
 
+    /**
+     * Delete an entity by its key
+     *
+     * @param uuid Key
+     */
     void delete(String uuid);
+
+    /**
+     * Get a page of fortunes
+     *
+     * @param page Page to retrieve
+     * @param size Size of page
+     * @return Fortunes
+     */
+    List<M> listAll(int page, int size);
+
+    /**
+     * Get a page of fortunes with named authors
+     *
+     * @param page Page to retrieve
+     * @param size Size of page
+     * @return Fortunes
+     */
+    List<M> listNamed(int page, int size);
+
+    /**
+     * Get a page of fortunes with anonymous authors
+     *
+     * @param page Page to retrieve
+     * @param size Size of page
+     * @return Fortunes
+     */
+    List<M> listAnon(int page, int size);
 }

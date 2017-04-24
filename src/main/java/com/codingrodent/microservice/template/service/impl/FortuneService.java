@@ -30,6 +30,7 @@ import com.codingrodent.microservice.template.repository.api.*;
 import com.codingrodent.microservice.template.service.api.*;
 import com.codingrodent.microservice.template.utility.Utility;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import rx.Observable;
 
@@ -79,42 +80,117 @@ public class FortuneService implements IFortuneService<Fortune> {
         logger.info("Preloaded fortunes:" + fortunes.length);
     }
 
+    /**
+     * Create an entity
+     *
+     * @param uuid    UUID of model object to save
+     * @param model   Model to create as an entity
+     * @param version Version (if required)
+     * @return Saved model
+     */
     @Override
-    public ModelVersion<Fortune> create(final Fortune fortune, final Optional<Long> version) {
-        FortuneEntity entity = repository.save(toNameEntity.convert(UUID.randomUUID(), fortune, version));
-        return new ModelVersion<>(toNameModel.convert(entity), Optional.ofNullable(entity.getVersion()));
+    public ModelVersion<Fortune> save(final UUID uuid, final Fortune model, Optional<Long> version) {
+
+        FortuneEntity entity = repository.save(toFortuneEntity.convert(uuid, model, version));
+        return new ModelVersion<>(toFortuneModel.convert(entity), Optional.ofNullable(entity.getVersion()));
     }
 
+    /**
+     * Create an entity
+     *
+     * @param model   Model object to create
+     * @param version Version (if required)
+     * @return Saved model
+     */
+    @Override
+    public ModelVersion<Fortune> create(final Fortune model, final Optional<Long> version) {
+        FortuneEntity entity = repository.save(toFortuneEntity.convert(UUID.randomUUID(), model, version));
+        return new ModelVersion<>(toFortuneModel.convert(entity), Optional.ofNullable(entity.getVersion()));
+    }
+
+    /**
+     * Load an entity by its key
+     *
+     * @param uuid Key
+     * @return The entity or an empty optional
+     */
     @Override
     public Optional<ModelVersion<Fortune>> load(final String uuid) {
         FortuneEntity entity = repository.findOne(uuid);
         if (null == entity)
             return Optional.empty();
         else
-            return Optional.of(new ModelVersion<>(toNameModel.convert(entity), Optional.ofNullable(entity.getVersion())));
+            return Optional.of(new ModelVersion<>(toFortuneModel.convert(entity), Optional.ofNullable(entity.getVersion())));
     }
 
+    /**
+     * Delete an entity by its key
+     *
+     * @param uuid Key
+     */
     @Override
     public void delete(String uuid) {
         repository.delete(uuid);
+    }
+
+    /**
+     * Get a page of fortunes
+     *
+     * @param page Page to retrieve
+     * @param size Size of page
+     * @return Fortunes
+     */
+    @Override
+    public List<Fortune> listAll(int page, int size) {
+        return getFortunes(repository.findAll(new PageRequest(page, size)).getContent());
+    }
+
+    /**
+     * Get a page of fortunes with named authors
+     *
+     * @param page Page to retrieve
+     * @param size Size of page
+     * @return Fortunes
+     */
+    @Override
+    public List<Fortune> listNamed(int page, int size) {
+        return getFortunes(repository.findAllNamed(new PageRequest(page, size)));
+    }
+
+    /**
+     * Get a page of fortunes with anonymous authors
+     *
+     * @param page Page to retrieve
+     * @param size Size of page
+     * @return Fortunes
+     */
+    @Override
+    public List<Fortune> listAnon(int page, int size) {
+        return getFortunes(repository.findAllAnon(new PageRequest(page, size)));
+    }
+
+    /**
+     * Convert entities to model equivalents
+     *
+     * @param entityList List to convert
+     * @return Converted list
+     */
+    private List<Fortune> getFortunes(final List<FortuneEntity> entityList) {
+        List<Fortune> result = new ArrayList<>(entityList.size());
+        entityList.stream().forEach(entity -> result.add(toFortuneModel.convert(entity)));
+        return result;
     }
 
     // ASync Implementations
 
     @Override
     public Observable<Fortune> saveAsync(final UUID uuid, final Fortune fortune) {
-        return asyncRepository.saveAsync(toNameEntity.convert(uuid, fortune, Optional.empty())).map(toNameModel::convert);
+        return asyncRepository.saveAsync(toFortuneEntity.convert(uuid, fortune, Optional.empty())).map(toFortuneModel::convert);
     }
 
     @Override
     public Observable<Fortune> loadAsync(final UUID uuid) {
-        return asyncRepository.findOneAsync(uuid).map(toNameModel::convert);
+        return asyncRepository.findOneAsync(uuid).map(toFortuneModel::convert);
     }
 
-    @Override
-    public ModelVersion<Fortune> save(final UUID uuid, final Fortune fortune, Optional<Long> version) {
-
-        FortuneEntity entity = repository.save(toNameEntity.convert(uuid, fortune, version));
-        return new ModelVersion<>(toNameModel.convert(entity), Optional.ofNullable(entity.getVersion()));
-    }
 }

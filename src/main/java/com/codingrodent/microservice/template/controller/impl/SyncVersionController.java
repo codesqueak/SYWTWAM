@@ -39,6 +39,7 @@ import static org.springframework.http.HttpMethod.*;
 /**
  * Simple sync REST controller to return version information
  */
+
 @RestController
 @Api(tags = "version", value = "version", description = "Endpoint for version Information - Don't do this in a production system as it gives away too much " + "information")
 @RequestMapping("/version/" + API_VERSION)

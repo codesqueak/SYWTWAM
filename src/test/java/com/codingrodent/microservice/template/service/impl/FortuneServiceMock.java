@@ -28,6 +28,7 @@ import com.codingrodent.microservice.template.model.*;
 import com.codingrodent.microservice.template.service.api.IFortuneService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.data.couchbase.core.query.View;
 import org.springframework.stereotype.Service;
 import rx.Observable;
 
@@ -91,5 +92,22 @@ public class FortuneServiceMock implements IFortuneService<Fortune> {
     @Override
     public void delete(final String uuid) {
 
+    }
+
+    @Override
+    public List<Fortune> listAll(final int page, final int size) {
+        return new ArrayList<Fortune>(0);
+    }
+
+    @Override
+    @View(viewName = "named")
+    public List<Fortune> listNamed(final int page, final int size) {
+        return null;
+    }
+
+    @Override
+    @View(viewName = "anon")
+    public List<Fortune> listAnon(final int page, final int size) {
+        return null;
     }
 }

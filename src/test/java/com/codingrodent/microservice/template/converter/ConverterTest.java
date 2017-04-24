@@ -21,13 +21,13 @@ public class ConverterTest {
         FortuneEntity fortuneEntity = new FortuneEntity(id.toString(), text, author.orElse(""));
         //
         // Convert to model and check
-        Fortune model = toNameModel.convert(fortuneEntity);
+        Fortune model = toFortuneModel.convert(fortuneEntity);
         assertEquals(text, model.getText());
         assertEquals(author, model.getAuthor());
 
         //
         // Convert back to entity and check
-        fortuneEntity = toNameEntity.convert(id, model, Optional.of(version));
+        fortuneEntity = toFortuneEntity.convert(id, model, Optional.of(version));
         assertEquals(id, fortuneEntity.getId());
         assertEquals(version.longValue(), fortuneEntity.getVersion());
         assertEquals(text, fortuneEntity.getText());
@@ -35,7 +35,7 @@ public class ConverterTest {
 
         //
         // Convert back to entity and check (No version information)
-        fortuneEntity = toNameEntity.convert(id, model, Optional.empty());
+        fortuneEntity = toFortuneEntity.convert(id, model, Optional.empty());
         assertEquals(id, fortuneEntity.getId());
         assertNull(fortuneEntity.getVersion());
         assertEquals(text, fortuneEntity.getText());

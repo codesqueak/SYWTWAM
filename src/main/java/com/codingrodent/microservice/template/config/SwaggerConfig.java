@@ -99,7 +99,7 @@ public class SwaggerConfig {
     @Bean
     UiConfiguration uiConfig() {
         return new UiConfiguration(null,// url - switch off validation
-                                   "none",       // docExpansion          => none | list
+                                   "none",       // docExpansion          => none | listAll
                                    "alpha",      // apiSorter             => alpha
                                    "schema",     // defaultModelRendering => schema
                                    new String[]{"get", "post", "put", "delete", "patch", "head", "options"}, // add head and options as not set by default
