@@ -47,7 +47,7 @@ import java.util.function.Function;
 public class FortuneRepository implements IAsync<FortuneEntity, UUID> {
 
     private final Cluster cluster = CouchbaseCluster.create("localhost");
-    private final Bucket bucket = cluster.openBucket("template", "password");
+    private final Bucket bucket = cluster.openBucket("template", "bucketpassword");
 
     @Override
     public Observable<FortuneEntity> saveAsync(final FortuneEntity entity) {
