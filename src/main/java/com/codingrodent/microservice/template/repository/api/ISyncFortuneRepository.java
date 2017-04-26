@@ -41,7 +41,7 @@ public interface ISyncFortuneRepository extends PagingAndSortingRepository<Fortu
      * <p>
      * This returns entities from the 'named' view
      *
-     * @param pageable
+     * @param pageable Pagination information
      * @return a list of entities
      */
     @View(viewName = "named")
@@ -52,7 +52,7 @@ public interface ISyncFortuneRepository extends PagingAndSortingRepository<Fortu
      * <p>
      * This returns entities from the 'anon' view
      *
-     * @param pageable
+     * @param pageable Pagination information
      * @return a list of entities
      */
     @View(viewName = "anon")

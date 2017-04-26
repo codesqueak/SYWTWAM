@@ -14,7 +14,7 @@ Once Couchbase has been installed, various configuration operations are required
 
 The following will be configured:
 
-* Consile user - Administrator
+* Console user - Administrator
 * Console password - password
 * Bucket name - template
 * Bucket password - bucketpassword
@@ -23,6 +23,7 @@ The following will be configured:
 * Index RAM Quota - 256MB
 * Full Text RAM Quota - 512MB
 * Index setting - Memory-Optimized Global Secondary Indexes
+
 
 If you are running Windows, the simplest way to get curl is to install [git for windows](https://git-for-windows.github.io/). This is highly recommended as it will give you
 a useful set of utilities in a Linux type shell for the Windows environment.
