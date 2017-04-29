@@ -22,24 +22,30 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.converter;
+package com.codingrodent.microservice.template.model;
 
-import com.codingrodent.microservice.template.entity.FortuneEntity;
-import com.codingrodent.microservice.template.model.Fortune;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.hateoas.ResourceSupport;
 
 import java.util.*;
 
 /**
- * Converters to allow entity and model objects to be interchanged
+ *
  */
-public class Converter {
+public abstract class ModelBase extends ResourceSupport {
 
-    private Converter() {
-        // Do not instantiate.
+    @JsonIgnore
+    private final Optional<UUID> uuid;
+
+    public ModelBase(final Optional<UUID> uuid) {
+        this.uuid = uuid;
     }
 
-    public final static IConvertToEntity<Fortune, FortuneEntity, UUID, Optional<Long>> toFortuneEntity = (id, m, v) -> new FortuneEntity(id.toString(), m.getText(), m.getAuthor
-            ().orElse(""));
-    public final static IConvertToModel<FortuneEntity, Fortune> toFortuneModel = entity -> new Fortune(entity.getText(), Optional.of(entity.getAuthor()), Optional.of(UUID.fromString(entity.getId())));
+    public ModelBase() {
+        this.uuid = Optional.empty();
+    }
 
+    public Optional<UUID> getUUID() {
+        return uuid;
+    }
 }

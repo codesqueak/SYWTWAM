@@ -62,20 +62,15 @@ public class FortuneService implements IFortuneService<Fortune> {
     }
 
     @PostConstruct
-    public void fill() {
+    public void fill() throws IOException {
         // Load default records
         InputStream s = getClass().getClassLoader().getResourceAsStream("fortune.json");
-        FortuneElement[] fortunes = null;
-        try {
-            fortunes = Utility.getObjectMapper().readValue(s, FortuneElement[].class);
-            for (FortuneElement element : fortunes) {
-                if (!repository.exists(element.getKey().toString())) {
-                    logger.info(element.getKey().toString() + " " + element.getText());
-                    repository.save(new FortuneEntity(element.getKey().toString(), element.getText(), element.getAuthor().orElse("")));
-                }
+        FortuneElement[] fortunes = Utility.getObjectMapper().readValue(s, FortuneElement[].class);
+        for (FortuneElement element : fortunes) {
+            if (!repository.exists(element.getKey().toString())) {
+                logger.info(element.getKey().toString() + " " + element.getText());
+                repository.save(new FortuneEntity(element.getKey().toString(), element.getText(), element.getAuthor().orElse("")));
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         logger.info("Preloaded fortunes:" + fortunes.length);
     }
@@ -90,9 +85,8 @@ public class FortuneService implements IFortuneService<Fortune> {
      */
     @Override
     public ModelVersion<Fortune> save(final UUID uuid, final Fortune model, Optional<Long> version) {
-
         FortuneEntity entity = repository.save(toFortuneEntity.convert(uuid, model, version));
-        return new ModelVersion<>(toFortuneModel.convert(entity), Optional.ofNullable(entity.getVersion()));
+        return new ModelVersion<>(toFortuneModel.convert(entity), Optional.of(entity.getVersion()));
     }
 
     /**
@@ -105,7 +99,7 @@ public class FortuneService implements IFortuneService<Fortune> {
     @Override
     public ModelVersion<Fortune> create(final Fortune model, final Optional<Long> version) {
         FortuneEntity entity = repository.save(toFortuneEntity.convert(UUID.randomUUID(), model, version));
-        return new ModelVersion<>(toFortuneModel.convert(entity), Optional.ofNullable(entity.getVersion()));
+        return new ModelVersion<>(toFortuneModel.convert(entity), Optional.of(entity.getVersion()));
     }
 
     /**
@@ -120,7 +114,7 @@ public class FortuneService implements IFortuneService<Fortune> {
         if (null == entity)
             return Optional.empty();
         else
-            return Optional.of(new ModelVersion<>(toFortuneModel.convert(entity), Optional.ofNullable(entity.getVersion())));
+            return Optional.of(new ModelVersion<>(toFortuneModel.convert(entity), Optional.of(entity.getVersion())));
     }
 
     /**
@@ -177,7 +171,7 @@ public class FortuneService implements IFortuneService<Fortune> {
      */
     private List<Fortune> getFortunes(final List<FortuneEntity> entityList) {
         List<Fortune> result = new ArrayList<>(entityList.size());
-        entityList.stream().forEach(entity -> result.add(toFortuneModel.convert(entity)));
+        entityList.forEach(entity -> result.add(toFortuneModel.convert(entity)));
         return result;
     }
 

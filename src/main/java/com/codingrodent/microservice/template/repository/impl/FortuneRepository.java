@@ -54,7 +54,7 @@ public class FortuneRepository implements IAsync<FortuneEntity, UUID> {
         JsonObject name;
         try {
             name = JsonObject.fromJson(Utility.getObjectMapper().writeValueAsString(entity));
-            Document document = JsonDocument.create(entity.getId().toString(), name);
+            Document document = JsonDocument.create(entity.getId(), name);
             return Observable.just(document).<Document>flatMap(d -> bucket.async().upsert(d)).map(docToEntity::apply);
         } catch (IOException e) {
             throw new InvalidDataAccessResourceUsageException("Entity serialization failed", e);

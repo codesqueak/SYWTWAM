@@ -24,9 +24,55 @@
  */
 package com.codingrodent.microservice.template.controller.api;
 
+import io.swagger.annotations.*;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 /**
  * Specific implementation methods for the fortune service
  */
 public interface IFortune<K, V> extends IREST<K, V> {
+
+    // Collections
+
+    /**
+     * GET - Requests data from a specified resource
+     *
+     * @param page Data page to read
+     * @param size Size of page
+     * @return Return selected entity or 'Not Modified' if version matched
+     */
+    @RequestMapping(path = "/list/named", params = {"page", "size"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Read all entities", notes = "Retrieve all entities in a paged manner if required", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses(value = { //
+            @ApiResponse(code = 200, message = "OK, response entity in body"), //
+            @ApiResponse(code = 304, message = "Not modified"), //
+            @ApiResponse(code = 410, message = "No matching entity exists"), //
+            @ApiResponse(code = 412, message = "Precondition Failed")})
+    default ResponseEntity<List<V>> listNamed(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
+                                              @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
+        throw new UnsupportedOperationException("List named not implemented");
+    }
+
+    /**
+     * GET - Requests data from a specified resource
+     *
+     * @param page Data page to read
+     * @param size Size of page
+     * @return Return selected entity or 'Not Modified' if version matched
+     */
+    @RequestMapping(path = "/list/anon", params = {"page", "size"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Read all entities", notes = "Retrieve all entities in a paged manner if required", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses(value = { //
+            @ApiResponse(code = 200, message = "OK, response entity in body"), //
+            @ApiResponse(code = 304, message = "Not modified"), //
+            @ApiResponse(code = 410, message = "No matching entity exists"), //
+            @ApiResponse(code = 412, message = "Precondition Failed")})
+    default ResponseEntity<List<V>> listAnon(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
+                                             @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
+        throw new UnsupportedOperationException("List anonymous not implemented");
+    }
 
 }

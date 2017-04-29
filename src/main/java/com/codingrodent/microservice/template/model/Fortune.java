@@ -28,13 +28,13 @@ import com.fasterxml.jackson.annotation.*;
 import io.swagger.annotations.*;
 
 import javax.validation.constraints.*;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Fortune model class
  */
 @ApiModel(description = "Sample fortune model item")
-public class Fortune {
+public class Fortune extends ModelBase {
 
     @JsonProperty("text")
     @NotNull
@@ -46,6 +46,11 @@ public class Fortune {
 
     @JsonCreator
     public Fortune(@JsonProperty("text") final String text, @JsonProperty("author") final Optional<String> author) {
+        this(text, author, Optional.empty());
+    }
+
+    public Fortune(final String text, final Optional<String> author, final Optional<UUID> uuid) {
+        super(uuid);
         this.text = text;
         this.author = author;
     }

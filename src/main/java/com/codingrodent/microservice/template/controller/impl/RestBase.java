@@ -108,8 +108,8 @@ public abstract class RestBase<V> {
         return headers;
     }
 
-    protected Function<String, Long> extractETag = v -> Long.parseLong(v.replace("\"", ""));
+    protected final Function<String, Long> extractETag = v -> Long.parseLong(v.replace("\"", ""));
 
-    protected Function<Long, String> makeETag = v -> "\"" + v + "\"";
+    protected final Function<Long, String> makeETag = v -> "\"" + v + "\"";
 
 }

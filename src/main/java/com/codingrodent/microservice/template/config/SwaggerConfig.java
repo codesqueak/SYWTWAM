@@ -24,8 +24,7 @@ import static springfox.documentation.schema.AlternateTypeRules.newRule;
  */
 @Configuration
 @EnableSwagger2
-@Import({springfox.documentation.spring.data.rest.configuration.SpringDataRestConfiguration.class, springfox.bean.validators.configuration
-        .BeanValidatorPluginsConfiguration.class})
+@Import({springfox.documentation.spring.data.rest.configuration.SpringDataRestConfiguration.class, springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration.class})
 public class SwaggerConfig {
 
     private final TypeResolver typeResolver;
@@ -46,13 +45,14 @@ public class SwaggerConfig {
                 // Unique docklet name - only required if more than one present
                 .groupName("template-api")
                 // Say where the endpoints are to be discovered
-                .select().apis(RequestHandlerSelectors.basePackage("com.codingrodent.microservice.template")).build()
+                .select().apis(RequestHandlerSelectors.basePackage("com.codingrodent.microservice.template.controller")).build()
                 // Don't use default HTTP response code - we will define our responses
                 .useDefaultResponseMessages(false)
                 // Sets information to be displayed in the API resource listing
                 .apiInfo(apiInfo())
                 // Tags used to identify components - purely documentation
                 .tags(new Tag("sync", "Synch demo interface"), //
+                      new Tag("version", "Async demo interface"), //
                       new Tag("async", "Async demo interface"))
                 // Model substitution rule
                 .directModelSubstitute(LocalDate.class, String.class)
@@ -122,48 +122,49 @@ public class SwaggerConfig {
         // Add response messages - globals first
         //
         // 400
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.BAD_REQUEST.value(), "The request cannot be fulfilled due to bad syntax", null,
-                                                              Collections.emptyMap(), Collections.emptyList()));
+        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.BAD_REQUEST.value(), "The request cannot be fulfilled due to bad syntax", null, Collections.emptyMap(),
+                                                              Collections.emptyList()));
         //
         // 401
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.UNAUTHORIZED.value(), "The request requires user authentication", null, Collections
-                .emptyMap(), Collections.emptyList()));
+        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.UNAUTHORIZED.value(), "The request requires user authentication", null, Collections.emptyMap(),
+                                                              Collections.emptyList()));
         // 403
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.FORBIDDEN.value(), "User not authorized to perform the operation or the resource is " + "" + "unavailable", null, Collections.emptyMap(), Collections.emptyList()));
-        //
-        // 404
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.NOT_FOUND.value(), "Document not found. This may be temporary or permanent", null,
+        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.FORBIDDEN.value(), "User not authorized to perform the operation or the resource is unavailable", null,
                                                               Collections.emptyMap(), Collections.emptyList()));
         //
-        // 405
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.METHOD_NOT_ALLOWED.value(), "Method not allowed on resource", null, Collections
-                .emptyMap(), Collections.emptyList()));
-        //
-        // 410
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.GONE.value(), "Document not found. Considered permanent", null, Collections.emptyMap
+        // 404
+        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.NOT_FOUND.value(), "Document not found. This may be temporary or permanent", null, Collections.emptyMap
                 (), Collections.emptyList()));
         //
+        // 405
+        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.METHOD_NOT_ALLOWED.value(), "Method not allowed on resource", null, Collections.emptyMap(), Collections
+                .emptyList()));
+        //
+        // 410
+        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.GONE.value(), "Document not found. Considered permanent", null, Collections.emptyMap(), Collections
+                .emptyList()));
+        //
         // 500
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.INTERNAL_SERVER_ERROR.value(), "A server fault has occurred", null, Collections
-                .emptyMap(), Collections.emptyList()));
+        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.INTERNAL_SERVER_ERROR.value(), "A server fault has occurred", null, Collections.emptyMap(), Collections
+                .emptyList()));
         //
         // 501
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.NOT_IMPLEMENTED.value(), "Requested HTTP operation not supported", null, Collections
-                .emptyMap(), Collections.emptyList()));
+        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.NOT_IMPLEMENTED.value(), "Requested HTTP operation not supported", null, Collections.emptyMap(),
+                                                              Collections.emptyList()));
         //
         // 503
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.SERVICE_UNAVAILABLE.value(), "The service is unavailable", null, Collections
-                .emptyMap(), Collections.emptyList()));
+        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.SERVICE_UNAVAILABLE.value(), "The service is unavailable", null, Collections.emptyMap(), Collections
+                .emptyList()));
         //
         // ... and now by request methods
         //
         // 304
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.NOT_MODIFIED.value(), "Content not modified", null, Collections.emptyMap(),
-                                                              Collections.emptyList()), RequestMethod.GET, RequestMethod.HEAD);
+        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.NOT_MODIFIED.value(), "Content not modified", null, Collections.emptyMap(), Collections.emptyList()),
+                        RequestMethod.GET, RequestMethod.HEAD);
         //
         // 418
-        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.I_AM_A_TEAPOT.value(), "Hyper Text Coffee Pot Control Protocol", null, Collections
-                .emptyMap(), Collections.emptyList()), RequestMethod.TRACE);
+        addHttpResponse(responseMessages, new ResponseMessage(HttpStatus.I_AM_A_TEAPOT.value(), "Hyper Text Coffee Pot Control Protocol", null, Collections.emptyMap(),
+                                                              Collections.emptyList()), RequestMethod.TRACE);
         //
         // update docket
         for (RequestMethod requestMethod : RequestMethod.values()) {
@@ -180,8 +181,7 @@ public class SwaggerConfig {
      *                         added to ALL
      *                         possible request methods.
      */
-    private void addHttpResponse(HashMap<RequestMethod, LinkedList<ResponseMessage>> responseMessages, ResponseMessage responseMessage, RequestMethod...
-            requestMethods) {
+    private void addHttpResponse(HashMap<RequestMethod, LinkedList<ResponseMessage>> responseMessages, ResponseMessage responseMessage, RequestMethod... requestMethods) {
         if (0 == requestMethods.length) {
             requestMethods = RequestMethod.values();
         }

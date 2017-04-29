@@ -29,6 +29,7 @@ import com.codingrodent.microservice.template.exception.*;
 import com.codingrodent.microservice.template.model.*;
 import com.codingrodent.microservice.template.service.api.IFortuneService;
 import io.swagger.annotations.*;
+import org.springframework.hateoas.Link;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,7 +47,6 @@ import static org.springframework.http.HttpMethod.*;
 @RestController
 @Api(tags = "sync", value = "syncfortune", description = "Endpoint for fortune management")
 @RequestMapping("/sync/fortune/" + API_VERSION)
-
 public class SyncFortuneController extends RestBase<Fortune> implements IFortune<UUID, Fortune> {
 
     private final IFortuneService<Fortune> fortuneService;
@@ -70,9 +70,13 @@ public class SyncFortuneController extends RestBase<Fortune> implements IFortune
                                                 Optional<String> version) {
         Optional<ModelVersion<Fortune>> modelVersion = fortuneService.load(uuid.toString());
         if (!version.isPresent() || ifNoneMatch(version, modelVersion)) {
-            // Exec
-            return modelVersion.map(mv -> new ResponseEntity<>(mv.getModel(), getETag(mv), HttpStatus.OK)).orElseThrow(DocumentNeverFoundException::new);
+            // Its changed, return new value
+            return modelVersion.map(mv -> {
+                mv.getModel().add(getLink(uuid));
+                return mv;
+            }).map(mv -> new ResponseEntity<>(mv.getModel(), getETag(mv), HttpStatus.OK)).orElseThrow(DocumentNeverFoundException::new);
         } else {
+            // Its the same as last time !
             return new ResponseEntity<>(getContent(), HttpStatus.NOT_MODIFIED);
         }
     }
@@ -90,9 +94,10 @@ public class SyncFortuneController extends RestBase<Fortune> implements IFortune
                                                  Optional<String> version) {
         Optional<ModelVersion<Fortune>> modelVersion = fortuneService.load(uuid.toString());
         if (!version.isPresent() || ifNoneMatch(version, modelVersion)) {
-            // Exec
+            // Exists, so just return empty response
             return modelVersion.map(mv -> new ResponseEntity<Optional>(Optional.empty(), getETag(mv), HttpStatus.NO_CONTENT)).orElseThrow(DocumentNeverFoundException::new);
         } else {
+            // Its the same as last time !
             return new ResponseEntity<>(getContent(), HttpStatus.NOT_MODIFIED);
         }
     }
@@ -122,6 +127,7 @@ public class SyncFortuneController extends RestBase<Fortune> implements IFortune
         if (null == written) {
             throw new ApplicationFaultException("PUT failed to return a document");
         } else {
+            written.getModel().add(getLink(uuid));
             return new ResponseEntity<>(written.getModel(), getETag(written), version.map(e -> HttpStatus.ACCEPTED).orElse(HttpStatus.CREATED));
         }
     }
@@ -144,8 +150,9 @@ public class SyncFortuneController extends RestBase<Fortune> implements IFortune
         if (null == written) {
             throw new ApplicationFaultException("POST failed to return a document");
         } else {
-            String location = linkTo(methodOn(SyncFortuneController.class).read(UUID.randomUUID(), Optional.empty())).toUri().toASCIIString();
-            return new ResponseEntity<>(written.getModel(), getETag(written, HttpHeaders.LOCATION, location), HttpStatus.CREATED);
+            Fortune model = written.getModel();
+            model.add(getLink(model.getUUID().get()));
+            return new ResponseEntity<>(model, getETag(written), HttpStatus.CREATED);
         }
     }
 
@@ -219,6 +226,10 @@ public class SyncFortuneController extends RestBase<Fortune> implements IFortune
     public ResponseEntity<List<Fortune>> listAnon(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
                                                   @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
         return new ResponseEntity<>(fortuneService.listAnon(page, size), HttpStatus.OK);
+    }
+
+    private Link getLink(final UUID uuid) {
+        return linkTo(methodOn(SyncFortuneController.class).read(uuid, Optional.empty())).withSelfRel();
     }
 
 }

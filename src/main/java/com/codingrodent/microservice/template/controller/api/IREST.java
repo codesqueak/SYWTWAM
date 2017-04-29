@@ -47,7 +47,7 @@ public interface IREST<K, V> {
     @RequestMapping(path = "/{uuid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Read an entity", notes = "Retrieve en entity identified by the Request-URI", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = { //
-            @ApiResponse(code = 200, message = "Ok, response entity in body"), //
+            @ApiResponse(code = 200, message = "OK, response entity in body"), //
             @ApiResponse(code = 304, message = "Not modified"), //
             @ApiResponse(code = 410, message = "No matching entity exists"), //
             @ApiResponse(code = 412, message = "Precondition Failed")})
@@ -90,7 +90,7 @@ public interface IREST<K, V> {
     @ApiOperation(value = "Create an entity", notes = "New / modified entity enclosed in the request as identified by the Request-URI", consumes = MediaType
             .APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = { //
-            @ApiResponse(code = 200, message = "Ok, response entity in body"), //
+            @ApiResponse(code = 200, message = "OK, response entity in body"), //
             @ApiResponse(code = 201, message = "Created, response entity in body"), //
             @ApiResponse(code = 409, message = "Conflict, can't update"), //
             @ApiResponse(code = 412, message = "Precondition Failed")})
@@ -112,7 +112,7 @@ public interface IREST<K, V> {
     @ApiOperation(value = "Update or create an entity", notes = "New / modified entity be stored under the supplied Request-URI", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = { //
-            @ApiResponse(code = 200, message = "Ok, response entity in body"), //
+            @ApiResponse(code = 200, message = "OK, response entity in body"), //
             @ApiResponse(code = 201, message = "Created, response entity in body"), //
             @ApiResponse(code = 409, message = "Conflict, can't update"), //
             @ApiResponse(code = 412, message = "Precondition Failed")})
@@ -137,7 +137,7 @@ public interface IREST<K, V> {
             {"application/json-patch+json", "application/merge-patch+json"})
     @ApiOperation(value = "Request to modify an existing entity", notes = "Request to modify an existing entity")
     @ApiResponses(value = { //
-            @ApiResponse(code = 200, message = "Ok, response entity in body"), //
+            @ApiResponse(code = 200, message = "OK, response entity in body"), //
             @ApiResponse(code = 409, message = "Conflict, can't update"), //
             @ApiResponse(code = 412, message = "Precondition Failed")})
     default ResponseEntity<Void> patch(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
@@ -187,54 +187,16 @@ public interface IREST<K, V> {
      * @param size Size of page
      * @return Return selected entity or 'Not Modified' if version matched
      */
-    @RequestMapping(path = "/listall", params = {"page", "size"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(path = "/list", params = {"page", "size"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Read all entities", notes = "Retrieve all entities in a paged manner if required", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = { //
-            @ApiResponse(code = 200, message = "Ok, response entity in body"), //
+            @ApiResponse(code = 200, message = "OK, response entity in body"), //
             @ApiResponse(code = 304, message = "Not modified"), //
             @ApiResponse(code = 410, message = "No matching entity exists"), //
             @ApiResponse(code = 412, message = "Precondition Failed")})
     default ResponseEntity<List<V>> listAll(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
                                             @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
-        throw new UnsupportedOperationException("Get an entity not implemented");
-    }
-
-    /**
-     * GET - Requests data from a specified resource
-     *
-     * @param page Data page to read
-     * @param size Size of page
-     * @return Return selected entity or 'Not Modified' if version matched
-     */
-    @RequestMapping(path = "/listnamed", params = {"page", "size"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Read all entities", notes = "Retrieve all entities in a paged manner if required", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiResponses(value = { //
-            @ApiResponse(code = 200, message = "Ok, response entity in body"), //
-            @ApiResponse(code = 304, message = "Not modified"), //
-            @ApiResponse(code = 410, message = "No matching entity exists"), //
-            @ApiResponse(code = 412, message = "Precondition Failed")})
-    default ResponseEntity<List<V>> listNamed(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
-                                              @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
-        throw new UnsupportedOperationException("Get an entity not implemented");
-    }
-
-    /**
-     * GET - Requests data from a specified resource
-     *
-     * @param page Data page to read
-     * @param size Size of page
-     * @return Return selected entity or 'Not Modified' if version matched
-     */
-    @RequestMapping(path = "/listanon", params = {"page", "size"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Read all entities", notes = "Retrieve all entities in a paged manner if required", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiResponses(value = { //
-            @ApiResponse(code = 200, message = "Ok, response entity in body"), //
-            @ApiResponse(code = 304, message = "Not modified"), //
-            @ApiResponse(code = 410, message = "No matching entity exists"), //
-            @ApiResponse(code = 412, message = "Precondition Failed")})
-    default ResponseEntity<List<V>> listAnon(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
-                                             @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
-        throw new UnsupportedOperationException("Get an entity not implemented");
+        throw new UnsupportedOperationException("List not implemented");
     }
 
     /**
