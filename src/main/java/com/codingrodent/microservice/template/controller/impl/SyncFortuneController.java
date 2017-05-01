@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import java.util.*;
+import java.util.function.Supplier;
 
 import static com.codingrodent.microservice.template.constants.SystemConstants.API_VERSION;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
@@ -73,12 +74,12 @@ public class SyncFortuneController extends RestBase<Fortune> implements IFortune
         if (modelVersion.isPresent()) {
             if (!version.isPresent() || ifNoneMatch(version, modelVersion)) {
                 // Its changed, return new value
-                Resource<Fortune> resource = new Resource(modelVersion.get().getModel());
+                Resource<Fortune> resource = new Resource<>(modelVersion.get().getModel());
                 resource.add(getRelLink(uuid));
                 return new ResponseEntity<>(resource, getETag(modelVersion.get()), HttpStatus.OK);
             } else {
                 // Its the same as last time !
-                return new ResponseEntity<>(getContent(), HttpStatus.NOT_MODIFIED);
+                return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
             }
         } else {
             throw new DocumentNeverFoundException();
@@ -102,7 +103,7 @@ public class SyncFortuneController extends RestBase<Fortune> implements IFortune
             return modelVersion.map(mv -> new ResponseEntity<Optional>(Optional.empty(), getETag(mv), HttpStatus.NO_CONTENT)).orElseThrow(DocumentNeverFoundException::new);
         } else {
             // Its the same as last time !
-            return new ResponseEntity<>(getContent(), HttpStatus.NOT_MODIFIED);
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
     }
 
@@ -125,8 +126,9 @@ public class SyncFortuneController extends RestBase<Fortune> implements IFortune
             throw new ApplicationFaultException("POST failed to return a document");
         } else {
             Fortune model = written.getModel();
-            Resource<Fortune> resource = new Resource(model);
-            resource.add(getRelLink(model.getUUID().get()));
+            Resource<Fortune> resource = new Resource<>(model);
+            UUID uuid = model.getUUID().orElseThrow(badRecordCreation);
+            resource.add(getRelLink(uuid));
             return new ResponseEntity<>(resource, getETag(written), HttpStatus.CREATED);
         }
     }
@@ -156,7 +158,7 @@ public class SyncFortuneController extends RestBase<Fortune> implements IFortune
         if (null == written) {
             throw new ApplicationFaultException("PUT failed to return a document");
         } else {
-            Resource<Fortune> resource = new Resource(written.getModel());
+            Resource<Fortune> resource = new Resource<>(written.getModel());
             return new ResponseEntity<>(resource, getETag(written), version.map(e -> HttpStatus.ACCEPTED).orElse(HttpStatus.CREATED));
         }
     }
@@ -252,9 +254,11 @@ public class SyncFortuneController extends RestBase<Fortune> implements IFortune
     private ResponseEntity<List<Resource<Fortune>>> getListResponseEntity(final List<Fortune> fortunes) {
         List<Resource<Fortune>> response = new ArrayList<>(fortunes.size());
         fortunes.forEach(fortune -> {
-            Resource resource = new Resource(fortune, getRelLink(fortune.getUUID().get()));
-            response.add(resource);
+            Link link = getRelLink(fortune.getUUID().orElseThrow(badRecordCreation));
+            response.add(new Resource<>(fortune, link));
         });
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    private Supplier<ApplicationFaultException> badRecordCreation = () -> new ApplicationFaultException("Database did not return UUID on record creation");
 }

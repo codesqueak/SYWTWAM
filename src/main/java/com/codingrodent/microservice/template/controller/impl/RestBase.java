@@ -30,8 +30,6 @@ import org.springframework.http.HttpHeaders;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static com.codingrodent.microservice.template.constants.SystemConstants.CONTENT_TYPE;
-
 /**
  * Shared base functionality for Sync Services
  */
@@ -96,17 +94,6 @@ public abstract class RestBase<V> {
         for (int p = 0; p < args.length; ) {
             headers.set(args[p++], args[p++]);
         }
-        return headers;
-    }
-
-    /**
-     * Generate ETag header from version resource version (if it exists)
-     *
-     * @return Headers with ETag set (if available)
-     */
-    protected HttpHeaders getContent() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set(HttpHeaders.CONTENT_TYPE, CONTENT_TYPE);
         return headers;
     }
 

@@ -103,7 +103,6 @@ public class FortuneServiceTest extends BaseMVCTests {
         // load - found - matching eTag
         performGet(controller, BASE + UUID.randomUUID(), "\"12345\"")
                 .andExpect(status().isNotModified())
-                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE ))
                 .andReturn();
         // @formatter:on
 
