@@ -46,10 +46,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
  */
 public abstract class BaseMVCTests {
 
-    private final MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
-
     protected final static String BAD_UUID = "abc-123";
     protected final ObjectMapper mapper = new ObjectMapper();
+    private final MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
 
     /**
      * Set logging system and subsystem names (Used in logback)

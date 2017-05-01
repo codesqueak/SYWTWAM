@@ -34,6 +34,10 @@ import java.util.regex.Pattern;
 public class ETagNumericMatcher extends TypeSafeDiagnosingMatcher<String> {
     private final Pattern pattern = Pattern.compile("\"-?+\\d++\"");
 
+    public static ETagNumericMatcher isETagNumeric() {
+        return new ETagNumericMatcher();
+    }
+
     @Override
     protected boolean matchesSafely(String etag, Description description) {
         return pattern.matcher(etag).matches();
@@ -42,9 +46,5 @@ public class ETagNumericMatcher extends TypeSafeDiagnosingMatcher<String> {
     @Override
     public void describeTo(Description description) {
         description.appendText("A numeric only ETag");
-    }
-
-    public static ETagNumericMatcher isETagNumeric() {
-        return new ETagNumericMatcher();
     }
 }

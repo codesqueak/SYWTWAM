@@ -31,10 +31,6 @@ import org.springframework.http.MediaType;
  */
 public class SystemConstants {
 
-    private SystemConstants() {
-        // Never need to make an instance of this class
-    }
-
     // Logging
     public final static String SYSTEM_NAME = "SYSTEM";
     public final static String SUBSYSTEM_NAME = "SUBSYSTEM";
@@ -43,5 +39,9 @@ public class SystemConstants {
     //Encoding
     public final static String CHAR_ENCODING = "UTF-8";
     public final static String CONTENT_TYPE = MediaType.APPLICATION_JSON_VALUE + ";charset=" + CHAR_ENCODING;
+
+    private SystemConstants() {
+        // Never need to make an instance of this class
+    }
 
 }

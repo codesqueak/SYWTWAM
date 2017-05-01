@@ -25,14 +25,13 @@
 package com.codingrodent.microservice.template.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.hateoas.ResourceSupport;
 
 import java.util.*;
 
 /**
  *
  */
-public abstract class ModelBase extends ResourceSupport {
+public abstract class ModelBase {
 
     @JsonIgnore
     private final Optional<UUID> uuid;

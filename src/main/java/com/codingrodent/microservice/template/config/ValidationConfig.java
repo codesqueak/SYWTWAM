@@ -27,18 +27,9 @@ package com.codingrodent.microservice.template.config;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Validation configuration.
+ * Validation configuration - control for JSR-303 / JSR-349
  */
 @Configuration
 public class ValidationConfig {
-    //
-    //    @Bean
-    //    public LocalValidatorFactoryBean validator() {
-    //        return new LocalValidatorFactoryBean();
-    //    }
 
-    //    @Bean
-    //    public MethodValidationPostProcessor methodValidationPostProcessor() {
-    //        return new MethodValidationPostProcessor();
-    //    }
 }

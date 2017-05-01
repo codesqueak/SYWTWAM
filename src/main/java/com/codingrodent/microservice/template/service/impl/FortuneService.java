@@ -76,6 +76,28 @@ public class FortuneService implements IFortuneService<Fortune> {
     }
 
     /**
+     * Convert entities to model equivalents
+     *
+     * @param entityList List to convert
+     * @return Converted list
+     */
+    private List<Fortune> getFortunes(final List<FortuneEntity> entityList) {
+        List<Fortune> result = new ArrayList<>(entityList.size());
+        entityList.forEach(entity -> result.add(toFortuneModel.convert(entity)));
+        return result;
+    }
+
+    @Override
+    public Observable<Fortune> saveAsync(final UUID uuid, final Fortune fortune) {
+        return asyncRepository.saveAsync(toFortuneEntity.convert(uuid, fortune, Optional.empty())).map(toFortuneModel::convert);
+    }
+
+    @Override
+    public Observable<Fortune> loadAsync(final UUID uuid) {
+        return asyncRepository.findOneAsync(uuid).map(toFortuneModel::convert);
+    }
+
+    /**
      * Create an entity
      *
      * @param uuid    UUID of model object to save
@@ -139,6 +161,8 @@ public class FortuneService implements IFortuneService<Fortune> {
         return getFortunes(repository.findAll(new PageRequest(page, size)).getContent());
     }
 
+    // ASync Implementations
+
     /**
      * Get a page of fortunes with named authors
      *
@@ -161,30 +185,6 @@ public class FortuneService implements IFortuneService<Fortune> {
     @Override
     public List<Fortune> listAnon(int page, int size) {
         return getFortunes(repository.findAllAnon(new PageRequest(page, size)));
-    }
-
-    /**
-     * Convert entities to model equivalents
-     *
-     * @param entityList List to convert
-     * @return Converted list
-     */
-    private List<Fortune> getFortunes(final List<FortuneEntity> entityList) {
-        List<Fortune> result = new ArrayList<>(entityList.size());
-        entityList.forEach(entity -> result.add(toFortuneModel.convert(entity)));
-        return result;
-    }
-
-    // ASync Implementations
-
-    @Override
-    public Observable<Fortune> saveAsync(final UUID uuid, final Fortune fortune) {
-        return asyncRepository.saveAsync(toFortuneEntity.convert(uuid, fortune, Optional.empty())).map(toFortuneModel::convert);
-    }
-
-    @Override
-    public Observable<Fortune> loadAsync(final UUID uuid) {
-        return asyncRepository.findOneAsync(uuid).map(toFortuneModel::convert);
     }
 
 }

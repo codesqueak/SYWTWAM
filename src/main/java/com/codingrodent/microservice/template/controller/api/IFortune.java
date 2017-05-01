@@ -25,6 +25,7 @@
 package com.codingrodent.microservice.template.controller.api;
 
 import io.swagger.annotations.*;
+import org.springframework.hateoas.Resource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,8 +52,8 @@ public interface IFortune<K, V> extends IREST<K, V> {
             @ApiResponse(code = 304, message = "Not modified"), //
             @ApiResponse(code = 410, message = "No matching entity exists"), //
             @ApiResponse(code = 412, message = "Precondition Failed")})
-    default ResponseEntity<List<V>> listNamed(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
-                                              @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
+    default ResponseEntity<List<Resource<V>>> listNamed(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
+                                                        @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
         throw new UnsupportedOperationException("List named not implemented");
     }
 
@@ -70,8 +71,8 @@ public interface IFortune<K, V> extends IREST<K, V> {
             @ApiResponse(code = 304, message = "Not modified"), //
             @ApiResponse(code = 410, message = "No matching entity exists"), //
             @ApiResponse(code = 412, message = "Precondition Failed")})
-    default ResponseEntity<List<V>> listAnon(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
-                                             @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
+    default ResponseEntity<List<Resource<V>>> listAnon(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
+                                                       @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
         throw new UnsupportedOperationException("List anonymous not implemented");
     }
 

@@ -49,8 +49,8 @@ public class ResponseAdvice implements ResponseBodyAdvice {
      * @see org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice#beforeBodyWrite
      */
     @Override
-    public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class selectedConverterType, ServerHttpRequest
-            request, ServerHttpResponse response) {
+    public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class selectedConverterType, ServerHttpRequest request,
+                                  ServerHttpResponse response) {
         HttpHeaders headers = response.getHeaders();
         //
         headers.setCacheControl("no-cache, no-store, must-revalidate"); // HTTP 1.1

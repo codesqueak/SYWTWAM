@@ -25,6 +25,7 @@
 package com.codingrodent.microservice.template.controller.api;
 
 import io.swagger.annotations.*;
+import org.springframework.hateoas.Resource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,14 +46,14 @@ public interface IREST<K, V> {
      * @return Return selected entity or 'Not Modified' if version matched
      */
     @RequestMapping(path = "/{uuid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Read an entity", notes = "Retrieve en entity identified by the Request-URI", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Read an entity", notes = "Retrieve an entity identified by the Request-URI", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = { //
             @ApiResponse(code = 200, message = "OK, response entity in body"), //
             @ApiResponse(code = 304, message = "Not modified"), //
             @ApiResponse(code = 410, message = "No matching entity exists"), //
             @ApiResponse(code = 412, message = "Precondition Failed")})
-    default ResponseEntity<V> read(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
-                                   @ApiParam(name = HttpHeaders.IF_NONE_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false)
+    default ResponseEntity<Resource<V>> read(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
+                                             @ApiParam(name = HttpHeaders.IF_NONE_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false)
                                            Optional<String> version) {
         throw new UnsupportedOperationException("Get an entity not implemented");
     }
@@ -94,9 +95,9 @@ public interface IREST<K, V> {
             @ApiResponse(code = 201, message = "Created, response entity in body"), //
             @ApiResponse(code = 409, message = "Conflict, can't update"), //
             @ApiResponse(code = 412, message = "Precondition Failed")})
-    default ResponseEntity<V> create(@ApiParam(name = HttpHeaders.IF_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false) Optional<String>
+    default ResponseEntity<Resource<V>> create(@ApiParam(name = HttpHeaders.IF_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false) Optional<String>
                                                  version, //
-                                     @ApiParam(name = "Entity", value = "Entity Value", required = true) @RequestBody V value) {
+                                               @ApiParam(name = "Entity", value = "Entity Value", required = true) @RequestBody V value) {
         throw new UnsupportedOperationException("Create an entity not implemented");
     }
 
@@ -116,10 +117,10 @@ public interface IREST<K, V> {
             @ApiResponse(code = 201, message = "Created, response entity in body"), //
             @ApiResponse(code = 409, message = "Conflict, can't update"), //
             @ApiResponse(code = 412, message = "Precondition Failed")})
-    default ResponseEntity<V> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
-                                     @ApiParam(name = HttpHeaders.IF_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false) Optional<String>
+    default ResponseEntity<Resource<V>> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
+                                               @ApiParam(name = HttpHeaders.IF_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false) Optional<String>
                                              version, //
-                                     @ApiParam(name = "Entity", value = "Entity Value", required = true) @RequestBody V value) {
+                                               @ApiParam(name = "Entity", value = "Entity Value", required = true) @RequestBody V value) {
         throw new UnsupportedOperationException("Update  or create an entity not implemented");
     }
 
@@ -194,8 +195,8 @@ public interface IREST<K, V> {
             @ApiResponse(code = 304, message = "Not modified"), //
             @ApiResponse(code = 410, message = "No matching entity exists"), //
             @ApiResponse(code = 412, message = "Precondition Failed")})
-    default ResponseEntity<List<V>> listAll(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
-                                            @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
+    default ResponseEntity<List<Resource<V>>> listAll(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
+                                                      @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
         throw new UnsupportedOperationException("List not implemented");
     }
 

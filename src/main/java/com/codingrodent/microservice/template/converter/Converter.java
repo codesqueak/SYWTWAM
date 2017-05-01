@@ -34,12 +34,12 @@ import java.util.*;
  */
 public class Converter {
 
-    private Converter() {
-        // Do not instantiate.
-    }
-
     public final static IConvertToEntity<Fortune, FortuneEntity, UUID, Optional<Long>> toFortuneEntity = (id, m, v) -> new FortuneEntity(id.toString(), m.getText(), m.getAuthor
             ().orElse(""));
     public final static IConvertToModel<FortuneEntity, Fortune> toFortuneModel = entity -> new Fortune(entity.getText(), Optional.of(entity.getAuthor()), Optional.of(UUID.fromString(entity.getId())));
+
+    private Converter() {
+        // Do not instantiate.
+    }
 
 }

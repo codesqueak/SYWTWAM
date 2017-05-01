@@ -51,8 +51,6 @@ public class SyncVersionController {
     private final static ResponseEntity<Map<String, String>> getResponse;
     private final static ResponseEntity<Void> optionsResponse;
 
-    private final TemplateMetrics metrics;
-
     static {
         versions = new HashMap<>();
         versions.put("Java", System.getProperty("java.version"));
@@ -65,6 +63,8 @@ public class SyncVersionController {
         headers.setAllow(ALLOWED_OPTIONS);
         optionsResponse = new ResponseEntity<>(headers, HttpStatus.OK);
     }
+
+    private final TemplateMetrics metrics;
 
     @Inject
     public SyncVersionController(final TemplateMetrics metrics) {

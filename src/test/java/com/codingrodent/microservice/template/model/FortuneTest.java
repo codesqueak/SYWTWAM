@@ -39,11 +39,11 @@ public class FortuneTest {
         Long version = 12345L;
         String text = "A fortune";
         Optional<String> author = Optional.of("An author");
-
+        //
         FortuneEntity fortuneEntity = new FortuneEntity(id.toString(), text, author.orElse(""));
         //
-        assertEquals(id, fortuneEntity.getId());
+        assertEquals(id, UUID.fromString(fortuneEntity.getId()));
         assertEquals(text, fortuneEntity.getText());
-        assertEquals(author, fortuneEntity.getAuthor());
+        assertEquals(author, Optional.ofNullable(fortuneEntity.getAuthor()));
     }
 }

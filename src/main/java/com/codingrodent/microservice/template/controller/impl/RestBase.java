@@ -38,6 +38,8 @@ import static com.codingrodent.microservice.template.constants.SystemConstants.C
 public abstract class RestBase<V> {
 
     private final static String ETAG_WILDCARD = "\"*\"";
+    protected final Function<String, Long> extractETag = v -> Long.parseLong(v.replace("\"", ""));
+    protected final Function<Long, String> makeETag = v -> "\"" + v + "\"";
 
     /**
      * Evaluate If-Match
@@ -107,9 +109,5 @@ public abstract class RestBase<V> {
         headers.set(HttpHeaders.CONTENT_TYPE, CONTENT_TYPE);
         return headers;
     }
-
-    protected final Function<String, Long> extractETag = v -> Long.parseLong(v.replace("\"", ""));
-
-    protected final Function<Long, String> makeETag = v -> "\"" + v + "\"";
 
 }

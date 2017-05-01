@@ -48,6 +48,15 @@ public class FortuneRepository implements IAsync<FortuneEntity, UUID> {
 
     private final Cluster cluster = CouchbaseCluster.create("localhost");
     private final Bucket bucket = cluster.openBucket("template", "bucketpassword");
+    private final Function<Document, FortuneEntity> docToEntity = doc -> {
+        String json = doc.content().toString();
+        FortuneEntity zz = null;
+        try {
+            return Utility.getObjectMapper().readValue(json, FortuneEntity.class);
+        } catch (IOException e) {
+            throw new InvalidDataAccessResourceUsageException("JSON deerialization failed", e);
+        }
+    };
 
     @Override
     public Observable<FortuneEntity> saveAsync(final FortuneEntity entity) {
@@ -65,16 +74,6 @@ public class FortuneRepository implements IAsync<FortuneEntity, UUID> {
     public Observable<FortuneEntity> findOneAsync(final UUID uuid) {
         return Observable.empty();
     }
-
-    private final Function<Document, FortuneEntity> docToEntity = doc -> {
-        String json = doc.content().toString();
-        FortuneEntity zz = null;
-        try {
-            return Utility.getObjectMapper().readValue(json, FortuneEntity.class);
-        } catch (IOException e) {
-            throw new InvalidDataAccessResourceUsageException("JSON deerialization failed", e);
-        }
-    };
 }
 
 

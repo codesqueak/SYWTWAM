@@ -7,7 +7,7 @@ import org.junit.Test;
 import java.util.*;
 
 import static com.codingrodent.microservice.template.converter.Converter.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class ConverterTest {
 
@@ -28,18 +28,16 @@ public class ConverterTest {
         //
         // Convert back to entity and check
         fortuneEntity = toFortuneEntity.convert(id, model, Optional.of(version));
-        assertEquals(id, fortuneEntity.getId());
-        assertEquals(version.longValue(), fortuneEntity.getVersion());
+        assertEquals(id, UUID.fromString(fortuneEntity.getId()));
         assertEquals(text, fortuneEntity.getText());
-        assertEquals(author, fortuneEntity.getAuthor());
+        assertEquals(author, Optional.of(fortuneEntity.getAuthor()));
 
         //
         // Convert back to entity and check (No version information)
         fortuneEntity = toFortuneEntity.convert(id, model, Optional.empty());
-        assertEquals(id, fortuneEntity.getId());
-        assertNull(fortuneEntity.getVersion());
+        assertEquals(id, UUID.fromString(fortuneEntity.getId()));
         assertEquals(text, fortuneEntity.getText());
-        assertEquals(author, fortuneEntity.getAuthor());
+        assertEquals(author, Optional.ofNullable(fortuneEntity.getAuthor()));
     }
 
 }

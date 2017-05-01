@@ -2,6 +2,7 @@ package com.codingrodent.microservice.template.config;
 
 import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.*;
+import org.springframework.hateoas.Resource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -67,6 +68,11 @@ public class SwaggerConfig {
                 .alternateTypeRules(newRule(//
                                             typeResolver.resolve(Optional.class, String.class), //
                                             typeResolver.resolve(String.class)))
+                //
+                // ResponseEntity<Resource<Fortune>>
+                //
+                .alternateTypeRules(newRule(typeResolver.resolve(ResponseEntity.class, typeResolver.resolve(Resource.class, WildcardType.class)), typeResolver.resolve
+                        (WildcardType.class)))
                 //
                 //  	Sets up the security schemes used to protect the apis. Can be ApiKey, BasicAuth and OAuth -- not used at the moment
                 .securitySchemes(Collections.singletonList(new ApiKey("ApiKey", "api_key", "header")));

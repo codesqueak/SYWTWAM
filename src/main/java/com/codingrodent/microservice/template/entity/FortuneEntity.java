@@ -37,12 +37,12 @@ public class FortuneEntity {
 
     @Id
     private final String id;
-    @Version
-    private long version;
     @Field
     private final String text;
     @Field
     private final String author;
+    @Version
+    private long version;
 
     @JsonCreator
     public FortuneEntity(@JsonProperty("id") final String id, @JsonProperty("text") final String text, @JsonProperty("author") final String author) {
