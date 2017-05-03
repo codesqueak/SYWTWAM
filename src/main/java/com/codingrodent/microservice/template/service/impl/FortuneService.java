@@ -29,7 +29,6 @@ import com.codingrodent.microservice.template.model.*;
 import com.codingrodent.microservice.template.repository.api.*;
 import com.codingrodent.microservice.template.service.api.*;
 import com.codingrodent.microservice.template.utility.Utility;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import rx.Observable;
@@ -45,7 +44,7 @@ import static com.codingrodent.microservice.template.converter.Converter.*;
  * Business logic for Fortune information
  */
 @Service
-@Profile("prod")
+// @Profile("prod")
 public class FortuneService implements IFortuneService<Fortune> {
 
     // Both sync and async implementations

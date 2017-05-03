@@ -26,16 +26,14 @@ package com.codingrodent.microservice.template.service.impl;
 
 import com.codingrodent.microservice.template.model.*;
 import com.codingrodent.microservice.template.service.api.IFortuneService;
-import org.springframework.context.annotation.Profile;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.couchbase.core.query.View;
-import org.springframework.stereotype.Service;
 import rx.Observable;
 
 import java.util.*;
 
-@Service
-@Profile("test")
+//@Service
+//@Profile("test")
 public class FortuneServiceMock implements IFortuneService<Fortune> {
 
     private final Map<UUID, ModelVersion<Fortune>> data = new HashMap<>();

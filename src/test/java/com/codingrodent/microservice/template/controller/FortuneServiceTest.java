@@ -51,8 +51,8 @@ public class FortuneServiceTest extends BaseMVCTests {
 
     private final static String json = "{\"text\":\"A fortune\",\"author\":\"An author\"}";
     private final static String json2 = "{\"text\":\"A fortune with uuid\",\"author\":\"An author with uuid\"}";
+    private final static String BASE = "/sync/fortune/" + API_VERSION + "/";
     //
-    private static final String BASE = "/sync/fortune/" + API_VERSION + "/";
     private ModelVersion<Fortune> modelVersion;
     private SyncFortuneController controller;
     private Fortune fortune, fortuneWithUUID;
@@ -63,7 +63,6 @@ public class FortuneServiceTest extends BaseMVCTests {
     public void init() throws JsonProcessingException {
         fortune = new Fortune("A fortune", Optional.of("An author"));
         fortuneWithUUID = new Fortune("A fortune with uuid", Optional.of("An author with uuid"), Optional.of(UUID.randomUUID()));
-        //json = mapper.writeValueAsString(fortune);
         modelVersion = new ModelVersion<>(fortune, Optional.of(12345L));
         controller = new SyncFortuneController(fortuneService);
     }
