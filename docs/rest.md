@@ -2,7 +2,7 @@
 
 | HTTP Verb     | CRUD             | Singleton / Collection | Idempotent | Safe  | Action                                                                         |
 | ------------- |------------------|------------------------|------------|-------|--------------------------------------------------------------------------------|
-| GET           | READ             | Singleton / Collection | Yes        | Yes   | Retrieve en entity identified by the Request-URI                               |
+| GET           | READ             | Singleton / Collection | Yes        | Yes   | Retrieve an entity identified by the Request-URI                               |
 | HEAD          |                  | Singleton / Collection | Yes        | Yes   | As per GET but do not return body                                              |
 | POST          | CREATE           | Singleton              | No         | No    | New / modified entity enclosed in the request as identified by the Request-URI |
 | PUT           | UPDATE / REPLACE | Singleton              | Yes        | No    | Requests that the enclosed entity be stored under the supplied Request-URI     |
@@ -26,7 +26,7 @@ Patch :  [JSON Patch](https://tools.ietf.org/html/rfc6902) or [JSON Merge Patch]
 
 ## GET 
 
-Retrieve en entity identified by the Request-URI
+Retrieve an entity identified by the Request-URI
 
 | Response | Reason      | Notes                                                   |
 |----------|-------------|---------------------------------------------------------| 

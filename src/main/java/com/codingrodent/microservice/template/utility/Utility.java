@@ -22,18 +22,24 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.constants;
+package com.codingrodent.microservice.template.utility;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 /**
- * Various constants used in data validation operations
+ * Various utility functions
  */
-public class ValidationConstants {
+public class Utility {
 
-    public final static String UUID_V4_REGEX = "(?i)[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}";
-    public final static int NAME_FIELD_MIN_LENGTH = 1;
-    public final static int NAME_FIELD_MAX_LENGTH = 40;
+    private final static ObjectMapper objectMapper = new ObjectMapper().registerModule(new Jdk8Module());
 
-    private ValidationConstants() {
-        // Never need to make an instance of this class
+    private Utility() {
+        // Stop instantiation
     }
+
+    public static ObjectMapper getObjectMapper() {
+        return objectMapper;
+    }
+
 }

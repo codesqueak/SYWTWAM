@@ -32,7 +32,7 @@ import org.springframework.boot.actuate.metrics.export.*;
 import org.springframework.boot.actuate.metrics.jmx.JmxMetricWriter;
 import org.springframework.boot.actuate.metrics.reader.MetricRegistryMetricReader;
 import org.springframework.boot.actuate.metrics.writer.MetricWriter;
-import org.springframework.boot.autoconfigure.condition.*;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.*;
 import org.springframework.jmx.export.MBeanExporter;
 import org.springframework.jmx.export.annotation.AnnotationMBeanExporter;
@@ -82,18 +82,20 @@ public class MetricsConfig {
     }
 
     /**
-     * Should not need this but intellij is convinced the exporter doesn't exist ... go figure ...
+     * Set up an exporter to publish mbeans
      *
      * @return MBean exporter
      */
     @Bean
-    @ConditionalOnMissingClass({"org.springframework.jmx.export.annotation.AnnotationMBeanExporter"})
-    @ConditionalOnMissingBean(AnnotationMBeanExporter.class)
+    @Primary
+    @ConditionalOnClass({AnnotationMBeanExporter.class})
     public MBeanExporter mbeanExporter() {
         return new AnnotationMBeanExporter();
     }
 
+    //
     // Export metrics - application specific
+    //
 
     /**
      * Generate a new registry to store custom metrics in

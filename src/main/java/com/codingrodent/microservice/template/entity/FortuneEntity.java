@@ -24,33 +24,47 @@
  */
 package com.codingrodent.microservice.template.entity;
 
-import org.junit.Test;
+import com.couchbase.client.java.repository.annotation.*;
+import com.fasterxml.jackson.annotation.*;
+import org.springframework.data.annotation.Version;
+import org.springframework.data.couchbase.core.mapping.Document;
 
-import java.util.UUID;
+/**
+ * Contact persistence class
+ */
+@Document
+public class FortuneEntity {
 
-import static org.junit.Assert.assertEquals;
+    @Id
+    private final String id;
+    @Field
+    private final String text;
+    @Field
+    private final String author;
+    @Version
+    private long version;
 
-public class ContactEntityTest {
-
-    @Test
-    public void basicTest() {
-        UUID id = UUID.randomUUID();
-        Long version = 12345L;
-        String firstName = "first";
-        String lastName = "last";
-        Integer age = 100;
-        String phone = "1-2-3-4-5";
-        String mobile = "6-7-8-9";
-        String country = "US";
-        ContactEntity contactEntity = new ContactEntity(id.toString(), firstName, lastName, age, phone, mobile, country, version);
-        //
-        assertEquals(id, contactEntity.getId());
-        assertEquals(version, contactEntity.getVersion());
-        assertEquals(firstName, contactEntity.getFirstName());
-        assertEquals(lastName, contactEntity.getLastName());
-        assertEquals(age, contactEntity.getAge());
-        assertEquals(phone, contactEntity.getPhone());
-        assertEquals(mobile, contactEntity.getMobile());
-        assertEquals(country, contactEntity.getCountry());
+    @JsonCreator
+    public FortuneEntity(@JsonProperty("id") final String id, @JsonProperty("text") final String text, @JsonProperty("author") final String author) {
+        this.id = id;
+        this.text = text;
+        this.author = author;
     }
+
+    public String getText() {
+        return text;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public long getVersion() {
+        return version;
+    }
+
+    public String getId() {
+        return id;
+    }
+
 }

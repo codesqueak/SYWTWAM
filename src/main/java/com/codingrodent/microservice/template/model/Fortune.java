@@ -22,18 +22,47 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.constants;
+package com.codingrodent.microservice.template.model;
+
+import com.fasterxml.jackson.annotation.*;
+import io.swagger.annotations.*;
+
+import javax.validation.constraints.*;
+import java.util.*;
 
 /**
- * Various constants used in data validation operations
+ * Fortune model class
  */
-public class ValidationConstants {
+@ApiModel(description = "Sample fortune model item")
+public class Fortune extends ModelBase {
 
-    public final static String UUID_V4_REGEX = "(?i)[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}";
-    public final static int NAME_FIELD_MIN_LENGTH = 1;
-    public final static int NAME_FIELD_MAX_LENGTH = 40;
+    @JsonProperty("text")
+    @NotNull
+    @Size(min = 5, max = 250)
+    private final String text;
 
-    private ValidationConstants() {
-        // Never need to make an instance of this class
+    @JsonProperty("author")
+    private final Optional<String> author;
+
+    @JsonCreator
+    public Fortune(@JsonProperty("text") final String text, @JsonProperty("author") final Optional<String> author) {
+        this(text, author, Optional.empty());
     }
+
+    public Fortune(final String text, final Optional<String> author, final Optional<UUID> uuid) {
+        super(uuid);
+        this.text = text;
+        this.author = author;
+    }
+
+    @ApiModelProperty(required = true, value = "Fortune cookie text")
+    public String getText() {
+        return text;
+    }
+
+    @ApiModelProperty(required = true, value = "Author (if available)")
+    public Optional<String> getAuthor() {
+        return author;
+    }
+
 }

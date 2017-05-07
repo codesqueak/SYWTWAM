@@ -22,28 +22,17 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.model;
+package com.codingrodent.microservice.template;
 
-import org.junit.Test;
+import com.codingrodent.microservice.template.constants.SystemConstants;
 
-import static org.junit.Assert.assertEquals;
+/**
+ * Common code for integration tests
+ */
+public class IntegrationTestBase {
 
-public class ContactTest {
-    @Test
-    public void basicTest() {
-        String firstName = "first";
-        String lastName = "last";
-        Integer age = 100;
-        String phone = "1-2-3-4-5";
-        String mobile = "6-7-8-9";
-        String country = "US";
-        Contact contactEntity = new Contact(firstName, lastName, age, phone, mobile, country);
-        //
-        assertEquals(firstName, contactEntity.getFirstName());
-        assertEquals(lastName, contactEntity.getLastName());
-        assertEquals(age, contactEntity.getAge());
-        assertEquals(phone, contactEntity.getPhone());
-        assertEquals(mobile, contactEntity.getMobile());
-        assertEquals(country, contactEntity.getCountry());
+    public IntegrationTestBase() {
+        System.setProperty(SystemConstants.SYSTEM_NAME, "IntTest");
+        System.setProperty(SystemConstants.SUBSYSTEM_NAME, "Spring");
     }
 }

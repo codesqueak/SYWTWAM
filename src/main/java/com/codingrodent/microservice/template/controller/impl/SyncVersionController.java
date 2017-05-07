@@ -39,6 +39,7 @@ import static org.springframework.http.HttpMethod.*;
 /**
  * Simple sync REST controller to return version information
  */
+
 @RestController
 @Api(tags = "version", value = "version", description = "Endpoint for version Information - Don't do this in a production system as it gives away too much " + "information")
 @RequestMapping("/version/" + API_VERSION)
@@ -49,8 +50,6 @@ public class SyncVersionController {
     private final static Map<String, String> versions;
     private final static ResponseEntity<Map<String, String>> getResponse;
     private final static ResponseEntity<Void> optionsResponse;
-
-    private final TemplateMetrics metrics;
 
     static {
         versions = new HashMap<>();
@@ -64,6 +63,8 @@ public class SyncVersionController {
         headers.setAllow(ALLOWED_OPTIONS);
         optionsResponse = new ResponseEntity<>(headers, HttpStatus.OK);
     }
+
+    private final TemplateMetrics metrics;
 
     @Inject
     public SyncVersionController(final TemplateMetrics metrics) {

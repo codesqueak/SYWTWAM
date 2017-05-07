@@ -24,8 +24,8 @@
  */
 package com.codingrodent.microservice.template.converter;
 
-import com.codingrodent.microservice.template.entity.ContactEntity;
-import com.codingrodent.microservice.template.model.Contact;
+import com.codingrodent.microservice.template.entity.FortuneEntity;
+import com.codingrodent.microservice.template.model.Fortune;
 
 import java.util.*;
 
@@ -34,14 +34,12 @@ import java.util.*;
  */
 public class Converter {
 
+    public final static IConvertToEntity<Fortune, FortuneEntity, UUID, Optional<Long>> toFortuneEntity = (id, m, v) -> new FortuneEntity(id.toString(), m.getText(), m.getAuthor
+            ().orElse(""));
+    public final static IConvertToModel<FortuneEntity, Fortune> toFortuneModel = entity -> new Fortune(entity.getText(), Optional.of(entity.getAuthor()), Optional.of(UUID.fromString(entity.getId())));
+
     private Converter() {
         // Do not instantiate.
     }
-
-    public final static IConvertToEntity<Contact, ContactEntity, UUID, Optional<Long>> toNameEntity = (id, m, v) -> new ContactEntity(id.toString(), m
-            .getFirstName(), m.getLastName(), m.getAge(), m.getPhone(), m.getMobile(), m.getCountry(), v.orElse(null));
-
-    public final static IConvertToModel<ContactEntity, Contact> toNameModel = entity -> new Contact(entity.getFirstName(), entity.getLastName(), entity
-            .getAge(), entity.getPhone(), entity.getMobile(), entity.getCountry());
 
 }

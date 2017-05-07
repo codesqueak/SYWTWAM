@@ -22,18 +22,44 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.constants;
+package com.codingrodent.microservice.template.service.impl;
+
+import com.fasterxml.jackson.annotation.*;
+
+import java.util.*;
 
 /**
- * Various constants used in data validation operations
+ * Fortune data record from initialization array
  */
-public class ValidationConstants {
 
-    public final static String UUID_V4_REGEX = "(?i)[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}";
-    public final static int NAME_FIELD_MIN_LENGTH = 1;
-    public final static int NAME_FIELD_MAX_LENGTH = 40;
+public class FortuneElement {
 
-    private ValidationConstants() {
-        // Never need to make an instance of this class
+    @JsonProperty("key")
+    private final UUID key;
+
+    @JsonProperty("text")
+    private final String text;
+
+    @JsonProperty("author")
+    private final Optional<String> author;
+
+    @JsonCreator
+    public FortuneElement(@JsonProperty("key") final UUID key, @JsonProperty("text") final String text, @JsonProperty("author") final Optional<String> author) {
+        this.key = key;
+        this.text = text;
+        this.author = author;
     }
+
+    public UUID getKey() {
+        return key;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public Optional<String> getAuthor() {
+        return author;
+    }
+
 }

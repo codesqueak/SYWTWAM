@@ -24,10 +24,10 @@
  */
 package com.codingrodent.microservice.template.controller;
 
-import com.codingrodent.microservice.template.BaseMVCTests;
-import com.codingrodent.microservice.template.controller.impl.SyncContactController;
+import com.codingrodent.microservice.template.MVCTestBase;
+import com.codingrodent.microservice.template.controller.impl.SyncFortuneController;
 import com.codingrodent.microservice.template.model.*;
-import com.codingrodent.microservice.template.service.api.IContactService;
+import com.codingrodent.microservice.template.service.api.IFortuneService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -47,38 +47,40 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Controller unit tests
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ContactServiceTest extends BaseMVCTests {
+public class FortuneServiceTest extends MVCTestBase {
 
-    private String json;
-    private ModelVersion<Contact> modelVersion;
-    private SyncContactController controller;
-    private Contact contact;
-
+    private final static String json = "{\"text\":\"A fortune\",\"author\":\"An author\"}";
+    private final static String json2 = "{\"text\":\"A fortune with uuid\",\"author\":\"An author with uuid\"}";
+    private final static String BASE = "/sync/fortune/" + API_VERSION + "/";
+    //
+    private ModelVersion<Fortune> modelVersion;
+    private SyncFortuneController controller;
+    private Fortune fortune, fortuneWithUUID;
     @Mock
-    private IContactService<Contact> contactService;
+    private IFortuneService<Fortune> fortuneService;
 
     @Before
     public void init() throws JsonProcessingException {
-        contact = new Contact("Firstname", "Lastname", 1, "000 000 000", "001 001 001", "AZ");
-        json = mapper.writeValueAsString(contact);
-        modelVersion = new ModelVersion<>(contact, Optional.of(12345L));
-        controller = new SyncContactController(contactService);
+        fortune = new Fortune("A fortune", Optional.of("An author"));
+        fortuneWithUUID = new Fortune("A fortune with uuid", Optional.of("An author with uuid"), Optional.of(UUID.randomUUID()));
+        modelVersion = new ModelVersion<>(fortune, Optional.of(12345L));
+        controller = new SyncFortuneController(fortuneService);
     }
 
     @Test
-    public void getContact() throws Exception {
-        when(contactService.load(any(UUID.class))).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion), Optional.empty());
+    public void getFortune() throws Exception {
+        when(fortuneService.load(any(String.class))).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion), Optional.empty());
 
         // @formatter:off
         // Invalid UUID
-        performGet(controller, "/syncname/" + API_VERSION + "/" + BAD_UUID, null)
+        performGet(controller, BASE + BAD_UUID, null)
                 .andExpect(status().isBadRequest())
                 .andReturn();
         // @formatter:on
 
         // @formatter:off
         // load - found
-        performGet(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), null)
+        performGet(controller, BASE + UUID.randomUUID(), null)
                 .andExpect(status().isOk())
                 .andExpect(content().json(json))
                 .andExpect(header().string(HttpHeaders.ETAG, "\"12345\""))
@@ -88,7 +90,7 @@ public class ContactServiceTest extends BaseMVCTests {
 
         // @formatter:off
         // load - found - non matching eTag
-        performGet(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), "\"2468\"")
+        performGet(controller, BASE + UUID.randomUUID(), "\"2468\"")
                 .andExpect(status().isOk())
                 .andExpect(content().json(json))
                 .andExpect(header().string(HttpHeaders.ETAG, "\"12345\""))
@@ -98,35 +100,34 @@ public class ContactServiceTest extends BaseMVCTests {
 
         // @formatter:off
         // load - found - matching eTag
-        performGet(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), "\"12345\"")
+        performGet(controller, BASE + UUID.randomUUID(), "\"12345\"")
                 .andExpect(status().isNotModified())
-                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE ))
                 .andReturn();
         // @formatter:on
 
         // @formatter:off
         // load - not found
-        performGet(controller,"/syncname/" + API_VERSION + "/" + UUID.randomUUID(), null)
+        performGet(controller,BASE + UUID.randomUUID(), null)
                 .andExpect(status().isGone())
                 .andReturn();
         // @formatter:on
-        verify(contactService, times(4)).load(any());
+        verify(fortuneService, times(4)).load(any());
     }
 
     @Test
-    public void headContact() throws Exception {
-        when(contactService.load(any(UUID.class))).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion), Optional.empty());
+    public void headFortune() throws Exception {
+        when(fortuneService.load(any(String.class))).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion), Optional.empty());
 
         // @formatter:off
         // Invalid UUID
-        performHead(controller, "/syncname/" + API_VERSION + "/" + BAD_UUID, null)
+        performHead(controller, BASE + BAD_UUID, null)
                 .andExpect(status().isBadRequest())
                 .andReturn();
         // @formatter:on
 
         // @formatter:off
         // load - found
-        performHead(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), null)
+        performHead(controller, BASE + UUID.randomUUID(), null)
                 .andExpect(status().isNoContent())
                 .andExpect(content().string("")) // Must be an empty body even if it is found
                 .andExpect(header().string(HttpHeaders.ETAG, "\"12345\""))
@@ -136,7 +137,7 @@ public class ContactServiceTest extends BaseMVCTests {
 
         // @formatter:off
         // load - found - non matching eTag
-        performHead(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), "\"2468\"")
+        performHead(controller, BASE + UUID.randomUUID(), "\"2468\"")
                 .andExpect(status().isNoContent())
                 .andExpect(header().string(HttpHeaders.ETAG, "\"12345\""))
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE ))
@@ -145,30 +146,30 @@ public class ContactServiceTest extends BaseMVCTests {
 
         // @formatter:off
         // load - found - matching eTag
-        performHead(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), "\"12345\"")
+        performHead(controller, BASE + UUID.randomUUID(), "\"12345\"")
                 .andExpect(status().isNotModified())
                 .andReturn();
 
         // @formatter:on
         // @formatter:off
         // load - not found
-        performHead(controller,"/syncname/" + API_VERSION + "/" + UUID.randomUUID(), null)
+        performHead(controller,BASE + UUID.randomUUID(), null)
                 .andExpect(status().isGone())
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE))
                 .andReturn();
         // @formatter:on
-        verify(contactService, times(4)).load(any());
+        verify(fortuneService, times(4)).load(any());
     }
 
     @Test
-    public void putContact() throws Exception {
-        when(contactService.load(any(UUID.class))).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion));
-        when(contactService.save(any(UUID.class), any(Contact.class), any(Optional.class))).thenThrow(OptimisticLockingFailureException.class).thenReturn(modelVersion,
+    public void putFortune() throws Exception {
+        when(fortuneService.load(any(String.class))).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion));
+        when(fortuneService.save(any(UUID.class), any(Fortune.class), any(Optional.class))).thenThrow(OptimisticLockingFailureException.class).thenReturn(modelVersion,
                                                                                                                                                           modelVersion, null);
 
         // @formatter:off
         // No body
-       performPut(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(),null,null)
+       performPut(controller, BASE + UUID.randomUUID(),null,null)
                 .andExpect(status()
                 .isBadRequest())
                 .andReturn();
@@ -176,28 +177,28 @@ public class ContactServiceTest extends BaseMVCTests {
 
         // @formatter:off
         // Invalid UUID
-        performPut(controller, "/syncname/" + API_VERSION + "/" + BAD_UUID,null,null)
+        performPut(controller, BASE + BAD_UUID,null,null)
                 .andExpect(status().isBadRequest())
                 .andReturn();
         // @formatter:on
 
         // @formatter:off
         // CAS fail
-        performPut(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), "\"12345\"", json)
+        performPut(controller, BASE + UUID.randomUUID(), "\"12345\"", json)
                 .andExpect(status().isPreconditionFailed())
                 .andReturn();
         // @formatter:on
 
         // @formatter:off
         // If-Match precondition fail
-        performPut(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), "\"246\"", json)
+        performPut(controller, BASE + UUID.randomUUID(), "\"246\"", json)
                 .andExpect(status().isPreconditionFailed())
                 .andReturn();
         // @formatter:on
 
         // @formatter:off
         // Save
-        performPut(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), "\"12345\"", json)
+        performPut(controller, BASE + UUID.randomUUID(), "\"12345\"", json)
                 .andExpect(status().isAccepted())
                 .andExpect(content().json(json))
                 .andExpect(header().string(HttpHeaders.ETAG, "\"12345\""))
@@ -207,7 +208,7 @@ public class ContactServiceTest extends BaseMVCTests {
 
         // @formatter:off
         // Create
-        performPut(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), null, json)
+        performPut(controller, BASE + UUID.randomUUID(), null, json)
                 .andExpect(status().isCreated())
                 .andExpect(content().json(json))
                 .andExpect(header().string(HttpHeaders.ETAG, "\"12345\""))
@@ -217,24 +218,24 @@ public class ContactServiceTest extends BaseMVCTests {
 
         // @formatter:off
         // Save - null return value - fault
-        performPut(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), "\"12345\"", json)
+        performPut(controller, BASE + UUID.randomUUID(), "\"12345\"", json)
                 .andExpect(status().isInternalServerError())
                 .andReturn();
         // @formatter:on
 
-        verify(contactService, times(4)).load(any());
-        verify(contactService, times(4)).save(any(), any(), any());
+        verify(fortuneService, times(4)).load(any());
+        verify(fortuneService, times(4)).save(any(), any(), any());
     }
 
     @Test
-    public void postContact() throws Exception {
+    public void postFortune() throws Exception {
         Long version = 789L;
-        when(contactService.create(any(Contact.class), any(Optional.class))).thenThrow(DuplicateKeyException.class).thenReturn(modelVersion).thenAnswer(inv -> new ModelVersion<>
-                (contact, (Optional) inv.getArguments()[1])).thenReturn(null);
+        when(fortuneService.create(any(Fortune.class), any(Optional.class))).thenThrow(DuplicateKeyException.class).thenReturn(new ModelVersion<>(fortuneWithUUID, Optional.of
+                (12345L))).thenAnswer(inv -> new ModelVersion<>(fortuneWithUUID, (Optional) inv.getArguments()[1])).thenReturn(null);
 
         // @formatter:off
         // No body
-       performPost(controller, "/syncname/" + API_VERSION,null,null)
+       performPost(controller, "/sync/fortune/" + API_VERSION,null,null)
                 .andExpect(status()
                 .isBadRequest())
                 .andReturn();
@@ -242,16 +243,16 @@ public class ContactServiceTest extends BaseMVCTests {
 
         // @formatter:off
         // Already exists
-        performPost(controller, "/syncname/" + API_VERSION , "\"12345\"", json)
+        performPost(controller, "/sync/fortune/" + API_VERSION , "\"12345\"", json)
                 .andExpect(status().isConflict())
                 .andReturn();
         // @formatter:on
 
         // @formatter:off
         // Create - no eTag
-        performPost(controller, "/syncname/" + API_VERSION , null, json)
+        performPost(controller, "/sync/fortune/" + API_VERSION , null, json2)
                 .andExpect(status().isCreated())
-                .andExpect(content().json(json))
+                .andExpect(content().json(json2))
                 .andExpect(header().string(HttpHeaders.ETAG, "\"12345\""))
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE))
                 .andReturn();
@@ -259,9 +260,9 @@ public class ContactServiceTest extends BaseMVCTests {
 
         // @formatter:off
         // Create with eTag
-        performPost(controller, "/syncname/" + API_VERSION , "\""+version+"\"", json)
+        performPost(controller, "/sync/fortune/" + API_VERSION , "\""+version+"\"", json2)
                 .andExpect(status().isCreated())
-                .andExpect(content().json(json))
+                .andExpect(content().json(json2))
                 .andExpect(header().string(HttpHeaders.ETAG, "\""+version+"\""))
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE))
                 .andReturn();
@@ -269,56 +270,56 @@ public class ContactServiceTest extends BaseMVCTests {
 
         // @formatter:off
         // Create with eTag - null return value - fault
-        performPost(controller, "/syncname/" + API_VERSION , "\""+version+"\"", json)
+        performPost(controller, "/sync/fortune/" + API_VERSION , "\""+version+"\"", json)
                 .andExpect(status().isInternalServerError())
                 .andReturn();
         // @formatter:on
 
-        verify(contactService, times(4)).create(any(), any());
+        verify(fortuneService, times(4)).create(any(), any());
     }
 
     @Test
-    public void deleteContact() throws Exception {
-        when(contactService.load(any())).thenReturn(Optional.of(modelVersion));
+    public void deleteFortune() throws Exception {
+        when(fortuneService.load(any())).thenReturn(Optional.of(modelVersion));
 
         // @formatter:off
         // Invalid UUID
-        performDelete(controller, "/syncname/" + API_VERSION + "/" + BAD_UUID, "\"12345\"")
+        performDelete(controller, BASE + BAD_UUID, "\"12345\"")
                 .andExpect(status().isBadRequest())
                 .andReturn();
         // @formatter:on
 
         // @formatter:off
         // Delete
-        performDelete(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), null)
+        performDelete(controller, BASE + UUID.randomUUID(), null)
                 .andExpect(status().isNoContent())
                 .andReturn();
         // @formatter:on
 
         // @formatter:off
         // Delete
-        performDelete(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), "\"12345\"")
+        performDelete(controller, BASE + UUID.randomUUID(), "\"12345\"")
                 .andExpect(status().isNoContent())
                 .andReturn();
         // @formatter:on
 
         // @formatter:off
         // Delete - loaded etag doesn't match
-        performDelete(controller, "/syncname/" + API_VERSION + "/" + UUID.randomUUID(), "\"246\"")
+        performDelete(controller, BASE + UUID.randomUUID(), "\"246\"")
                 .andExpect(status().isPreconditionFailed())
                 .andReturn();
         // @formatter:on
 
-        verify(contactService, times(2)).load(any());
-        verify(contactService, times(2)).delete(any());
+        verify(fortuneService, times(2)).load(any());
+        verify(fortuneService, times(2)).delete(any());
     }
 
     @Test
-    public void optionsContact() throws Exception {
+    public void optionsFortune() throws Exception {
 
         // @formatter:off
         // Save
-        performOptions(controller, "/syncname/" + API_VERSION)
+        performOptions(controller, "/sync/fortune/" + API_VERSION)
                 .andExpect(status().isOk())
                 .andExpect(extra().options("GET, HEAD, POST, PUT, PATCH, DELETE"))
                 .andReturn();

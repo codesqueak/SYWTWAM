@@ -22,18 +22,27 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.constants;
+package com.codingrodent.microservice.template.service.impl;
+
+import com.codingrodent.microservice.template.service.api.ILogger;
+import org.slf4j.*;
+import org.springframework.stereotype.Service;
 
 /**
- * Various constants used in data validation operations
+ *
  */
-public class ValidationConstants {
+@Service
+public class LoggingService implements ILogger {
 
-    public final static String UUID_V4_REGEX = "(?i)[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}";
-    public final static int NAME_FIELD_MIN_LENGTH = 1;
-    public final static int NAME_FIELD_MAX_LENGTH = 40;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private ValidationConstants() {
-        // Never need to make an instance of this class
+    @Override
+    public void warn(final String msg) {
+        logger.warn(msg);
+    }
+
+    @Override
+    public void info(final String msg) {
+        logger.info(msg);
     }
 }

@@ -22,28 +22,14 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.service.api;
+package com.codingrodent.microservice.template.config;
 
-import com.codingrodent.microservice.template.model.*;
-import rx.Observable;
-
-import java.util.*;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * Business logic for Contact information
+ * Validation configuration - control for JSR-303 / JSR-349
  */
-public interface IContactService<M> {
-    // Async
-    Observable<M> saveAsync(UUID uuid, Contact contact);
+@Configuration
+public class ValidationConfig {
 
-    Observable<M> loadAsync(UUID uuid);
-
-    // Sync
-    ModelVersion<M> save(UUID uuid, M model, Optional<Long> version);
-
-    ModelVersion<M> create(M mode, Optional<Long> version);
-
-    Optional<ModelVersion<M>> load(UUID uuid);
-
-    void delete(UUID uuid);
 }

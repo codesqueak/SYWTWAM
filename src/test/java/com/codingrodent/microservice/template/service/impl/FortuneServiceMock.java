@@ -25,33 +25,32 @@
 package com.codingrodent.microservice.template.service.impl;
 
 import com.codingrodent.microservice.template.model.*;
-import com.codingrodent.microservice.template.service.api.IContactService;
-import org.springframework.context.annotation.Profile;
+import com.codingrodent.microservice.template.service.api.IFortuneService;
 import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.stereotype.Service;
+import org.springframework.data.couchbase.core.query.View;
 import rx.Observable;
 
 import java.util.*;
 
-@Service
-@Profile("test")
-public class ContactServiceMock implements IContactService<Contact> {
+//@Service
+//@Profile("test")
+public class FortuneServiceMock implements IFortuneService<Fortune> {
 
-    private final Map<UUID, ModelVersion<Contact>> data = new HashMap<>();
+    private final Map<UUID, ModelVersion<Fortune>> data = new HashMap<>();
 
     @Override
-    public Observable<Contact> saveAsync(final UUID uuid, final Contact contact) {
+    public Observable<Fortune> saveAsync(final UUID uuid, final Fortune fortune) {
         return null;
     }
 
     @Override
-    public Observable<Contact> loadAsync(final UUID uuid) {
+    public Observable<Fortune> loadAsync(final UUID uuid) {
         return null;
     }
 
     @Override
-    public ModelVersion<Contact> save(final UUID uuid, final Contact model, final Optional<Long> version) {
-        ModelVersion<Contact> modelVersion;
+    public ModelVersion<Fortune> save(final UUID uuid, final Fortune model, final Optional<Long> version) {
+        ModelVersion<Fortune> modelVersion;
         if (version.isPresent()) {
             if ((data.containsKey(uuid))) {
                 if (version.get().equals(data.get(uuid).getVersion().get())) {
@@ -76,12 +75,12 @@ public class ContactServiceMock implements IContactService<Contact> {
     }
 
     @Override
-    public ModelVersion<Contact> create(final Contact contact, final Optional<Long> version) {
+    public ModelVersion<Fortune> create(final Fortune fortune, final Optional<Long> version) {
         return null;
     }
 
     @Override
-    public Optional<ModelVersion<Contact>> load(final UUID uuid) {
+    public Optional<ModelVersion<Fortune>> load(final String uuid) {
         if (data.containsKey(uuid)) {
             return Optional.of(data.get(uuid));
         } else
@@ -89,7 +88,24 @@ public class ContactServiceMock implements IContactService<Contact> {
     }
 
     @Override
-    public void delete(final UUID uuid) {
+    public void delete(final String uuid) {
 
+    }
+
+    @Override
+    public List<Fortune> listAll(final int page, final int size) {
+        return new ArrayList<Fortune>(0);
+    }
+
+    @Override
+    @View(viewName = "named")
+    public List<Fortune> listNamed(final int page, final int size) {
+        return null;
+    }
+
+    @Override
+    @View(viewName = "anon")
+    public List<Fortune> listAnon(final int page, final int size) {
+        return null;
     }
 }

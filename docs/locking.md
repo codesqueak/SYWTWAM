@@ -43,7 +43,7 @@ return true
 
 ## GET
 
-Retrieve en entity identified by the Request-URI
+Retrieve an entity identified by the Request-URI
 
 ### If-Match
 

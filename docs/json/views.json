@@ -1,0 +1,13 @@
+{
+  "views": {
+    "anon": {
+      "map": "function (doc, meta) {\n  if (doc.author == \"\") {\n  \temit(meta.id, null);\n  }\n}"
+    },
+    "named": {
+      "map": "function (doc, meta) {\n  if (doc.author != \"\") {\n  \temit(meta.id, null);\n  }\n}"
+    }
+  }
+}
+
+
+

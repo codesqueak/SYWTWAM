@@ -40,7 +40,7 @@ public interface IAsyncREST<K, V> {
 
     // GET (200)
     @RequestMapping(path = "/{uuid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Read an entity", notes = "Retrieve en entity identified by the Request-URI")
+    @ApiOperation(value = "Read an entity", notes = "Retrieve an entity identified by the Request-URI")
     @ApiResponses(value = { //
             @ApiResponse(code = 200, message = "Response entity in body"), //
             @ApiResponse(code = 404, message = "No matching entity exists")})

@@ -22,18 +22,29 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.constants;
+package com.codingrodent.microservice.template.model;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.*;
 
 /**
- * Various constants used in data validation operations
+ *
  */
-public class ValidationConstants {
+public abstract class ModelBase {
 
-    public final static String UUID_V4_REGEX = "(?i)[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}";
-    public final static int NAME_FIELD_MIN_LENGTH = 1;
-    public final static int NAME_FIELD_MAX_LENGTH = 40;
+    @JsonIgnore
+    private final Optional<UUID> uuid;
 
-    private ValidationConstants() {
-        // Never need to make an instance of this class
+    public ModelBase(final Optional<UUID> uuid) {
+        this.uuid = uuid;
+    }
+
+    public ModelBase() {
+        this.uuid = Optional.empty();
+    }
+
+    public Optional<UUID> getUUID() {
+        return uuid;
     }
 }

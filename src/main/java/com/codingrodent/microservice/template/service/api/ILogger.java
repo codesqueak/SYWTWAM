@@ -22,16 +22,14 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.repository.api;
-
-import com.codingrodent.microservice.template.entity.ContactEntity;
-import org.springframework.data.repository.CrudRepository;
-
-import java.util.UUID;
+package com.codingrodent.microservice.template.service.api;
 
 /**
- * Let spring build basic repository - we don't have to supply a body for this
+ * Centralized logging controller
  */
-public interface ISyncNameRepository extends CrudRepository<ContactEntity, UUID> {
+public interface ILogger {
 
+    void warn(String message);
+
+    void info(String message);
 }

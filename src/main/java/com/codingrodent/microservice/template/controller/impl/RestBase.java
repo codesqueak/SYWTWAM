@@ -30,14 +30,14 @@ import org.springframework.http.HttpHeaders;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static com.codingrodent.microservice.template.constants.SystemConstants.CONTENT_TYPE;
-
 /**
  * Shared base functionality for Sync Services
  */
 public abstract class RestBase<V> {
 
     private final static String ETAG_WILDCARD = "\"*\"";
+    protected final Function<String, Long> extractETag = v -> Long.parseLong(v.replace("\"", ""));
+    protected final Function<Long, String> makeETag = v -> "\"" + v + "\"";
 
     /**
      * Evaluate If-Match
@@ -96,20 +96,5 @@ public abstract class RestBase<V> {
         }
         return headers;
     }
-
-    /**
-     * Generate ETag header from version resource version (if it exists)
-     *
-     * @return Headers with ETag set (if available)
-     */
-    protected HttpHeaders getContent() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set(HttpHeaders.CONTENT_TYPE, CONTENT_TYPE);
-        return headers;
-    }
-
-    protected Function<String, Long> extractETag = v -> Long.parseLong(v.replace("\"", ""));
-
-    protected Function<Long, String> makeETag = v -> "\"" + v + "\"";
 
 }
