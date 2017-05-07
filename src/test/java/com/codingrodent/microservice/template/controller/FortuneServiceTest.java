@@ -24,7 +24,7 @@
  */
 package com.codingrodent.microservice.template.controller;
 
-import com.codingrodent.microservice.template.BaseMVCTests;
+import com.codingrodent.microservice.template.MVCTestBase;
 import com.codingrodent.microservice.template.controller.impl.SyncFortuneController;
 import com.codingrodent.microservice.template.model.*;
 import com.codingrodent.microservice.template.service.api.IFortuneService;
@@ -47,7 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Controller unit tests
  */
 @RunWith(MockitoJUnitRunner.class)
-public class FortuneServiceTest extends BaseMVCTests {
+public class FortuneServiceTest extends MVCTestBase {
 
     private final static String json = "{\"text\":\"A fortune\",\"author\":\"An author\"}";
     private final static String json2 = "{\"text\":\"A fortune with uuid\",\"author\":\"An author with uuid\"}";

@@ -246,7 +246,7 @@ public class SyncFortuneController extends RestBase<Fortune> implements IFortune
     }
 
     /**
-     * Add HATEOAS links to a list for results and return HTTP repsonse
+     * Add HATEOAS links to a list for results and return HTTP response
      *
      * @param fortunes List of results
      * @return HTTP response for list

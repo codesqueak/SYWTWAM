@@ -29,12 +29,13 @@ import com.codingrodent.microservice.template.model.*;
 import com.codingrodent.microservice.template.repository.api.*;
 import com.codingrodent.microservice.template.service.api.*;
 import com.codingrodent.microservice.template.utility.Utility;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import rx.Observable;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import java.io.*;
 import java.util.*;
 
@@ -44,21 +45,25 @@ import static com.codingrodent.microservice.template.converter.Converter.*;
  * Business logic for Fortune information
  */
 @Service
-// @Profile("prod")
+@Profile("prod")
 public class FortuneService implements IFortuneService<Fortune> {
 
     // Both sync and async implementations
     // Normally use only one but this is for demo purposes
-    private final ISyncFortuneRepository repository;
-    private final IAsync<FortuneEntity, UUID> asyncRepository;
-    private final ILogger logger;
+    @Autowired
+    private CouchRepository repository;
+    @Autowired
+    private IAsync<FortuneEntity, UUID> asyncRepository;
+    @Autowired
+    private ILogger logger;
 
-    @Inject
-    public FortuneService(final ILogger logger, final ISyncFortuneRepository repository, final IAsync<FortuneEntity, UUID> asyncRepository) {
-        this.repository = repository;
-        this.asyncRepository = asyncRepository;
-        this.logger = logger;
-    }
+    // @Inject
+    //    public FortuneService(final ILogger logger, final ISyncFortuneRepository repository, final IAsync<FortuneEntity, UUID> asyncRepository) {
+    //    public FortuneService() {
+    //        this.repository = repository;
+    //        this.asyncRepository = asyncRepository;
+    //        this.logger = logger;
+    //    }
 
     @PostConstruct
     public void fill() throws IOException {

@@ -24,17 +24,18 @@
  */
 package com.codingrodent.microservice.template.repository.api;
 
-import com.codingrodent.microservice.template.entity.FortuneEntity;
 import org.springframework.data.couchbase.core.query.View;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Let spring build basic repository - we don't have to supply a body for this
  */
-public interface ISyncFortuneRepository extends PagingAndSortingRepository<FortuneEntity, String> {
+@NoRepositoryBean
+interface ISyncFortuneRepository<T, ID extends Serializable> extends PagingAndSortingRepository<T, ID> {
 
     /**
      * Returns a {@link List} of entities meeting the paging restriction provided in the {@code Pageable} object.
@@ -45,7 +46,7 @@ public interface ISyncFortuneRepository extends PagingAndSortingRepository<Fortu
      * @return a list of entities
      */
     @View(viewName = "named")
-    List<FortuneEntity> findAllNamed(Pageable pageable);
+    List<T> findAllNamed(Pageable pageable);
 
     /**
      * Returns a {@link List} of entities meeting the paging restriction provided in the {@code Pageable} object.
@@ -56,5 +57,6 @@ public interface ISyncFortuneRepository extends PagingAndSortingRepository<Fortu
      * @return a list of entities
      */
     @View(viewName = "anon")
-    List<FortuneEntity> findAllAnon(Pageable pageable);
+    List<T> findAllAnon(Pageable pageable);
 }
+

@@ -44,7 +44,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 /**
  * Common code for controller tests
  */
-public abstract class BaseMVCTests {
+public abstract class MVCTestBase {
 
     protected final static String BAD_UUID = "abc-123";
     protected final ObjectMapper mapper = new ObjectMapper();
