@@ -22,9 +22,9 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.controller.impl;
+package com.codingrodent.microservice.template.impl;
 
-import com.codingrodent.microservice.template.controller.api.IFortune;
+import com.codingrodent.microservice.template.api.IFortune;
 import com.codingrodent.microservice.template.exception.*;
 import com.codingrodent.microservice.template.model.*;
 import com.codingrodent.microservice.template.service.api.IFortuneService;

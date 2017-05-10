@@ -22,7 +22,7 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.controller.api;
+package com.codingrodent.microservice.template.api;
 
 import io.swagger.annotations.*;
 import org.springframework.http.*;

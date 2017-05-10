@@ -22,10 +22,9 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.controller;
+package com.codingrodent.microservice.template;
 
-import com.codingrodent.microservice.template.MVCTestBase;
-import com.codingrodent.microservice.template.controller.impl.SyncFortuneController;
+import com.codingrodent.microservice.template.impl.SyncFortuneController;
 import com.codingrodent.microservice.template.model.*;
 import com.codingrodent.microservice.template.service.api.IFortuneService;
 import com.fasterxml.jackson.core.JsonProcessingException;

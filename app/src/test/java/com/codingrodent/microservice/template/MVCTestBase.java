@@ -24,9 +24,9 @@
  */
 package com.codingrodent.microservice.template;
 
+import com.codingrodent.microservice.template.api.IREST;
 import com.codingrodent.microservice.template.config.advice.RestAdvice;
 import com.codingrodent.microservice.template.constants.SystemConstants;
-import com.codingrodent.microservice.template.controller.api.IREST;
 import com.codingrodent.microservice.template.model.Fortune;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.BeforeClass;

@@ -1,0 +1,253 @@
+/**
+ * MIT License
+ *
+ * Copyright (c) 2017
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ * Application build script
+ *
+ * Standard compile & test
+ *
+ * ./gradlew clean build test
+ *
+ */
+
+buildscript {
+    // These are for the build, not the application
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        jcenter()
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
+        maven {
+            url 'https://repo.spring.io/libs-milestone'
+        }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.3.RELEASE")
+        classpath('se.transmode.gradle:gradle-docker:1.2')
+        classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17")
+    }
+}
+
+description = "So You Want To Write A Microservice (Service)"
+
+// various plugins to add required functinality
+
+apply plugin: 'org.springframework.boot'
+apply plugin: 'idea'
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'findbugs'
+apply plugin: 'docker'
+apply plugin: 'application'
+apply plugin: "com.gorylenko.gradle-git-properties"
+
+// ant taskdef for simple component to identify the operating system being used
+import org.apache.tools.ant.taskdefs.condition.Os
+
+// task to generate a version number based on contents of gradle.properties OR a system environment variable for the build number
+
+project.version = projectVersionMajor + '.' + projectVersionMinor + '.' + projectVersionBuild + '-SNAPSHOT'
+
+bootRepackage {
+    classifier = 'BOOT'
+}
+
+springBoot  {
+    buildInfo()
+}
+
+gitProperties {
+    dateFormat = "yyyy-MM-dd'T'HH:mmZ"
+    dateFormatTimeZone = "GMT"
+}
+
+// put source into a jar
+task sourceJar(type: Jar) {
+    baseName = projectName
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+// put javadoc into a jar
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    baseName = projectName
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+//
+//configurations {
+//    xyzzy
+//}
+//
+//task xyzzyJar(type: Jar) {
+//    baseName = 'app-xyzzy'
+//    dependsOn classes
+//    from sourceSets.main.output
+//}
+//
+//artifacts {
+//    xyzzy xyzzyJar
+//}
+
+// generate a jar file [Uses version, format will be SYWTWAM-0.0.1-SNAPSHOT.jar for example)
+jar {
+    dependsOn = [sourceJar, javadocJar]
+    baseName = projectName
+    manifest
+            {
+                attributes('Implementation-Title': projectName,
+                        'Implementation-Version': project.version,
+                        'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"))
+            }
+}
+
+// execute code covergae analysis
+jacoco {
+    toolVersion = "0.7+"
+    reportsDir = file("$buildDir/customJacocoReportDir")
+}
+
+// generate jacoco reports
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+        csv.enabled = false
+        html.destination "${buildDir}/jacocoHtml"
+    }
+}
+
+// execute junit tests - add extra info to the test task
+test {
+    maxParallelForks = 1
+
+    // set heap size for the test JVM(s)
+    minHeapSize = "256m"
+    maxHeapSize = "256m"
+
+    // and limit metaspace (no more max perm gen in Java 8)
+    jvmArgs '-XX:MaxMetaspaceSize=256m'
+
+    filter
+            {
+                includeTestsMatching "com.codingrodent.microservice.template.*"
+            }
+    jacoco {
+        append = false
+        destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
+        classDumpFile = file("$buildDir/jacoco/classpathdumps")
+    }
+}
+
+// run static analysis on the code base
+findbugs {
+    toolVersion = "3.0.1"
+    sourceSets = [sourceSets.main]
+    effort = "max"
+    reportLevel = "high"
+    findbugsTest.enabled = false
+    ignoreFailures = true
+}
+
+// add reporting to the static analysis tests
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled = true
+        html.enabled = false
+    }
+}
+
+// manually build a docker container - at the time of writing, the plugin was having issues ...
+// Don't use for now ...
+task buildDocker(type: Exec) {
+    doFirst {
+        copy {
+            from "build/libs"
+            into "build/docker/"
+            include "*.jar"
+        }
+        copy {
+            from "."
+            into "build/docker/"
+            include "Dockerfile"
+        }
+    }
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        commandLine 'cmd', '/c', 'docker', 'build', '-f', 'build/docker/Dockerfile', '-t', 'codesqueak', 'build/docker/'
+    } else {
+        commandLine 'docker', 'build', '-f', 'build/docker/Dockerfile', '-t', 'codesqueak', 'build/docker/'
+    }
+}
+
+// add verification tasks to the project - Only jacoco at the moment. Findbugs adds itself into the test task ...
+check {
+    dependsOn jacocoTestReport
+}
+
+// In this section you declare the dependencies for your production and test code
+dependencies {
+    // Spring boot
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.5.3.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow', version: '1.5.3.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '1.5.3.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.5.3.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '1.5.3.RELEASE'
+    // Cloud extensions
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter', version: '1.2.0.RELEASE'
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-commons', version: '1.2.0.RELEASE'
+    // Consul / Discovery
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-consul-all', version: '1.2.0.RELEASE'
+    // Lots of netflix goodies
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-netflix-core', version: '1.3.0.RELEASE'
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix', version: '1.3.0.RELEASE'
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix-dashboard', version: '1.3.0.RELEASE'
+    // https://mvnrepository.com/artifact/org.springframework.retry/spring-retry
+    compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.2.0.RELEASE'
+    // Spring data for couchbase
+    compile group: 'org.springframework.data', name: 'spring-data-couchbase', version: '2.2.3.RELEASE'
+    // Spring hateoas support
+    compile group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '0.23.0.RELEASE'
+    // Springfox swagger documentation tools
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.6.1'
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.6.1'
+    compile group: 'io.springfox', name: 'springfox-bean-validators', version: '2.6.1'
+    compile group: 'io.springfox', name: 'springfox-data-rest', version: '2.6.1'
+    //  Support for JSR 330: Dependency Injection for Java (pref to autowire - ymmv)
+    compile group: 'javax.inject', name: 'javax.inject', version: '1'
+    // Java / json twiddling
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.8.8'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.8.8'
+    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.8.8'
+    // Lots of observable goodies
+    compile group: 'io.reactivex', name: 'rxjava', version: '1.2.9'
+    // compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.1.0'
+    // Couchbase client side driver
+    compile group: 'com.couchbase.client', name: 'java-client', version: '2.4.5'
+    // metrics
+    compile group: 'io.dropwizard.metrics', name: 'metrics-core', version: '3.2.2'
+    compile group: 'io.dropwizard.metrics', name: 'metrics-jvm', version: '3.2.2'
+}
+
+
+

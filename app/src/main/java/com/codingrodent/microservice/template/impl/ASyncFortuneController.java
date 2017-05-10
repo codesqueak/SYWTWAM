@@ -22,9 +22,9 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.controller.impl;
+package com.codingrodent.microservice.template.impl;
 
-import com.codingrodent.microservice.template.controller.api.IAsyncREST;
+import com.codingrodent.microservice.template.api.IAsyncREST;
 import com.codingrodent.microservice.template.model.Fortune;
 import com.codingrodent.microservice.template.service.api.IFortuneService;
 import io.swagger.annotations.*;

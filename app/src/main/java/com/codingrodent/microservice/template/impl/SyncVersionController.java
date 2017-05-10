@@ -22,7 +22,7 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.controller.impl;
+package com.codingrodent.microservice.template.impl;
 
 import com.codingrodent.microservice.template.metrics.TemplateMetrics;
 import io.swagger.annotations.*;
