@@ -22,16 +22,14 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template;
+package com.codingrodent.microservice.template.controller;
 
-import com.codingrodent.microservice.template.impl.SyncFortuneController;
+import com.codingrodent.microservice.template.MVCTestBase;
 import com.codingrodent.microservice.template.model.*;
 import com.codingrodent.microservice.template.service.api.IFortuneService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.*;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.dao.*;
 import org.springframework.http.HttpHeaders;
 
@@ -45,7 +43,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Controller unit tests
  */
-@RunWith(MockitoJUnitRunner.class)
 public class FortuneServiceTest extends MVCTestBase {
 
     private final static String json = "{\"text\":\"A fortune\",\"author\":\"An author\"}";
@@ -68,6 +65,7 @@ public class FortuneServiceTest extends MVCTestBase {
 
     @Test
     public void getFortune() throws Exception {
+
         when(fortuneService.load(any(String.class))).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion), Optional.empty());
 
         // @formatter:off

@@ -27,18 +27,13 @@ package com.codingrodent.microservice.template.controller;
 import com.codingrodent.microservice.template.IntegrationTestBase;
 import com.codingrodent.microservice.template.constants.SystemConstants;
 import org.junit.*;
-import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.SpringVersion;
 import org.springframework.http.*;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SyncVersionmControllerIntegrationTest extends IntegrationTestBase {
 
     private final String json = "{\"Java\":\"" + System.getProperty("java.version") + "\",\"Spring\":\"" + SpringVersion.getVersion() + "\",\"Undertow\":\"" + io.undertow

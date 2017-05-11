@@ -29,6 +29,8 @@
  *
  */
 
+// Main build and unit test
+
 buildscript {
     // These are for the build, not the application
     repositories {
@@ -62,21 +64,36 @@ apply plugin: 'docker'
 apply plugin: 'application'
 apply plugin: "com.gorylenko.gradle-git-properties"
 
-// ant taskdef for simple component to identify the operating system being used
-import org.apache.tools.ant.taskdefs.condition.Os
 
-// task to generate a version number based on contents of gradle.properties OR a system environment variable for the build number
 
+// version number to use in various places
 project.version = projectVersionMajor + '.' + projectVersionMinor + '.' + projectVersionBuild + '-SNAPSHOT'
 
+// Tell spring boot where to put the repackaged jar, otherwise it overwrites the default which means it cannot be
+// referenced in other sub-projects, e.g. integration
 bootRepackage {
     classifier = 'BOOT'
 }
 
-springBoot  {
-    buildInfo()
+
+import java.text.SimpleDateFormat
+def buildTime() {
+    final dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ")
+    dateFormat.timeZone = TimeZone.getTimeZone('GMT')
+    dateFormat.format(new Date())
 }
 
+// Add build info to build-info.properties the jar /META-INF directory
+springBoot  {
+    buildInfo {
+        additionalProperties = [
+                operatingSystem: "${System.properties['os.name']} (${System.properties['os.version']})",
+                time: buildTime()
+        ]
+    }
+}
+
+//
 gitProperties {
     dateFormat = "yyyy-MM-dd'T'HH:mmZ"
     dateFormatTimeZone = "GMT"
@@ -95,21 +112,6 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
 }
-
-//
-//configurations {
-//    xyzzy
-//}
-//
-//task xyzzyJar(type: Jar) {
-//    baseName = 'app-xyzzy'
-//    dependsOn classes
-//    from sourceSets.main.output
-//}
-//
-//artifacts {
-//    xyzzy xyzzyJar
-//}
 
 // generate a jar file [Uses version, format will be SYWTWAM-0.0.1-SNAPSHOT.jar for example)
 jar {
@@ -180,6 +182,8 @@ tasks.withType(FindBugs) {
 
 // manually build a docker container - at the time of writing, the plugin was having issues ...
 // Don't use for now ...
+// ant taskdef for simple component to identify the operating system being used
+import org.apache.tools.ant.taskdefs.condition.Os
 task buildDocker(type: Exec) {
     doFirst {
         copy {

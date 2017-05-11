@@ -29,9 +29,12 @@ import com.codingrodent.microservice.template.config.advice.RestAdvice;
 import com.codingrodent.microservice.template.constants.SystemConstants;
 import com.codingrodent.microservice.template.model.Fortune;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.slf4j.MDC;
 import org.springframework.http.*;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.*;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -44,6 +47,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 /**
  * Common code for controller tests
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@TestPropertySource(locations = "classpath:unit_test.properties")
 public abstract class MVCTestBase {
 
     protected final static String BAD_UUID = "abc-123";
@@ -53,12 +58,10 @@ public abstract class MVCTestBase {
     /**
      * Set logging system and subsystem names (Used in logback)
      */
-    @BeforeClass
-    public static void initialize() {
-        System.setProperty(SystemConstants.SYSTEM_NAME, "Unit_Test");
-        System.setProperty(SystemConstants.SUBSYSTEM_NAME, "Controller");
+    public MVCTestBase() {
+        MDC.put(SystemConstants.SYSTEM_NAME, "Unit");
+        MDC.put(SystemConstants.SUBSYSTEM_NAME, "Test");
     }
-
     /**
      * Generate a default mock MVC environment for a controller
      *

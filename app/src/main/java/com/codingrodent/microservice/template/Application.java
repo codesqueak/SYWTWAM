@@ -39,7 +39,7 @@ import org.springframework.context.annotation.Bean;
 public class Application {
 
     public static void main(String[] args) {
-        // Default system / subsystem names for logging
+        // Default system / subsystem names for logging - overridew with MDC.put();
         System.setProperty(SystemConstants.SYSTEM_NAME, "Template");
         System.setProperty(SystemConstants.SUBSYSTEM_NAME, "Spring");
         //

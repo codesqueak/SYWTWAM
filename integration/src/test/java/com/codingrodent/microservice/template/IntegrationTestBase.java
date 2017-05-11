@@ -25,11 +25,18 @@
 package com.codingrodent.microservice.template;
 
 import com.codingrodent.microservice.template.constants.SystemConstants;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * Common code for integration tests
  */
-public class IntegrationTestBase {
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(locations = "classpath:integration_test.properties")
+public abstract class IntegrationTestBase {
 
     public IntegrationTestBase() {
         System.setProperty(SystemConstants.SYSTEM_NAME, "IntTest");
