@@ -26,11 +26,10 @@ package com.codingrodent.microservice.template.service.impl;
 
 import com.codingrodent.microservice.template.entity.FortuneEntity;
 import com.codingrodent.microservice.template.model.*;
-import com.codingrodent.microservice.template.repository.api.*;
+import com.codingrodent.microservice.template.repository.api.ISyncFortuneRepository;
 import com.codingrodent.microservice.template.service.api.*;
 import com.codingrodent.microservice.template.utility.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import rx.Observable;
@@ -45,15 +44,14 @@ import static com.codingrodent.microservice.template.converter.Converter.*;
  * Business logic for Fortune information
  */
 @Service
-@Profile("prod")
 public class FortuneService implements IFortuneService<Fortune> {
 
     // Both sync and async implementations
     // Normally use only one but this is for demo purposes
     @Autowired
-    private CouchRepository repository;
-    @Autowired
-    private IAsync<FortuneEntity, UUID> asyncRepository;
+    private ISyncFortuneRepository<FortuneEntity, String> repository;
+    //    @Autowired
+    //    private IAsync<FortuneEntity, UUID> asyncRepository;
     @Autowired
     private ILogger logger;
 
@@ -93,12 +91,14 @@ public class FortuneService implements IFortuneService<Fortune> {
 
     @Override
     public Observable<Fortune> saveAsync(final UUID uuid, final Fortune fortune) {
-        return asyncRepository.saveAsync(toFortuneEntity.convert(uuid, fortune, Optional.empty())).map(toFortuneModel::convert);
+        //   return asyncRepository.saveAsync(toFortuneEntity.convert(uuid, fortune, Optional.empty())).map(toFortuneModel::convert);
+        throw new UnsupportedOperationException("Get an entity not implemented");
     }
 
     @Override
     public Observable<Fortune> loadAsync(final UUID uuid) {
-        return asyncRepository.findOneAsync(uuid).map(toFortuneModel::convert);
+        // return asyncRepository.findOneAsync(uuid).map(toFortuneModel::convert);
+        throw new UnsupportedOperationException("Get an entity not implemented");
     }
 
     /**

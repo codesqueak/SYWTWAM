@@ -44,7 +44,7 @@ import java.util.function.Function;
  */
 @Service
 @Profile("prod")
-public class FortuneRepository implements IAsync<FortuneEntity, UUID> {
+public class FortuneAsyncRepository implements IAsync<FortuneEntity, UUID> {
 
     private final Cluster cluster = CouchbaseCluster.create("localhost");
     private final Bucket bucket = cluster.openBucket("template", "bucketpassword");

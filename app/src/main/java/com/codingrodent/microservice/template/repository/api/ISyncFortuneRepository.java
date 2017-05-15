@@ -35,7 +35,7 @@ import java.util.List;
  * Let spring build basic repository - we don't have to supply a body for this
  */
 @NoRepositoryBean
-interface ISyncFortuneRepository<T, ID extends Serializable> extends PagingAndSortingRepository<T, ID> {
+public interface ISyncFortuneRepository<T, ID extends Serializable> extends PagingAndSortingRepository<T, ID> {
 
     /**
      * Returns a {@link List} of entities meeting the paging restriction provided in the {@code Pageable} object.

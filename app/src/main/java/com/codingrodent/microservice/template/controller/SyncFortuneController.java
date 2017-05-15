@@ -219,7 +219,7 @@ public class SyncFortuneController extends RestBase<Fortune> implements IFortune
     @Override
     public ResponseEntity<List<Resource<Fortune>>> listNamed(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
                                                              @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
-        return getListResponseEntity(fortuneService.listAll(page, size));
+        return getListResponseEntity(fortuneService.listNamed(page, size));
     }
 
     /**
@@ -232,7 +232,7 @@ public class SyncFortuneController extends RestBase<Fortune> implements IFortune
     @Override
     public ResponseEntity<List<Resource<Fortune>>> listAnon(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
                                                             @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
-        return getListResponseEntity(fortuneService.listAll(page, size));
+        return getListResponseEntity(fortuneService.listAnon(page, size));
     }
 
     /**
@@ -260,5 +260,5 @@ public class SyncFortuneController extends RestBase<Fortune> implements IFortune
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    private Supplier<ApplicationFaultException> badRecordCreation = () -> new ApplicationFaultException("Database did not return UUID on record creation");
+    private final Supplier<ApplicationFaultException> badRecordCreation = () -> new ApplicationFaultException("Database did not return UUID on record creation");
 }

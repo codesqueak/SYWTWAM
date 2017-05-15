@@ -22,24 +22,17 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template;
+package com.codingrodent.microservice.template.config;
 
-import com.codingrodent.microservice.template.constants.SystemConstants;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.annotation.*;
 
 /**
- * Common code for integration tests
+ * Consul configuration
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {"spring.cloud.consul.enabled=false", "spring.cloud.bus.enabled=false"})
-@TestPropertySource(locations = "classpath:integration_test.properties")
-public abstract class IntegrationTestBase {
+@Configuration
+@EnableDiscoveryClient
+@Profile("prod")
+public class ConsulConfig {
 
-    public IntegrationTestBase() {
-        System.setProperty(SystemConstants.SYSTEM_NAME, "IntTest");
-        System.setProperty(SystemConstants.SUBSYSTEM_NAME, "Spring");
-    }
 }
