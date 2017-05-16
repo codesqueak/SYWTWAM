@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.inject.Inject;
 import java.util.*;
 
-import static com.codingrodent.microservice.template.constants.SystemConstants.API_VERSION;
+import static com.codingrodent.microservice.template.constants.SystemConstants.*;
 import static org.springframework.http.HttpMethod.*;
 
 /**
@@ -73,12 +73,11 @@ public class SyncVersionController {
 
     // GET (200) - Recover version information
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Read version information", notes = "Version Information - For Demo Only -  Don't do this in a production system as it gives away " + "too much " +
-            "information")
+    @ApiOperation(value = "Read version information", notes = "Version Information - For Demo Only")
     @ApiResponses(value = { //
             @ApiResponse(code = 200, message = "Version information in body")})
     public ResponseEntity<Map<String, String>> read() {
-        metrics.inc("com.codingrodent.microservice.template.get");
+        metrics.inc(METRIC_VERSION_GET);
         return getResponse;
     }
 
@@ -86,7 +85,7 @@ public class SyncVersionController {
     @RequestMapping(method = RequestMethod.OPTIONS)
     @ApiOperation(value = "Querying the Available Operations", notes = "Request for information about the communication options available")
     public ResponseEntity<Void> options() {
-        metrics.inc("com.codingrodent.microservice.template.options");
+        metrics.inc(METRIC_VERSION_OPTIONS);
         return optionsResponse;
     }
 }

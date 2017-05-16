@@ -33,11 +33,11 @@ import java.util.function.Function;
 /**
  * Shared base functionality for Sync Services
  */
-public abstract class RestBase<V> {
+abstract class RestBase<V> {
 
     private final static String ETAG_WILDCARD = "\"*\"";
     protected final Function<String, Long> extractETag = v -> Long.parseLong(v.replace("\"", ""));
-    protected final Function<Long, String> makeETag = v -> "\"" + v + "\"";
+    private final Function<Long, String> makeETag = v -> "\"" + v + "\"";
 
     /**
      * Evaluate If-Match
@@ -67,7 +67,7 @@ public abstract class RestBase<V> {
      * @param modelVersion Resource entity being requested
      * @return Matching status
      */
-    protected boolean ifNoneMatch(final Optional<String> etag, final Optional<ModelVersion<V>> modelVersion) {
+    boolean ifNoneMatch(final Optional<String> etag, final Optional<ModelVersion<V>> modelVersion) {
         // basic checks - must have a field and a record to match
         if (!etag.isPresent() || (!modelVersion.isPresent()))
             return true; // can never match
@@ -83,16 +83,16 @@ public abstract class RestBase<V> {
      * Generate ETag header from version resource (if it exists) and then add any additionally defined headers
      *
      * @param modelVersion Source of version information
-     * @param args         Additional header keys and values
+     * @param additionalHeaders         Additional header keys and values
      * @return Headers with ETag set (if available) and customer values set
      */
-    protected HttpHeaders getETag(ModelVersion<?> modelVersion, String... args) {
+    HttpHeaders getETag(ModelVersion<?> modelVersion, String... additionalHeaders) {
         HttpHeaders headers = new HttpHeaders();
         // Add etag
         modelVersion.getVersion().ifPresent(version -> headers.setETag("\"" + version + "\""));
         // Add any others defined (args - key/value/key/value...key/value)
-        for (int p = 0; p < args.length; ) {
-            headers.set(args[p++], args[p++]);
+        for (int p = 0; p < additionalHeaders.length; ) {
+            headers.set(additionalHeaders[p++], additionalHeaders[p++]);
         }
         return headers;
     }

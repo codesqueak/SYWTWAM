@@ -29,18 +29,25 @@ import org.slf4j.*;
 import org.springframework.stereotype.Service;
 
 /**
- *
+ * Basic logging service
  */
 @Service
 public class LoggingService implements ILogger {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    /**
+     * @see ILogger#warn
+     */
     @Override
     public void warn(final String msg) {
         logger.warn(msg);
     }
 
+    /**
+     *
+     * @see ILogger#info
+     */
     @Override
     public void info(final String msg) {
         logger.info(msg);

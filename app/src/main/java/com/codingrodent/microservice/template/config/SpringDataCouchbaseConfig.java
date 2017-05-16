@@ -7,5 +7,5 @@ import org.springframework.data.couchbase.repository.config.EnableCouchbaseRepos
  * Example couchbase configuration data pulled from application.properties
  */
 @Configuration
-@EnableCouchbaseRepositories(basePackages = {"com.codingrodent.microservice.template.repository.impl"})
+@EnableCouchbaseRepositories(basePackages = {"com.codingrodent.microservice.template.repository.api"})
 public class SpringDataCouchbaseConfig {}

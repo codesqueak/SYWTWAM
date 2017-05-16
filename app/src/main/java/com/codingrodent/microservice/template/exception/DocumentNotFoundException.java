@@ -36,12 +36,4 @@ public class DocumentNotFoundException extends RuntimeException {
         super("Document not found. This may be temporary or permanent");
     }
 
-    /**
-     * Constructs an <code>DocumentNotFoundException</code> with the specified detail message.
-     *
-     * @param message the detail message.
-     */
-    public DocumentNotFoundException(String message) {
-        super(message);
-    }
 }

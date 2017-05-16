@@ -29,14 +29,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.*;
 
 /**
- *
+ * Base class for all model data
  */
 public abstract class ModelBase {
 
     @JsonIgnore
     private final Optional<UUID> uuid;
 
-    public ModelBase(final Optional<UUID> uuid) {
+    ModelBase(final Optional<UUID> uuid) {
         this.uuid = uuid;
     }
 

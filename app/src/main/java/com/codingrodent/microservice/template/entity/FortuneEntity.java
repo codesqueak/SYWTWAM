@@ -30,7 +30,7 @@ import org.springframework.data.annotation.Version;
 import org.springframework.data.couchbase.core.mapping.Document;
 
 /**
- * Contact persistence class
+ * Fortune persistence class
  */
 @Document
 public class FortuneEntity {

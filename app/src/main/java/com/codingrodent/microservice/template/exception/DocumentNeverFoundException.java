@@ -26,6 +26,7 @@ package com.codingrodent.microservice.template.exception;
 
 /**
  * Thrown to indicate that a document will never be found (REST).
+ * Useful instead if a 404 when using UUID's as key as you are unlikely to re-use a key
  */
 public class DocumentNeverFoundException extends RuntimeException {
 
@@ -36,12 +37,4 @@ public class DocumentNeverFoundException extends RuntimeException {
         super("Document not found. Considered permanent");
     }
 
-    /**
-     * Constructs an <code>DocumentNotFoundException</code> with the specified detail message.
-     *
-     * @param message the detail message.
-     */
-    public DocumentNeverFoundException(String message) {
-        super(message);
-    }
 }

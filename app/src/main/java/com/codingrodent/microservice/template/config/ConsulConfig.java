@@ -25,14 +25,13 @@
 package com.codingrodent.microservice.template.config;
 
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * Consul configuration
  */
 @Configuration
 @EnableDiscoveryClient
-@Profile("prod")
 public class ConsulConfig {
 
 }

@@ -30,10 +30,11 @@ import rx.Observable;
 import java.util.*;
 
 /**
- * Business logic for Fortune information
+ * Fortune service interface
  */
 public interface IFortuneService<M> {
-    // Async
+    // Async - TBD
+
     Observable<M> saveAsync(UUID uuid, Fortune fortune);
 
     Observable<M> loadAsync(UUID uuid);

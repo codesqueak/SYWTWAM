@@ -25,12 +25,12 @@
 package com.codingrodent.microservice.template.exception;
 
 /**
- * Thrown to indicate that an unexpected internal condition has occurred.
+ * Thrown to indicate that an unexpected internal condition has occurred. Usually results in a 500 response
  */
 public class ApplicationFaultException extends RuntimeException {
 
     /**
-     * Constructs an <code>DocumentNotFoundException</code> with the specified detail message.
+     * Constructs an <code>ApplicationFaultException</code> with the specified detail message.
      *
      * @param message the detail message.
      */

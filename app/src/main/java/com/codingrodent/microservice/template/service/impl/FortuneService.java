@@ -29,64 +29,63 @@ import com.codingrodent.microservice.template.model.*;
 import com.codingrodent.microservice.template.repository.api.ISyncFortuneRepository;
 import com.codingrodent.microservice.template.service.api.*;
 import com.codingrodent.microservice.template.utility.Utility;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import rx.Observable;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.codingrodent.microservice.template.converter.Converter.*;
 
 /**
- * Business logic for Fortune information
+ * Fortune service implementation
  */
 @Service
 public class FortuneService implements IFortuneService<Fortune> {
 
-    // Both sync and async implementations
-    // Normally use only one but this is for demo purposes
-    @Autowired
-    private ISyncFortuneRepository<FortuneEntity, String> repository;
-    //    @Autowired
-    //    private IAsync<FortuneEntity, UUID> asyncRepository;
-    @Autowired
-    private ILogger logger;
+    // Both sync and async implementations. Normally use only one but this is for demo purposes
 
-    // @Inject
-    //    public FortuneService(final ILogger logger, final ISyncFortuneRepository repository, final IAsync<FortuneEntity, UUID> asyncRepository) {
-    //    public FortuneService() {
-    //        this.repository = repository;
-    //        this.asyncRepository = asyncRepository;
-    //        this.logger = logger;
-    //    }
+    private final ISyncFortuneRepository<FortuneEntity, String> repository;
+    private final ILogger logger;
 
+    @Inject
+    public FortuneService(final ILogger logger, final ISyncFortuneRepository<FortuneEntity, String> repository) {
+        this.repository = repository;
+        this.logger = logger;
+    }
+
+    /**
+     * Initial loader - gives us some data to demonstrate with
+     *
+     * @throws IOException
+     */
     @PostConstruct
     public void fill() throws IOException {
         // Load default records
         InputStream s = getClass().getClassLoader().getResourceAsStream("fortune.json");
         FortuneElement[] fortunes = Utility.getObjectMapper().readValue(s, FortuneElement[].class);
-        for (FortuneElement element : fortunes) {
+
+        Arrays.stream(fortunes).forEach(element -> {
             if (!repository.exists(element.getKey().toString())) {
                 logger.info(element.getKey().toString() + " " + element.getText());
                 repository.save(new FortuneEntity(element.getKey().toString(), element.getText(), element.getAuthor().orElse("")));
             }
-        }
+        });
         logger.info("Preloaded fortunes:" + fortunes.length);
     }
 
     /**
-     * Convert entities to model equivalents
+     * Convert list of entities to model equivalents
      *
      * @param entityList List to convert
      * @return Converted list
      */
     private List<Fortune> getFortunes(final List<FortuneEntity> entityList) {
-        List<Fortune> result = new ArrayList<>(entityList.size());
-        entityList.forEach(entity -> result.add(toFortuneModel.convert(entity)));
-        return result;
+        return entityList.stream().map(toFortuneModel::convert).collect(Collectors.toList());
     }
 
     @Override

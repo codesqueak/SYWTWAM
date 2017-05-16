@@ -30,7 +30,7 @@ import com.codingrodent.microservice.template.model.Fortune;
 import java.util.*;
 
 /**
- * Converters to allow entity and model objects to be interchanged
+ * Converter functions to allow entity and model objects to be interchanged
  */
 public class Converter {
 

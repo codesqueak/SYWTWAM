@@ -25,12 +25,14 @@
 package com.codingrodent.microservice.template.exception;
 
 /**
- * Thrown to indicate that a request caused an internal conflict (REST).
+ * Thrown to indicate that a request has failed due to a precondition.
+ *
+ * This is most often thrown when using eTag's to control versioning
  */
 public class PreconditionFailedException extends RuntimeException {
 
     /**
-     * Constructs an <code>ConflictException</code> with the specified detail message.
+     * Constructs an <code>PreconditionFailedException</code> with the specified detail message.
      *
      * @param message the detail message.
      */

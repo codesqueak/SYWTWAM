@@ -36,9 +36,12 @@ public class SystemConstants {
     public final static String SUBSYSTEM_NAME = "SUBSYSTEM";
     // API Versions
     public final static String API_VERSION = "V1";
-    //Encoding
+    // Encoding
     public final static String CHAR_ENCODING = "UTF-8";
     public final static String CONTENT_TYPE = MediaType.APPLICATION_JSON_VALUE + ";charset=" + CHAR_ENCODING;
+    // Metrics
+    public final static String METRIC_VERSION_GET = "com.codingrodent.microservice.template.get";
+    public final static String METRIC_VERSION_OPTIONS = "com.codingrodent.microservice.template.options";
 
     private SystemConstants() {
         // Never need to make an instance of this class

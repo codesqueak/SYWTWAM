@@ -38,16 +38,25 @@ public class TemplateMetricsWriter implements MetricWriter {
         this.token = name;
     }
 
+    /**
+     * @see org.springframework.boot.actuate.metrics.writer.CounterWriter#increment
+     */
     @Override
     public void increment(final Delta<?> delta) {
         System.out.println(token + ":" + delta.getName() + "(increment) " + delta.getValue());
     }
 
+    /**
+     * @see org.springframework.boot.actuate.metrics.writer.CounterWriter#reset
+     */
     @Override
     public void reset(final String metricName) {
         System.out.println(token + ":" + "Reset metric: " + metricName);
     }
 
+    /**
+     * @see org.springframework.boot.actuate.metrics.writer.GaugeWriter#set
+     */
     @Override
     public void set(final Metric<?> value) {
         System.out.println(token + ":" + value.getName() + "(set) " + value.getValue());

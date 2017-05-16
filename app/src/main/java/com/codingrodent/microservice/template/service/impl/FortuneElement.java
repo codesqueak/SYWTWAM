@@ -29,7 +29,7 @@ import com.fasterxml.jackson.annotation.*;
 import java.util.*;
 
 /**
- * Fortune data record from initialization array
+ * Fortune data record from initialization array - used to set up default values
  */
 
 public class FortuneElement {

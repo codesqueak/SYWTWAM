@@ -32,7 +32,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Let spring build basic repository - we don't have to supply a body for this
+ * Additional sync repository access methods based on Couchbase views
  */
 @NoRepositoryBean
 public interface ISyncFortuneRepository<T, ID extends Serializable> extends PagingAndSortingRepository<T, ID> {

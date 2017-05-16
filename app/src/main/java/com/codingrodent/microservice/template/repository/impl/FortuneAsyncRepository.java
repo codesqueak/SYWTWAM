@@ -40,7 +40,7 @@ import java.util.UUID;
 import java.util.function.Function;
 
 /**
- * Simple example repository
+ * Simple example async repository
  */
 @Service
 @Profile("prod")
@@ -50,7 +50,6 @@ public class FortuneAsyncRepository implements IAsync<FortuneEntity, UUID> {
     private final Bucket bucket = cluster.openBucket("template", "bucketpassword");
     private final Function<Document, FortuneEntity> docToEntity = doc -> {
         String json = doc.content().toString();
-        FortuneEntity zz = null;
         try {
             return Utility.getObjectMapper().readValue(json, FortuneEntity.class);
         } catch (IOException e) {

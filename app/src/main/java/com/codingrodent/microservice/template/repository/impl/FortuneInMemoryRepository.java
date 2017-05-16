@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
- * In memory version of repository for when Couchbase is unavailable in the environment
+ * In memory version of repository for when Couchbase is unavailable in the environment - minimal implementation of required methods
  */
 @Profile({"test", "integration", "aws"})
 @Service
@@ -57,13 +57,13 @@ public class FortuneInMemoryRepository implements ISyncFortuneRepository<Fortune
 
     @Override
     public List<FortuneEntity> findAllNamed(final Pageable pageable) {
-        List<FortuneEntity> l = store.keySet().stream().map(key -> store.get(key)).filter(model -> !model.getAuthor().equals("")).collect(Collectors.toList());
+        List<FortuneEntity> l = store.keySet().stream().map(store::get).filter(model -> !model.getAuthor().equals("")).collect(Collectors.toList());
         return getFortunes(pageable.getPageNumber(), pageable.getPageSize(), l).getContent();
     }
 
     @Override
     public List<FortuneEntity> findAllAnon(final Pageable pageable) {
-        List<FortuneEntity> l = store.keySet().stream().map(key -> store.get(key)).filter(model -> model.getAuthor().equals("")).collect(Collectors.toList());
+        List<FortuneEntity> l = store.keySet().stream().map(store::get).filter(model -> model.getAuthor().equals("")).collect(Collectors.toList());
         return getFortunes(pageable.getPageNumber(), pageable.getPageSize(), l).getContent();
     }
 
@@ -74,18 +74,18 @@ public class FortuneInMemoryRepository implements ISyncFortuneRepository<Fortune
 
     @Override
     public Page<FortuneEntity> findAll(final Pageable pageable) {
-        List<FortuneEntity> l = store.keySet().stream().map(key -> store.get(key)).collect(Collectors.toList());
+        List<FortuneEntity> l = store.keySet().stream().map(store::get).collect(Collectors.toList());
         return getFortunes(pageable.getPageNumber(), pageable.getPageSize(), l);
     }
 
-    private Page<FortuneEntity> getFortunes(final int page, final int size, final List<FortuneEntity> l) {
+    private PageImpl<FortuneEntity> getFortunes(final int page, final int size, final List<FortuneEntity> l) {
         int start = page * size;
         if (start >= l.size())
-            return new PageImpl(Collections.EMPTY_LIST);
+            return new PageImpl<>(new ArrayList<>(0));
         int last = start + size;
         if (last > l.size())
             last = l.size();
-        return new PageImpl(l.subList(start, last));
+        return new PageImpl<>(l.subList(start, last));
     }
 
     /**
@@ -96,7 +96,7 @@ public class FortuneInMemoryRepository implements ISyncFortuneRepository<Fortune
      * @return the saved entity
      */
     @Override
-    public FortuneEntity save(final FortuneEntity entity) {
+    public <S extends FortuneEntity> S save(final S entity) {
         FortuneEntity original = store.get(entity.getId());
         long version = (null == original) ? 0L : entity.getVersion();
         original = new FortuneEntity(entity.getId(), entity.getText(), entity.getAuthor());
@@ -106,8 +106,7 @@ public class FortuneInMemoryRepository implements ISyncFortuneRepository<Fortune
         } catch (IllegalAccessException e) {
             throw new ApplicationFaultException("Unable to update version field");
         }
-        store.put(entity.getId(), original);
-        return original;
+        return (S) store.put(entity.getId(), original);
     }
 
     @Override

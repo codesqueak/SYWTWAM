@@ -25,11 +25,21 @@
 package com.codingrodent.microservice.template.service.api;
 
 /**
- * Centralized logging controller
+ * Logging service interface
  */
 public interface ILogger {
 
+    /**
+     * Write warning message
+     *
+     * @param message Message to write
+     */
     void warn(String message);
 
+    /**
+     * Write informational message
+     *
+     * @param message Message to write
+     */
     void info(String message);
 }

@@ -5,7 +5,7 @@ import rx.Observable;
 import java.io.Serializable;
 
 /**
- *
+ * Async aceess interface for repositories
  */
 public interface IAsync<T, ID extends Serializable> {
 
