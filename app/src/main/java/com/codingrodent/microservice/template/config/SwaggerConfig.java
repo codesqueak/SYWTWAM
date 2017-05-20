@@ -52,7 +52,7 @@ public class SwaggerConfig {
                 // Sets information to be displayed in the API resource listing
                 .apiInfo(apiInfo())
                 // Tags used to identify components - purely documentation
-                .tags(new Tag("sync", "Synch demo interface"), //
+                .tags(new Tag("sync", "Sync demo interface"), //
                       new Tag("version", "Async demo interface"), //
                       new Tag("async", "Async demo interface"))
                 // Model substitution rule

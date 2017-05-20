@@ -38,9 +38,16 @@ This will pull down all required libraries, compile and test the application.
 ## Run
 
 
-For Windows: ```java -jar build/libs/MicroserviceTemplate-0.0.1-SNAPSHOT.jar```
+For Windows: ```java -Dspring.cloud.consul.enabled=false -Dspring.cloud.bus.enabled=false -jar app/build/libs/SYWTWAM-0.2.1-SNAPSHOT-BOOT.jar --spring.profiles.active=aws```
 
-For Linux: ```java -jar build\libs\MicroserviceTemplate-0.0.1-SNAPSHOT.jar```
+For Linux: ```java -Dspring.cloud.consul.enabled=false -Dspring.cloud.bus.enabled=false -jar app/build\libs\SYWTWAM-0.2.1-SNAPSHOT-BOOT.jar --spring.profiles.active=aws```
+
+### Notes
+
+If you have configured Couchbase, you can run without the **--spring.profiles.active=aws** option
+
+If you have configured Consul, you can run without the **-Dspring.cloud.consul.enabled=false -Dspring.cloud.bus.enabled=false** options
+
 
 ## Play
 
