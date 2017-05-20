@@ -24,21 +24,21 @@ def test() {
 def junitreport() {
     stage('JUnit report')
             {
-                step([$class: 'JUnitResultArchiver', testResults: 'build/test-results/test/TEST-*.xml'])
+                step([$class: 'JUnitResultArchiver', testResults: 'app/build/test-results/test/TEST-*.xml'])
             }
 }
 
 def findbugsreport() {
     stage('Findbugs report')
             {
-                step([$class: 'FindBugsPublisher', pattern: 'build/reports/findbugs/main.xml'])
+                step([$class: 'FindBugsPublisher', pattern: 'app/build/reports/findbugs/main.xml'])
             }
 }
 
 def jacocoreport() {
     stage('Jacoco report')
             {
-                step([$class: 'JacocoPublisher', execPattern: 'build/jacoco/jacocoTest.exec', pattern: 'build/jacoco/classpathdumps/com/codingrodent/**/*.class'])
+                step([$class: 'JacocoPublisher', execPattern: 'app/build/jacoco/jacocoTest.exec', pattern: 'app/build/jacoco/classpathdumps/com/codingrodent/**/*.class'])
             }
 }
 

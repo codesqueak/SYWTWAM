@@ -61,7 +61,7 @@ public class FortuneService implements IFortuneService<Fortune> {
     /**
      * Initial loader - gives us some data to demonstrate with
      *
-     * @throws IOException
+     * @throws IOException Can't find the demo data for some reason - not good !
      */
     @PostConstruct
     public void fill() throws IOException {
