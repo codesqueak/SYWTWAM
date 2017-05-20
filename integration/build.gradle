@@ -35,54 +35,43 @@ buildscript {
         mavenCentral()
         mavenLocal()
         jcenter()
-        maven {
-            url 'https://repo.spring.io/libs-milestone'
-        }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.3.RELEASE")
-        classpath('se.transmode.gradle:gradle-docker:1.2')
     }
 }
 
-description = "So You Want To Write A Microservice"
+description = "So You Want To Write A Microservice (Integration)"
 
-// various global project settings
-allprojects {
-    group = projectGroup
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
 
-    apply plugin: 'java'
 
-    // set the java version
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
+bootRepackage {
+    enabled = false
 }
 
-subprojects {
+// execute junit tests - add extra info to the test task
+test {
+    maxParallelForks = 1
 
+    // set heap size for the test JVM(s)
+    minHeapSize = "256m"
+    maxHeapSize = "256m"
 
-// repos to find components in
-    repositories {
-        mavenCentral()
-        mavenLocal()
-        jcenter()
-        maven {
-            url 'https://repo.spring.io/libs-milestone'
-        }
-    }
+    // and limit metaspace (no more max perm gen in Java 8)
+    jvmArgs '-XX:MaxMetaspaceSize=256m'
+
+    filter
+            {
+                includeTestsMatching "com.codingrodent.microservice.template.*"
+            }
 }
 
-build.dependsOn project(':app').tasks.build
-
-// repos to find components in
-repositories {
-    mavenCentral()
-    mavenLocal()
-    jcenter()
+// In this section you declare the dependencies for your production and test code
+dependencies {
+    compile project(path: ':app')
 }
 
-// ... and finally,  the gradle version to use
-task wrapper(type: Wrapper) {
-    gradleVersion = '3.5'
-}
+
 

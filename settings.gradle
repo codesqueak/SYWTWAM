@@ -1,2 +1,5 @@
+rootProject.name = 'SYWTWAM'
 
+include 'app'
+include 'integration'
 

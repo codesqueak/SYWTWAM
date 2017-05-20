@@ -4,18 +4,8 @@ What you need to do to build this project
 
 ## Install
 
-The application requires that the [Java 8 JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) and [Couchbase](https://www.couchbase.com/) are 
-installed. Couchbase is used as the storage engine in the examples.
-
-Once Couchbase has been installed, create a Data Bucket named **template** with the password **password**
-
-These settings may be changed by modifying the following values in application.properties
-```
-spring.couchbase.bucket.name=template
-spring.couchbase.bucket.password=password
-```
-
-If Windows is being used, [git](https://www.atlassian.com/git/tutorials/install-git/windows) will need to be installed.
+The application requires that the [Java 8 JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) is
+installed. If Windows is being used, [git](https://www.atlassian.com/git/tutorials/install-git/windows) will also need to be installed.
 
 
 ## Clone
@@ -38,9 +28,16 @@ This will pull down all required libraries, compile and test the application.
 ## Run
 
 
-For Windows: ```java -jar build/libs/MicroserviceTemplate-0.0.1-SNAPSHOT.jar```
+For Windows: ```java -Dspring.cloud.consul.enabled=false -Dspring.cloud.bus.enabled=false -jar app/build/libs/SYWTWAM-0.2.1-SNAPSHOT-BOOT.jar --spring.profiles.active=aws```
 
-For Linux: ```java -jar build\libs\MicroserviceTemplate-0.0.1-SNAPSHOT.jar```
+For Linux: ```java -Dspring.cloud.consul.enabled=false -Dspring.cloud.bus.enabled=false -jar app/build\libs\SYWTWAM-0.2.1-SNAPSHOT-BOOT.jar --spring.profiles.active=aws```
+
+### Notes
+
+If you have configured Couchbase, you can run without the **--spring.profiles.active=aws** option
+
+If you have configured Consul, you can run without the **-Dspring.cloud.consul.enabled=false -Dspring.cloud.bus.enabled=false** options
+
 
 ## Play
 
