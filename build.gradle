@@ -83,8 +83,8 @@ repositories {
     jcenter()
 }
 
-// manually build a docker container - at the time of writing, the plugin was having issues ...
-// Don't use for now ...
+// manually build a docker container
+//
 // ant taskdef for simple component to identify the operating system being used
 import org.apache.tools.ant.taskdefs.condition.Os
 task buildDocker(type: Exec) {

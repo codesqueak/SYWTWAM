@@ -99,7 +99,7 @@ If you just want to see the microservice built and running, head over to the [qu
 |-----------------|---------------------|:---------------------:|:---------------------:|
 | CSCI store | [Artifactory](https://www.jfrog.com/artifactory/) / [Sonatype Nexus](https://www.sonatype.com/nexus-repository-sonatype) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Build | [Puppet](https://puppet.com/) / [Ansible](https://www.ansible.com)  | ![alt text](docs/images/cross.png "Not Implemented") |
-| Containers | [Docker](https://www.docker.com/)  | ![alt text](docs/images/cross.png "Not Implemented") |
+| Containers | [Docker](https://www.docker.com/)  | ![alt text](docs/images/tick.png "Implemented") | [Deployment](docs/docker.md) |
 | Orchestration | [Kubernetes](http://kubernetes.io/) / [Nomad](https://www.hashicorp.com/blog/nomad.html) / [Docker Swarm](https://docs.docker.com/swarm/)  | ![alt text](docs/images/cross.png "Not Implemented") |
 
 
