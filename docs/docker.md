@@ -9,8 +9,12 @@ Docker can be installed on Linux, Windows and Mac platforms.  Linux is by far th
 
 * Windows (Before 10) - [Here](https://docs.docker.com/toolbox/toolbox_install_windows/) 
 * Windows (Version 10) - [Here](https://docs.docker.com/docker-for-windows/install/) 
-* Linux - ```sudo yum install docker``` or ```sudo apt-get docker``` depending on distro (You may need to google for it)
+* Linux - ```sudo yum install docker``` or ```sudo apt-get docker``` depending on distro (You may need to Google for specific distro information)
 * Mac - [Here](https://docs.docker.com/docker-for-mac/)
+
+# Getting Started
+
+Far too comples to explain here! - Try the [guide](https://docs.docker.com/get-started/#setup) on the Docker site.
 
 ## Generate a Docker Image
 
@@ -19,7 +23,7 @@ Spring has a detailed usage guide [here](https://spring.io/guides/gs/spring-boot
 
 ## Dockerfile
 
-The file used to define the Docker image build is defined as
+The file used to define the Docker image build in this project is:
 
 ```
 FROM frolvlad/alpine-oraclejdk8:slim
@@ -77,7 +81,7 @@ Now we have an image, running it is as simple as the following command:
 docker run -d -p 8081:8081 sywtwam
 ```
 
-This will start execution, in detached mode (-d) with internal port 8081 mapped to port 8081 externally (-p).  Check that the everything is running with:
+This will start execution, in detached mode (-d) with internal port 8081 mapped to port 8081 externally (-p).  To check that the everything is running use:
 ```
 docker ps
 ```
