@@ -10,8 +10,8 @@ live environment is a trivial task.
 This project sets out to demonstrate a group of possible technologies (1) working together to build and deploy a **real** microservice. As the project 
 proceeds, this list will change, technologies will be substituted and I will modify things in the light of experience.
 
-(1) Only one example of each. I'm not doing every tool, framework and language in existence. Life is too short to ~~follow new JavaScript frameworks~~ 
-try every possible combination.
+*(1) Only one example of each. I'm not doing every tool, framework and language in existence. Life is too short to ~~follow new JavaScript frameworks~~ 
+try every possible combination.*
 
 To give you an idea of the problem, this is my basic list of things to understand with a view to building and deploying a production ready microservice, 
 using [Spring](https://spring.io/) / [Java](https://www.java.com/en/) and [AWS](https://aws.amazon.com/).
