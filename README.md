@@ -26,7 +26,7 @@ If you just want to see the microservice built and running, head over to the [qu
 
 ## Implementation Technology
 
-| Task            | Possible Implementation Technology  | Status | Doc |
+| Task            | Possible Implementation Technology  | Status | Documentation |
 |-----------------|---------------------|:---------------------:|:---------------------:|
 | Basic framework | [SpringBoot](http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)| ![alt text](docs/images/tick.png "Implemented") | [Framework](docs/framework.md) |
 | Configuration | [Spring](http://spring.io/) | ![alt text](docs/images/tick.png "Implemented") |
@@ -53,7 +53,7 @@ If you just want to see the microservice built and running, head over to the [qu
 
 
 ## Test Test Test ... !
-| Task            | Possible Implementation Technology  | Status | Doc |
+| Task            | Possible Implementation Technology  | Status | Documentation |
 |-----------------|---------------------|:---------------------:|:---------------------:|
 | Build | [Maven](https://maven.apache.org/) / [Gradle](https://gradle.org/)  | ![alt text](docs/images/tick.png "Implemented") |
 | Unit test | [JUnit](http://junit.org/junit4/) | ![alt text](docs/images/tick.png "Implemented") |
@@ -70,7 +70,7 @@ If you just want to see the microservice built and running, head over to the [qu
 
 
 ## Infrastructure 
-| Task            | Possible Implementation Technology  | Status | Doc |
+| Task            | Possible Implementation Technology  | Status | Documentation |
 |-----------------|---------------------|:---------------------:|:---------------------:|
 | Cloud | [AWS](https://aws.amazon.com/) ... There are others ... :) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Firewall | Loads to choose from  |  ![alt text](docs/images/cross.png "Not Implemented") |
@@ -81,7 +81,7 @@ If you just want to see the microservice built and running, head over to the [qu
 
 
 ## Environment 
-| Task            | Possible Implementation Technology  | Status | Doc |
+| Task            | Possible Implementation Technology  | Status | Documentation |
 |-----------------|---------------------|:---------------------:|:---------------------:|
 | Data storage / persistence | [MongoDB](https://www.mongodb.com/) / [Coucbase](http://www.couchbase.com/) / [PostgrSQL](https://www.postgresql.org/)  | ![alt text](docs/images/cross.png "Not Implemented") |
 | Cache | [Hazelcast](https://hazelcast.com/) / [memcached](https://memcached.org/)  | ![alt text](docs/images/cross.png "Not Implemented") |
@@ -95,7 +95,7 @@ If you just want to see the microservice built and running, head over to the [qu
 
 
 ## Deployment
-| Task            | Possible Implementation Technology  | Status | Doc |
+| Task            | Possible Implementation Technology  | Status | Documentation |
 |-----------------|---------------------|:---------------------:|:---------------------:|
 | CSCI store | [Artifactory](https://www.jfrog.com/artifactory/) / [Sonatype Nexus](https://www.sonatype.com/nexus-repository-sonatype) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Build | [Puppet](https://puppet.com/) / [Ansible](https://www.ansible.com)  | ![alt text](docs/images/cross.png "Not Implemented") |
