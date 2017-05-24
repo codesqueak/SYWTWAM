@@ -64,7 +64,7 @@ If you just want to see the microservice built and running, head over to the [qu
 | Security audit | [Coverity](http://www.coverity.com/products/code-advisor/) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Code quality | [PMD](https://pmd.github.io/) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Static analysis | [findbugs](http://findbugs.sourceforge.net/) | ![alt text](docs/images/cross.png "Not Implemented") |
-| CI | [Jenkins](https://jenkins.io/) / [Bamboo](https://www.atlassian.com/software/bamboo) | ![alt text](docs/images/cross.png "Not Implemented") |
+| CI | [Jenkins](https://jenkins.io/) / [Bamboo](https://www.atlassian.com/software/bamboo) | ![alt text](docs/images/tick.png "Implemented") | [Config](docs/ci.md) |
 | Mocking | [Mockito](http://site.mockito.org/) / [EasyMock](http://site.mockito.org/) ... and all the others | ![alt text](docs/images/tick.png "Implemented") |
 | Mock Services | [WireMock](http://wiremock.org/) | ![alt text](docs/images/tick.png "Implemented") |
 
@@ -88,7 +88,7 @@ If you just want to see the microservice built and running, head over to the [qu
 | Logging | [ELK (Elastic search / Logstash / Kibana)](https://www.elastic.co/webinars/introduction-elk-stack)  | ![alt text](docs/images/cross.png "Not Implemented") |
 | Message bus | [RabbitMQ](https://www.rabbitmq.com/)   | ![alt text](docs/images/cross.png "Not Implemented") |
 | Event bus  |  | ![alt text](docs/images/cross.png "Not Implemented") |
-| Configuration | [Consul](https://www.consul.io/)  | ![alt text](docs/images/tick.png "Implemented") | [Config](docs/config.md)
+| Configuration | [Consul](https://www.consul.io/)  | ![alt text](docs/images/tick.png "Implemented") | [Config](docs/config.md) |
 | Authentication | [OAuth2](https://oauth.net/2/)  | ![alt text](docs/images/cross.png "Not Implemented") |
 | Monitoring and analytics | [New Relic](https://newrelic.com/) / [AppDynamics](https://www.appdynamics.com/)  | ![alt text](docs/images/cross.png "Not Implemented") |
 | Service discovery | [Eureka](https://github.com/Netflix/eureka)  | ![alt text](docs/images/cross.png "Not Implemented") |
