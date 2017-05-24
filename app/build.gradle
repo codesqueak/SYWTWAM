@@ -184,6 +184,11 @@ tasks.withType(FindBugs) {
 check {
     dependsOn jacocoTestReport
 }
+//we are using undertow so remove Tomcat support
+configurations {
+    compile.exclude module: "spring-boot-starter-tomcat"
+}
+
 
 // In this section you declare the dependencies for your production and test code
 dependencies {

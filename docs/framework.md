@@ -39,6 +39,10 @@ This ‘Starter’ supplies utilities, libraries and annotations to help in test
 6. [JSONassert](http://jsonassert.skyscreamer.org/) — An assertion library for JSON.
 7. [JsonPath](https://github.com/jayway/JsonPath) — XPath for JSON.
 
+## spring-boot-starter-aop
+
+This Starter supplies suport for aspect-oriented programming with Spring AOP and AspectJ.  This is used in support of other components
+
 ## Gradle
 
 The build system for the project is [Gradle](https://gradle.org/).  To include the starters, the following dependencies are specified:
@@ -46,10 +50,11 @@ The build system for the project is [Gradle](https://gradle.org/).  To include t
 ```groovy
 dependencies {
     // Spring boot
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.4.3.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow', version: '1.4.3.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '1.4.3.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.4.3.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.5.3.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow', version: '1.5.3.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '1.5.3.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.5.3.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '1.5.3.RELEASE'
     // ...
     }
 ```
