@@ -91,7 +91,7 @@ If you just want to see the microservice built and running, head over to the [qu
 | Configuration | [Consul](https://www.consul.io/)  | ![alt text](docs/images/tick.png "Implemented") | [Config](docs/config.md) |
 | Authentication | [OAuth2](https://oauth.net/2/)  | ![alt text](docs/images/cross.png "Not Implemented") |
 | Monitoring and analytics | [New Relic](https://newrelic.com/) / [AppDynamics](https://www.appdynamics.com/)  | ![alt text](docs/images/cross.png "Not Implemented") |
-| Service discovery | [Eureka](https://github.com/Netflix/eureka)  | ![alt text](docs/images/cross.png "Not Implemented") |
+| Service discovery | [Eureka](https://github.com/Netflix/eureka) / [Consul](https://www.consul.io/)  | ![alt text](docs/images/cross.png "Not Implemented") |
 
 
 ## Deployment
