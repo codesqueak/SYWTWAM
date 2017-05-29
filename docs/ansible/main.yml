@@ -1,5 +1,16 @@
 ---
 #
+# Hosts file in /etc/ansible/hosts
+# Can override with -i
+#
+# Need to set up SSH first
+# ssh-keygen -t rsa
+# ssh-copy-id -i ~/.ssh/id_rsa.pub $remote_user@$remote_host
+#
+# Example command using sudo
+# ansible all -a 'yum update -y'  --become --become-user=root --ask-become-pass --key-file=~/.ssh/id_rsa_ansible
+#
+#
 # RPi custom setup
 #
 # account: pi/raspberry
@@ -7,9 +18,6 @@
 # sudo apt-get install xrdp
 # sudo apt-get install vnc4server
 #
-# Need to set up SSH first
-# ssh-keygen -t rsa
-# ssh-copy-id -i ~/.ssh/id_rsa.pub $remote_user@$remote_host
 #
 # ansible-playbook main.yml -b
 #

@@ -31,7 +31,7 @@ If you just want to see the microservice built and running, head over to the [qu
 | Basic framework | [SpringBoot](http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)| ![alt text](docs/images/tick.png "Implemented") | [Framework](docs/framework.md) |
 | Configuration | [Spring](http://spring.io/) | ![alt text](docs/images/tick.png "Implemented") |
 | Async services | [RxJava](https://github.com/ReactiveX/RxJava) | ![alt text](docs/images/cross.png "Not Implemented") |
-| Sync services | [Java](https://www.java.com)  | ![alt text](docs/images/tick.png "Implemented") |
+| Sync services | [Java](https://www.java.com)  | ![alt text](docs/images/tick.png "Implemented") | [Sync](docs/sync.md) |
 | API Framework /  Documentation | [Swagger](http://swagger.io/) / [SpringFox](http://springfox.github.io/springfox/)| ![alt text](docs/images/tick.png "Implemented") |
 | Error handling |  | ![alt text](docs/images/cross.png "Not Implemented") |
 | Validation | [JSR303 (Hibernate Validator)](http://hibernate.org/validator/) | ![alt text](docs/images/cross.png "Not Implemented") |
