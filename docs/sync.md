@@ -58,15 +58,22 @@ package com.codingrodent.microservice.template.controller;
 @RestController
 @Api(tags = "sync", value = "syncfortune", description = "Endpoint for fortune management")
 @RequestMapping("/sync/fortune/" + API_VERSION)
-public class SyncFortuneController extends RestBase<Fortune> implements IFortune<UUID, Fortune> {
+public class SyncFortuneController extends RestBase<Fortune> implements IFortune<UUID, Fortune> {}
 ```
+Where the Key type is UUID and the Value type is Fortune.  The Fortune class is annotated to transformed to / from JSON.  Spring can manage this translation process automatically
+which makes sending and receiving JSON request / response bodies a trivial process.
+
+## A Brief Overview of Annotations Used
+
+### Class Level Definition
+
 *@RestController* - Tell Spring this is a specific controller for handling a RESTful web service
 
 *@Api* - Describe the service to Swagger
 
-*@RequestMapping* - Define the URI on which this service resides
+### Method Level Definition
 
-### Brief Overview of Annotations Used
+*@RequestMapping* - Define the URI on which this service resides
 
 *@ApiParam* - Describe the parameter to Swagger
 
