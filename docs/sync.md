@@ -79,7 +79,7 @@ which makes sending and receiving JSON request / response bodies a trivial proce
 
 *@PathVariable* - Map a value contained in a path to a parameter in the method call, e.g. http://myapp.com/my/rest/service/{mapthisvalue}
 
-*@RequestHeader* - Map a value contained in a header field to a parameter in the method call, e.g. Get a an eTag value
+*@RequestHeader* - Map a value contained in a header field to a parameter in the method call, e.g. Get a an eTag value from the header field
 
 *@RequestBody* - Map a value contained in a request body to a parameter in the method call. Often used to transfer a JSON document to a matching class
 
