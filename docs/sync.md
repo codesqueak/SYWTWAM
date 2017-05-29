@@ -60,7 +60,7 @@ package com.codingrodent.microservice.template.controller;
 @RequestMapping("/sync/fortune/" + API_VERSION)
 public class SyncFortuneController extends RestBase<Fortune> implements IFortune<UUID, Fortune> {}
 ```
-Where the Key type is UUID and the Value type is Fortune.  The Fortune class is annotated to transformed to / from JSON.  Spring can manage this translation process automatically
+Where the Key type is UUID and the Value type is Fortune.  The Fortune class is annotated to be transformed to / from JSON.  Spring can manage this translation process automatically
 which makes sending and receiving JSON request / response bodies a trivial process.
 
 ## A Brief Overview of Annotations Used
@@ -71,9 +71,9 @@ which makes sending and receiving JSON request / response bodies a trivial proce
 
 *@Api* - Describe the service to Swagger
 
-### Method Level Definition
-
 *@RequestMapping* - Define the URI on which this service resides
+
+### Method Level Definition
 
 *@ApiParam* - Describe the parameter to Swagger
 
