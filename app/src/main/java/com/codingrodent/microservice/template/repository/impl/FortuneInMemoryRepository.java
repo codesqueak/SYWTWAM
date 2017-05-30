@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
  */
 @Profile({"test", "integration", "aws"})
 @Service
-public class FortuneInMemoryRepository implements ISyncFortuneRepository<FortuneEntity, String> {
+public class FortuneInMemoryRepository implements ISyncFortuneRepository<FortuneEntity> {
 
     private final ConcurrentHashMap<String, FortuneEntity> store = new ConcurrentHashMap<>();
     private final Field versionField;

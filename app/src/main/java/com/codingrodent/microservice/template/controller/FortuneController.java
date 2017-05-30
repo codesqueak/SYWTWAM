@@ -48,13 +48,13 @@ import static org.springframework.http.HttpMethod.*;
 @RestController
 @Api(tags = "sync", value = "syncfortune", description = "Endpoint for fortune management")
 @RequestMapping("/sync/fortune/" + API_VERSION)
-public class SyncFortuneController extends RestBase<Fortune> implements IFortune<UUID, Fortune> {
+public class FortuneController extends RestBase<Fortune> implements IFortune<UUID, Fortune> {
 
     private final static Set<HttpMethod> ALLOWED_OPTIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(GET, HEAD, POST, PUT, PATCH, DELETE)));
     private final IFortuneService<Fortune> fortuneService;
 
     @Inject
-    public SyncFortuneController(final IFortuneService<Fortune> fortuneService) {
+    public FortuneController(final IFortuneService<Fortune> fortuneService) {
         this.fortuneService = fortuneService;
     }
 
@@ -242,7 +242,7 @@ public class SyncFortuneController extends RestBase<Fortune> implements IFortune
      * @return Link to key
      */
     private Link getRelLink(final UUID uuid) {
-        return linkTo(methodOn(SyncFortuneController.class).read(uuid, Optional.empty())).withSelfRel();
+        return linkTo(methodOn(FortuneController.class).read(uuid, Optional.empty())).withSelfRel();
     }
 
     /**

@@ -50,7 +50,7 @@ public class FortuneServiceTest extends MVCTestBase {
     private final static String BASE = "/sync/fortune/" + API_VERSION + "/";
     //
     private ModelVersion<Fortune> modelVersion;
-    private SyncFortuneController controller;
+    private FortuneController controller;
     private Fortune fortune, fortuneWithUUID;
     @Mock
     private IFortuneService<Fortune> fortuneService;
@@ -60,7 +60,7 @@ public class FortuneServiceTest extends MVCTestBase {
         fortune = new Fortune("A fortune", Optional.of("An author"));
         fortuneWithUUID = new Fortune("A fortune with uuid", Optional.of("An author with uuid"), Optional.of(UUID.randomUUID()));
         modelVersion = new ModelVersion<>(fortune, Optional.of(12345L));
-        controller = new SyncFortuneController(fortuneService);
+        controller = new FortuneController(fortuneService);
     }
 
     @Test

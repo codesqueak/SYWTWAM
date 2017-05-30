@@ -31,7 +31,6 @@ import com.codingrodent.microservice.template.service.api.*;
 import com.codingrodent.microservice.template.utility.Utility;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import rx.Observable;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -47,13 +46,11 @@ import static com.codingrodent.microservice.template.converter.Converter.*;
 @Service
 public class FortuneService implements IFortuneService<Fortune> {
 
-    // Both sync and async implementations. Normally use only one but this is for demo purposes
-
-    private final ISyncFortuneRepository<FortuneEntity, String> repository;
+    private final ISyncFortuneRepository<FortuneEntity> repository;
     private final ILogger logger;
 
     @Inject
-    public FortuneService(final ILogger logger, final ISyncFortuneRepository<FortuneEntity, String> repository) {
+    public FortuneService(final ILogger logger, final ISyncFortuneRepository<FortuneEntity> repository) {
         this.repository = repository;
         this.logger = logger;
     }
@@ -86,18 +83,6 @@ public class FortuneService implements IFortuneService<Fortune> {
      */
     private List<Fortune> getFortunes(final List<FortuneEntity> entityList) {
         return entityList.stream().map(toFortuneModel::convert).collect(Collectors.toList());
-    }
-
-    @Override
-    public Observable<Fortune> saveAsync(final UUID uuid, final Fortune fortune) {
-        //   return asyncRepository.saveAsync(toFortuneEntity.convert(uuid, fortune, Optional.empty())).map(toFortuneModel::convert);
-        throw new UnsupportedOperationException("Get an entity not implemented");
-    }
-
-    @Override
-    public Observable<Fortune> loadAsync(final UUID uuid) {
-        // return asyncRepository.findOneAsync(uuid).map(toFortuneModel::convert);
-        throw new UnsupportedOperationException("Get an entity not implemented");
     }
 
     /**

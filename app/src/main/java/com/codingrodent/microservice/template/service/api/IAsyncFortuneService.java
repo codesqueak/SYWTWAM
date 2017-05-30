@@ -22,36 +22,22 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.entity;
+package com.codingrodent.microservice.template.service.api;
 
-import com.couchbase.client.java.repository.annotation.Field;
-import com.fasterxml.jackson.annotation.*;
-import org.springframework.data.couchbase.core.mapping.Document;
+import com.codingrodent.microservice.template.model.Fortune;
+import rx.Observable;
+
+import java.util.UUID;
 
 /**
- * Fortune persistence class
+ * Fortune service interface - Async
  */
-@Document
-public class FortuneEntity extends EntityBase {
+public interface IAsyncFortuneService<M> {
 
-    @Field
-    private final String text;
-    @Field
-    private final String author;
+    public Observable<Fortune> saveAsync(final UUID uuid, final Fortune fortune);
 
-    @JsonCreator
-    public FortuneEntity(@JsonProperty("id") final String id, @JsonProperty("text") final String text, @JsonProperty("author") final String author) {
-        super(id);
-        this.text = text;
-        this.author = author;
-    }
+    public Observable<Fortune> loadAsync(final UUID uuid);
 
-    public String getText() {
-        return text;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
+    public Observable<Fortune> findAllAsync();
 
 }

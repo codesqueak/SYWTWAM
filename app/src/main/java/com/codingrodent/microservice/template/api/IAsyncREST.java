@@ -24,12 +24,14 @@
  */
 package com.codingrodent.microservice.template.api;
 
+import com.codingrodent.microservice.template.model.Fortune;
 import io.swagger.annotations.*;
+import org.springframework.hateoas.Resource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Simple async REST controller default implementation
@@ -111,6 +113,24 @@ public interface IAsyncREST<K, V> {
             @ApiResponse(code = 404, message = "No matching entity exists")})
     default DeferredResult<ResponseEntity<Void>> patch(@RequestBody V value) {
         throw new UnsupportedOperationException("Patch not implemented");
+    }
+
+    // Collections
+
+    /**
+     * GET - Requests data from a specified resource
+     *
+     * @return Return selected entity or 'Not Modified' if version matched
+     */
+    @RequestMapping(path = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Read all entities", notes = "Retrieve all entities in a paged manner if required", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses(value = { //
+            @ApiResponse(code = 200, message = "OK, response entity in body"), //
+            @ApiResponse(code = 304, message = "Not modified"), //
+            @ApiResponse(code = 410, message = "No matching entity exists"), //
+            @ApiResponse(code = 412, message = "Precondition Failed")})
+    default DeferredResult<List<Resource<Fortune>>> listAll() {
+        throw new UnsupportedOperationException("List not implemented");
     }
 
 }

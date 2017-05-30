@@ -24,7 +24,28 @@
  */
 package com.codingrodent.microservice.template.entity;
 
-public abstract class EntityBase {
+import com.couchbase.client.java.repository.annotation.Id;
+import org.springframework.data.annotation.Version;
 
-    public abstract String getId();
+/**
+ * Base class for all entities - holds key and version information used by Spring Data
+ */
+public abstract class EntityBase {
+    @Id
+    private final String id;
+
+    @Version
+    private long version;
+
+    public EntityBase(final String id) {
+        this.id = id;
+    }
+
+    public long getVersion() {
+        return version;
+    }
+
+    public String getId() {
+        return id;
+    }
 }

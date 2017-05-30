@@ -24,8 +24,7 @@
  */
 package com.codingrodent.microservice.template.service.api;
 
-import com.codingrodent.microservice.template.model.*;
-import rx.Observable;
+import com.codingrodent.microservice.template.model.ModelVersion;
 
 import java.util.*;
 
@@ -33,13 +32,6 @@ import java.util.*;
  * Fortune service interface
  */
 public interface IFortuneService<M> {
-    // Async - TBD
-
-    Observable<M> saveAsync(UUID uuid, Fortune fortune);
-
-    Observable<M> loadAsync(UUID uuid);
-
-    // Sync
 
     /**
      * Create an entity

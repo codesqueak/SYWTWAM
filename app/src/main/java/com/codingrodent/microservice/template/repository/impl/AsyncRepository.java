@@ -30,11 +30,14 @@ import com.codingrodent.microservice.template.utility.Utility;
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.document.*;
 import com.couchbase.client.java.document.json.JsonObject;
+import com.couchbase.client.java.query.AsyncN1qlQueryResult;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import rx.Observable;
 
 import java.io.IOException;
 import java.util.function.Function;
+
+import static com.couchbase.client.java.query.Select.select;
 
 /**
  * Simple example async repository
@@ -45,6 +48,8 @@ public abstract class AsyncRepository<T extends EntityBase> implements IAsyncCru
     protected abstract Bucket getBucket();
 
     protected abstract Function<Document, T> getDocToEntity();
+
+    protected abstract Function<JsonObject, T> getJsonToEntity();
 
     @Override
     public Observable<T> save(final T entity) {
@@ -75,7 +80,7 @@ public abstract class AsyncRepository<T extends EntityBase> implements IAsyncCru
 
     @Override
     public Observable<T> findAll() {
-        return null;
+        return getBucket().async().query(select("*").fromCurrentBucket()).flatMap(AsyncN1qlQueryResult::rows).map(row -> getJsonToEntity().apply(row.value()));
     }
 
     @Override

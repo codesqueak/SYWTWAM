@@ -28,14 +28,13 @@ import org.springframework.data.couchbase.core.query.View;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.*;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * Additional sync repository access methods based on Couchbase views
  */
 @NoRepositoryBean
-public interface ISyncFortuneRepository<T, ID extends Serializable> extends PagingAndSortingRepository<T, ID> {
+public interface ISyncFortuneRepository<T> extends PagingAndSortingRepository<T, String> {
 
     /**
      * Returns a {@link List} of entities meeting the paging restriction provided in the {@code Pageable} object.

@@ -26,14 +26,15 @@ package com.codingrodent.microservice.template.controller;
 
 import com.codingrodent.microservice.template.api.IAsyncREST;
 import com.codingrodent.microservice.template.model.Fortune;
-import com.codingrodent.microservice.template.service.api.IFortuneService;
-import io.swagger.annotations.*;
-import org.springframework.http.*;
+import com.codingrodent.microservice.template.service.api.IAsyncFortuneService;
+import io.swagger.annotations.Api;
+import org.springframework.hateoas.Resource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
+import rx.Observable;
 
 import javax.inject.Inject;
-import java.util.UUID;
+import java.util.*;
 
 import static com.codingrodent.microservice.template.constants.SystemConstants.API_VERSION;
 
@@ -45,45 +46,24 @@ import static com.codingrodent.microservice.template.constants.SystemConstants.A
 @RequestMapping("/async/fortune/" + API_VERSION)
 public class ASyncFortuneController implements IAsyncREST<UUID, Fortune> {
 
-    private final IFortuneService<Fortune> fortuneService;
+    private final IAsyncFortuneService<Fortune> fortuneService;
 
     @Inject
-    public ASyncFortuneController(final IFortuneService<Fortune> fortuneService) {
+    public ASyncFortuneController(final IAsyncFortuneService<Fortune> fortuneService) {
         this.fortuneService = fortuneService;
     }
 
-    // GET (200)
+    /**
+     * GET - Requests data from a specified resource
+     *
+     * @return Return selected entity or 'Not Modified' if version matched
+     */
     @Override
-    public DeferredResult<ResponseEntity<Fortune>> read(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable final UUID uuid) {
-        DeferredResult<ResponseEntity<Fortune>> result = new DeferredResult<>();
-        fortuneService.loadAsync(uuid).subscribe(c -> result.setResult(new ResponseEntity<>(c, HttpStatus.OK)));
+    public DeferredResult<List<Resource<Fortune>>> listAll() {
+        DeferredResult<List<Resource<Fortune>>> result = new DeferredResult<>();
+        Observable<LinkedList<Resource<Fortune>>> o = fortuneService.findAllAsync().map(f -> new Resource<>(f)).collect(() -> new LinkedList<Resource<Fortune>>(),
+                                                                                                                        LinkedList::add).first();
+        o.subscribe(result::setResult);
         return result;
     }
-
-    // PUT - Create (201) or Update  (200)
-    @Override
-    public DeferredResult<ResponseEntity<Void>> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable final UUID uuid, @RequestBody
-    final Fortune fortune) {
-        DeferredResult<ResponseEntity<Void>> result = new DeferredResult<>();
-        fortuneService.saveAsync(uuid, fortune).subscribe(c -> result.setResult(new ResponseEntity<>(HttpStatus.NO_CONTENT)));
-        return result;
-    }
-
-    // POST - Create (201) - Return URL in location header
-    @Override
-    public DeferredResult<ResponseEntity<Void>> create(@RequestBody final Fortune value) {
-        DeferredResult<ResponseEntity<Void>> result = new DeferredResult<>();
-        result.setResult(new ResponseEntity<>(HttpStatus.OK));
-        return result;
-    }
-
-    // DELETE (200)
-    @Override
-    public DeferredResult<ResponseEntity<Void>> delete(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable final UUID uuid) {
-        System.out.println("Delete: " + uuid);
-        DeferredResult<ResponseEntity<Void>> result = new DeferredResult<>();
-        result.setResult(new ResponseEntity<>(HttpStatus.OK));
-        return result;
-    }
-
 }
