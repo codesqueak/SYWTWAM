@@ -10,8 +10,8 @@ live environment is a trivial task.
 This project sets out to demonstrate a group of possible technologies (1) working together to build and deploy a **real** microservice. As the project 
 proceeds, this list will change, technologies will be substituted and I will modify things in the light of experience.
 
-(1) Only one example of each. I'm not doing every tool, framework and language in existence. Life is too short to ~~follow new JavaScript frameworks~~ 
-try every possible combination.
+*(1) Only one example of each. I'm not doing every tool, framework and language in existence. Life is too short to ~~follow new JavaScript frameworks~~ 
+try every possible combination.*
 
 To give you an idea of the problem, this is my basic list of things to understand with a view to building and deploying a production ready microservice, 
 using [Spring](https://spring.io/) / [Java](https://www.java.com/en/) and [AWS](https://aws.amazon.com/).
@@ -26,12 +26,12 @@ If you just want to see the microservice built and running, head over to the [qu
 
 ## Implementation Technology
 
-| Task            | Possible Implementation Technology  | Status | Doc |
+| Task            | Possible Implementation Technology  | Status | Documentation |
 |-----------------|---------------------|:---------------------:|:---------------------:|
 | Basic framework | [SpringBoot](http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)| ![alt text](docs/images/tick.png "Implemented") | [Framework](docs/framework.md) |
 | Configuration | [Spring](http://spring.io/) | ![alt text](docs/images/tick.png "Implemented") |
 | Async services | [RxJava](https://github.com/ReactiveX/RxJava) | ![alt text](docs/images/cross.png "Not Implemented") |
-| Sync services | [Java](https://www.java.com)  | ![alt text](docs/images/tick.png "Implemented") |
+| Sync services | [Java](https://www.java.com)  | ![alt text](docs/images/tick.png "Implemented") | [Sync](docs/sync.md) |
 | API Framework /  Documentation | [Swagger](http://swagger.io/) / [SpringFox](http://springfox.github.io/springfox/)| ![alt text](docs/images/tick.png "Implemented") |
 | Error handling |  | ![alt text](docs/images/cross.png "Not Implemented") |
 | Validation | [JSR303 (Hibernate Validator)](http://hibernate.org/validator/) | ![alt text](docs/images/cross.png "Not Implemented") |
@@ -53,7 +53,7 @@ If you just want to see the microservice built and running, head over to the [qu
 
 
 ## Test Test Test ... !
-| Task            | Possible Implementation Technology  | Status | Doc |
+| Task            | Possible Implementation Technology  | Status | Documentation |
 |-----------------|---------------------|:---------------------:|:---------------------:|
 | Build | [Maven](https://maven.apache.org/) / [Gradle](https://gradle.org/)  | ![alt text](docs/images/tick.png "Implemented") |
 | Unit test | [JUnit](http://junit.org/junit4/) | ![alt text](docs/images/tick.png "Implemented") |
@@ -64,13 +64,13 @@ If you just want to see the microservice built and running, head over to the [qu
 | Security audit | [Coverity](http://www.coverity.com/products/code-advisor/) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Code quality | [PMD](https://pmd.github.io/) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Static analysis | [findbugs](http://findbugs.sourceforge.net/) | ![alt text](docs/images/cross.png "Not Implemented") |
-| CI | [Jenkins](https://jenkins.io/) / [Bamboo](https://www.atlassian.com/software/bamboo) | ![alt text](docs/images/cross.png "Not Implemented") |
+| CI | [Jenkins](https://jenkins.io/) / [Bamboo](https://www.atlassian.com/software/bamboo) | ![alt text](docs/images/tick.png "Implemented") | [Jenkins](docs/ci.md) |
 | Mocking | [Mockito](http://site.mockito.org/) / [EasyMock](http://site.mockito.org/) ... and all the others | ![alt text](docs/images/tick.png "Implemented") |
 | Mock Services | [WireMock](http://wiremock.org/) | ![alt text](docs/images/tick.png "Implemented") |
 
 
 ## Infrastructure 
-| Task            | Possible Implementation Technology  | Status | Doc |
+| Task            | Possible Implementation Technology  | Status | Documentation |
 |-----------------|---------------------|:---------------------:|:---------------------:|
 | Cloud | [AWS](https://aws.amazon.com/) ... There are others ... :) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Firewall | Loads to choose from  |  ![alt text](docs/images/cross.png "Not Implemented") |
@@ -81,21 +81,21 @@ If you just want to see the microservice built and running, head over to the [qu
 
 
 ## Environment 
-| Task            | Possible Implementation Technology  | Status | Doc |
+| Task            | Possible Implementation Technology  | Status | Documentation |
 |-----------------|---------------------|:---------------------:|:---------------------:|
 | Data storage / persistence | [MongoDB](https://www.mongodb.com/) / [Coucbase](http://www.couchbase.com/) / [PostgrSQL](https://www.postgresql.org/)  | ![alt text](docs/images/cross.png "Not Implemented") |
 | Cache | [Hazelcast](https://hazelcast.com/) / [memcached](https://memcached.org/)  | ![alt text](docs/images/cross.png "Not Implemented") |
 | Logging | [ELK (Elastic search / Logstash / Kibana)](https://www.elastic.co/webinars/introduction-elk-stack)  | ![alt text](docs/images/cross.png "Not Implemented") |
 | Message bus | [RabbitMQ](https://www.rabbitmq.com/)   | ![alt text](docs/images/cross.png "Not Implemented") |
 | Event bus  |  | ![alt text](docs/images/cross.png "Not Implemented") |
-| Configuration | [Consul](https://www.consul.io/)  | ![alt text](docs/images/tick.png "Implemented") | [Config](docs/config.md)
+| Configuration | [Consul](https://www.consul.io/)  | ![alt text](docs/images/tick.png "Implemented") | [Config](docs/config.md) |
 | Authentication | [OAuth2](https://oauth.net/2/)  | ![alt text](docs/images/cross.png "Not Implemented") |
 | Monitoring and analytics | [New Relic](https://newrelic.com/) / [AppDynamics](https://www.appdynamics.com/)  | ![alt text](docs/images/cross.png "Not Implemented") |
-| Service discovery | [Eureka](https://github.com/Netflix/eureka)  | ![alt text](docs/images/cross.png "Not Implemented") |
+| Service discovery | [Eureka](https://github.com/Netflix/eureka) / [Consul](https://www.consul.io/)  | ![alt text](docs/images/cross.png "Not Implemented") |
 
 
 ## Deployment
-| Task            | Possible Implementation Technology  | Status | Doc |
+| Task            | Possible Implementation Technology  | Status | Documentation |
 |-----------------|---------------------|:---------------------:|:---------------------:|
 | CSCI store | [Artifactory](https://www.jfrog.com/artifactory/) / [Sonatype Nexus](https://www.sonatype.com/nexus-repository-sonatype) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Build | [Puppet](https://puppet.com/) / [Ansible](https://www.ansible.com)  | ![alt text](docs/images/cross.png "Not Implemented") |

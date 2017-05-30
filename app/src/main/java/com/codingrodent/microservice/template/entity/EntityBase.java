@@ -24,47 +24,7 @@
  */
 package com.codingrodent.microservice.template.entity;
 
-import com.couchbase.client.java.repository.annotation.*;
-import com.fasterxml.jackson.annotation.*;
-import org.springframework.data.annotation.Version;
-import org.springframework.data.couchbase.core.mapping.Document;
+public abstract class EntityBase {
 
-/**
- * Fortune persistence class
- */
-@Document
-public class FortuneEntity extends EntityBase {
-
-    @Id
-    private final String id;
-    @Field
-    private final String text;
-    @Field
-    private final String author;
-    @Version
-    private long version;
-
-    @JsonCreator
-    public FortuneEntity(@JsonProperty("id") final String id, @JsonProperty("text") final String text, @JsonProperty("author") final String author) {
-        this.id = id;
-        this.text = text;
-        this.author = author;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public long getVersion() {
-        return version;
-    }
-
-    public String getId() {
-        return id;
-    }
-
+    public abstract String getId();
 }
