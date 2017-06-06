@@ -34,10 +34,14 @@ import java.util.UUID;
  */
 public interface IAsyncFortuneService<M> {
 
-    public Observable<Fortune> saveAsync(final UUID uuid, final Fortune fortune);
+    Observable<Fortune> saveAsync(final UUID uuid, final Fortune fortune);
 
-    public Observable<Fortune> loadAsync(final UUID uuid);
+    Observable<Fortune> loadAsync(final UUID uuid);
 
-    public Observable<Fortune> findAllAsync();
+    Observable<Fortune> findAllAsync();
+
+    Observable<Fortune> findAnonAsync();
+
+    Observable<Fortune> findNamedAsync();
 
 }

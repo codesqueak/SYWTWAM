@@ -24,16 +24,39 @@
  */
 package com.codingrodent.microservice.template.repository.api;
 
-import com.codingrodent.microservice.template.entity.FortuneEntity;
-import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.NoRepositoryBean;
+import rx.Observable;
+
+import java.util.List;
 
 /**
- * Let spring build basic repository - we don't have to supply a body for this
- * <p>
- * Repository to be used when Couchbase is  present and selected
+ * Additional async repository access methods based on Couchbase views
  */
+@NoRepositoryBean
+public interface IASyncFortuneRepository<T> extends IAsyncCrudRepository<T> {
 
-@Profile("prod")
-public interface ICouchFortuneRepository extends ISyncFortuneRepository<FortuneEntity> {
+    String VIEW_ANON = "anon";
+    String VIEW_NAMED = "named";
 
+    /**
+     * Returns a {@link List} of entities meeting the paging restriction provided in the {@code Pageable} object.
+     * <p>
+     * This returns entities from the 'named' view
+     *
+     * @param pageable Pagination information
+     * @return a list of entities
+     */
+    Observable<T> findAllNamed(Pageable pageable);
+
+    /**
+     * Returns a {@link List} of entities meeting the paging restriction provided in the {@code Pageable} object.
+     * <p>
+     * This returns entities from the 'anon' view
+     *
+     * @param pageable Pagination information
+     * @return a list of entities
+     */
+    Observable<T> findAllAnon(Pageable pageable);
 }
+

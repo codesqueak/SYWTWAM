@@ -36,6 +36,9 @@ import java.util.List;
 @NoRepositoryBean
 public interface ISyncFortuneRepository<T> extends PagingAndSortingRepository<T, String> {
 
+    String VIEW_ANON = "anon";
+    String VIEW_NAMED = "named";
+
     /**
      * Returns a {@link List} of entities meeting the paging restriction provided in the {@code Pageable} object.
      * <p>
@@ -44,7 +47,7 @@ public interface ISyncFortuneRepository<T> extends PagingAndSortingRepository<T,
      * @param pageable Pagination information
      * @return a list of entities
      */
-    @View(viewName = "named")
+    @View(viewName = VIEW_NAMED)
     List<T> findAllNamed(Pageable pageable);
 
     /**
@@ -55,7 +58,7 @@ public interface ISyncFortuneRepository<T> extends PagingAndSortingRepository<T,
      * @param pageable Pagination information
      * @return a list of entities
      */
-    @View(viewName = "anon")
+    @View(viewName = VIEW_ANON)
     List<T> findAllAnon(Pageable pageable);
 }
 

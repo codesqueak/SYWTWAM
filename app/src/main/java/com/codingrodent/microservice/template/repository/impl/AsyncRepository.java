@@ -28,28 +28,28 @@ import com.codingrodent.microservice.template.entity.EntityBase;
 import com.codingrodent.microservice.template.repository.api.IAsyncCrudRepository;
 import com.codingrodent.microservice.template.utility.Utility;
 import com.couchbase.client.java.Bucket;
-import com.couchbase.client.java.document.*;
+import com.couchbase.client.java.document.JsonDocument;
 import com.couchbase.client.java.document.json.JsonObject;
-import com.couchbase.client.java.query.AsyncN1qlQueryResult;
+import com.couchbase.client.java.view.*;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import rx.Observable;
 
 import java.io.IOException;
 import java.util.function.Function;
 
-import static com.couchbase.client.java.query.Select.select;
-
 /**
  * Simple example async repository
  */
-
 public abstract class AsyncRepository<T extends EntityBase> implements IAsyncCrudRepository<T> {
 
+    private static final String DESIGN = "fortuneEntity";
+
+    private static final String ID = "id";
+    private static final String VERSION = "version";
+    private static final String _CLASS = "_class";
+    private static final String VIEW_ALL = "all";
+
     protected abstract Bucket getBucket();
-
-    protected abstract Function<Document, T> getDocToEntity();
-
-    protected abstract Function<JsonObject, T> getJsonToEntity();
 
     @Override
     public Observable<T> save(final T entity) {
@@ -57,7 +57,7 @@ public abstract class AsyncRepository<T extends EntityBase> implements IAsyncCru
         try {
             jsonEntity = JsonObject.fromJson(Utility.getObjectMapper().writeValueAsString(entity));
             JsonDocument jsonDocument = JsonDocument.create(entity.getId(), jsonEntity);
-            return getBucket().async().upsert(jsonDocument).map(getDocToEntity()::apply);
+            return getBucket().async().upsert(jsonDocument).map(docToEntity::apply);
         } catch (IOException e) {
             throw new InvalidDataAccessResourceUsageException("Entity serialization failed", e);
         }
@@ -70,7 +70,7 @@ public abstract class AsyncRepository<T extends EntityBase> implements IAsyncCru
 
     @Override
     public Observable<T> findOne(final String id) {
-        return getBucket().async().get(id).map(getDocToEntity()::apply);
+        return getBucket().async().get(id).map(docToEntity::apply);
     }
 
     @Override
@@ -80,7 +80,7 @@ public abstract class AsyncRepository<T extends EntityBase> implements IAsyncCru
 
     @Override
     public Observable<T> findAll() {
-        return getBucket().async().query(select("*").fromCurrentBucket()).flatMap(AsyncN1qlQueryResult::rows).map(row -> getJsonToEntity().apply(row.value()));
+        return findByView(VIEW_ALL);
     }
 
     @Override
@@ -112,6 +112,38 @@ public abstract class AsyncRepository<T extends EntityBase> implements IAsyncCru
     public void deleteAll() {
 
     }
+
+    // Utilities
+
+    /**
+     * General form of all view based find queries
+     *
+     * @param view The view to be used to identify documents
+     * @return Observable enclosing all return values
+     */
+    Observable<T> findByView(final String view) {
+        return getBucket().async().query(ViewQuery.from(DESIGN, view)).flatMap(AsyncViewResult::rows).flatMap(AsyncViewRow::document).map(docToEntity::apply);
+    }
+
+    /**
+     * Function to convert a Couchbase JsonDocument to an entity.
+     * <p>
+     * The function also lifts the docvuments ID and CAS values from the containg document and inserts them in the json ready for deserialization
+     */
+    private final Function<JsonDocument, T> docToEntity = doc -> {
+        JsonObject entity = doc.content();
+        entity.put(ID, doc.id());
+        entity.put(VERSION, doc.cas());
+        try {
+            return Utility.getObjectMapper().readValue(entity.toString(), (Class<T>) Class.forName(entity.getString(_CLASS)));
+        } catch (IOException e) {
+            throw new InvalidDataAccessResourceUsageException("JSON deerialization failed", e);
+        } catch (ClassNotFoundException e) {
+            return null;
+            // throw new ApplicationFaultException("Unable to find class " + clazzName + " for deserialization", e);
+        }
+    };
+
 }
 
 

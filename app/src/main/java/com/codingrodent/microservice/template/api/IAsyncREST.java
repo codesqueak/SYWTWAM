@@ -24,7 +24,6 @@
  */
 package com.codingrodent.microservice.template.api;
 
-import com.codingrodent.microservice.template.model.Fortune;
 import io.swagger.annotations.*;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.*;
@@ -126,10 +125,9 @@ public interface IAsyncREST<K, V> {
     @ApiOperation(value = "Read all entities", notes = "Retrieve all entities in a paged manner if required", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = { //
             @ApiResponse(code = 200, message = "OK, response entity in body"), //
-            @ApiResponse(code = 304, message = "Not modified"), //
             @ApiResponse(code = 410, message = "No matching entity exists"), //
             @ApiResponse(code = 412, message = "Precondition Failed")})
-    default DeferredResult<List<Resource<Fortune>>> listAll() {
+    default DeferredResult<List<Resource<V>>> listAll() {
         throw new UnsupportedOperationException("List not implemented");
     }
 

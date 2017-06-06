@@ -24,7 +24,7 @@
  */
 package com.codingrodent.microservice.template.controller;
 
-import com.codingrodent.microservice.template.api.IAsyncREST;
+import com.codingrodent.microservice.template.api.IAsyncFortune;
 import com.codingrodent.microservice.template.model.Fortune;
 import com.codingrodent.microservice.template.service.api.IAsyncFortuneService;
 import io.swagger.annotations.Api;
@@ -44,7 +44,7 @@ import static com.codingrodent.microservice.template.constants.SystemConstants.A
 @RestController
 @Api(tags = "async", value = "asyncfortune", description = "Endpoint for fortune management (async)")
 @RequestMapping("/async/fortune/" + API_VERSION)
-public class ASyncFortuneController implements IAsyncREST<UUID, Fortune> {
+public class ASyncFortuneController implements IAsyncFortune<UUID, Fortune> {
 
     private final IAsyncFortuneService<Fortune> fortuneService;
 
@@ -63,6 +63,34 @@ public class ASyncFortuneController implements IAsyncREST<UUID, Fortune> {
         DeferredResult<List<Resource<Fortune>>> result = new DeferredResult<>();
         Observable<LinkedList<Resource<Fortune>>> o = fortuneService.findAllAsync().map(f -> new Resource<>(f)).collect(() -> new LinkedList<Resource<Fortune>>(),
                                                                                                                         LinkedList::add).first();
+        o.subscribe(result::setResult);
+        return result;
+    }
+
+    /**
+     * GET - Requests data from a specified resource
+     *
+     * @return Return selected entity or 'Not Modified' if version matched
+     */
+    @Override
+    public DeferredResult<List<Resource<Fortune>>> listAnon() {
+        DeferredResult<List<Resource<Fortune>>> result = new DeferredResult<>();
+        Observable<LinkedList<Resource<Fortune>>> o = fortuneService.findAnonAsync().map(f -> new Resource<>(f)).collect(() -> new LinkedList<Resource<Fortune>>(),
+                                                                                                                         LinkedList::add).first();
+        o.subscribe(result::setResult);
+        return result;
+    }
+
+    /**
+     * GET - Requests data from a specified resource
+     *
+     * @return Return selected entity or 'Not Modified' if version matched
+     */
+    @Override
+    public DeferredResult<List<Resource<Fortune>>> listNamed() {
+        DeferredResult<List<Resource<Fortune>>> result = new DeferredResult<>();
+        Observable<LinkedList<Resource<Fortune>>> o = fortuneService.findNamedAsync().map(f -> new Resource<>(f)).collect(() -> new LinkedList<Resource<Fortune>>(),
+                                                                                                                          LinkedList::add).first();
         o.subscribe(result::setResult);
         return result;
     }

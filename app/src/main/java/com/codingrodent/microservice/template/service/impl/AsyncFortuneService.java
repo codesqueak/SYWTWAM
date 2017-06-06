@@ -26,7 +26,7 @@ package com.codingrodent.microservice.template.service.impl;
 
 import com.codingrodent.microservice.template.entity.FortuneEntity;
 import com.codingrodent.microservice.template.model.Fortune;
-import com.codingrodent.microservice.template.repository.api.IAsyncCrudRepository;
+import com.codingrodent.microservice.template.repository.api.IASyncFortuneRepository;
 import com.codingrodent.microservice.template.service.api.*;
 import org.springframework.stereotype.Service;
 import rx.Observable;
@@ -42,11 +42,11 @@ import static com.codingrodent.microservice.template.converter.Converter.toFortu
 @Service
 public class AsyncFortuneService implements IAsyncFortuneService<Fortune> {
 
-    private final IAsyncCrudRepository<FortuneEntity> repository;
+    private final IASyncFortuneRepository<FortuneEntity> repository;
     private final ILogger logger;
 
     @Inject
-    public AsyncFortuneService(final ILogger logger, final IAsyncCrudRepository<FortuneEntity> repository) {
+    public AsyncFortuneService(final ILogger logger, final IASyncFortuneRepository<FortuneEntity> repository) {
         this.repository = repository;
         this.logger = logger;
     }
@@ -66,4 +66,13 @@ public class AsyncFortuneService implements IAsyncFortuneService<Fortune> {
         return repository.findAll().map(toFortuneModel::convert);
     }
 
+    @Override
+    public Observable<Fortune> findAnonAsync() {
+        return repository.findAllAnon(null).map(toFortuneModel::convert);
+    }
+
+    @Override
+    public Observable<Fortune> findNamedAsync() {
+        return repository.findAllNamed(null).map(toFortuneModel::convert);
+    }
 }

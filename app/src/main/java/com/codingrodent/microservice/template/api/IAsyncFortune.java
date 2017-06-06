@@ -26,51 +26,46 @@ package com.codingrodent.microservice.template.api;
 
 import io.swagger.annotations.*;
 import org.springframework.hateoas.Resource;
-import org.springframework.http.*;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.List;
 
 /**
  * Specific implementation methods for the fortune service
  */
-public interface IFortune<K, V> extends IREST<K, V> {
+public interface IAsyncFortune<K, V> extends IAsyncREST<K, V> {
 
     // Collections
 
     /**
      * GET - Requests data from a specified resource
      *
-     * @param page Data page to read
-     * @param size Size of page
      * @return Return selected entity or 'Not Modified' if version matched
      */
-    @RequestMapping(path = "/list/named", params = {"page", "size"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Read all entities", notes = "Retrieve all named entities in a paged manner if required", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(path = "/list/named", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Read all entities", notes = "Retrieve all named entities", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = { //
             @ApiResponse(code = 200, message = "OK, response entity in body"), //
             @ApiResponse(code = 410, message = "No matching entity exists"), //
             @ApiResponse(code = 412, message = "Precondition Failed")})
-    default ResponseEntity<List<Resource<V>>> listNamed(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
-                                                        @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
+    default DeferredResult<List<Resource<V>>> listNamed() {
         throw new UnsupportedOperationException("List named not implemented");
     }
 
     /**
      * GET - Requests data from a specified resource
      *
-     * @param page Data page to read
-     * @param size Size of page
      * @return Return selected entity or 'Not Modified' if version matched
      */
-    @RequestMapping(path = "/list/anon", params = {"page", "size"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Read all entities", notes = "Retrieve all anonymous entities in a paged manner if required", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(path = "/list/anon", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Read all entities", notes = "Retrieve all named entities", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = { //
             @ApiResponse(code = 200, message = "OK, response entity in body"), //
             @ApiResponse(code = 410, message = "No matching entity exists"), //
             @ApiResponse(code = 412, message = "Precondition Failed")})
-    default ResponseEntity<List<Resource<V>>> listAnon(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
-                                                       @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
+    default DeferredResult<List<Resource<V>>> listAnon() {
         throw new UnsupportedOperationException("List anonymous not implemented");
     }
 
