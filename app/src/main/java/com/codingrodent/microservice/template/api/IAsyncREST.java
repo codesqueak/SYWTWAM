@@ -24,21 +24,25 @@
  */
 package com.codingrodent.microservice.template.api;
 
+import com.codingrodent.microservice.template.controller.SaveStateOperator;
+import com.codingrodent.microservice.template.exception.ApplicationFaultException;
+import com.codingrodent.microservice.template.model.ModelBase;
 import io.swagger.annotations.*;
-import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 
 /**
  * Simple async REST controller default implementation
  * <p>
  * https://en.wikipedia.org/wiki/Representational_state_transfer
  */
-public interface IAsyncREST<K, V> {
+public interface IAsyncREST<K, V extends ModelBase> {
 
     // GET (200)
     @RequestMapping(path = "/{uuid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -48,8 +52,7 @@ public interface IAsyncREST<K, V> {
             @ApiResponse(code = 304, message = "Not modified"), //
             @ApiResponse(code = 410, message = "No matching entity exists"), //
             @ApiResponse(code = 412, message = "Precondition Failed")})
-    default DeferredResult<ResponseEntity<V>> read(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, HttpServletRequest
-            request) {
+    default DeferredResult<ResponseEntity<V>> read(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid) {
         throw new UnsupportedOperationException("Get an entity not implemented");
     }
 
@@ -135,4 +138,31 @@ public interface IAsyncREST<K, V> {
         throw new UnsupportedOperationException("List not implemented");
     }
 
+    // Default
+
+    /**
+     * Add recovered data to a list and add HATEOAS links
+     *
+     * @param data Observable returning results
+     * @return Deferred result subscribing to the list observable
+     */
+    default DeferredResult<List<Resource<V>>> getListDeferredResult(final rx.Observable<V> data) {
+        DeferredResult<List<Resource<V>>> result = new DeferredResult<>();
+        rx.Observable<LinkedList<Resource<V>>> list = data.lift(new SaveStateOperator<>()).
+                map(f -> new Resource<>(f, getRelLink(f))).
+                collect(() -> new LinkedList<Resource<V>>(), LinkedList::add).first();
+        list.subscribe(result::setResult);
+        return result;
+    }
+
+    /**
+     * Generate self reference link to a document - use for HATEOAS
+     *
+     * @param modelBase Base class for all model objects. Contians id
+     * @return Link to key
+     */
+    default Link getRelLink(final ModelBase modelBase) {
+        final UUID uuid = modelBase.getUUID().orElseThrow(() -> new ApplicationFaultException("Database did not return UUID on record creation"));
+        return linkTo(methodOn(this.getClass()).read(uuid)).withSelfRel();
+    }
 }

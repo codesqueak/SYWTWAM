@@ -24,6 +24,7 @@
  */
 package com.codingrodent.microservice.template.api;
 
+import com.codingrodent.microservice.template.model.ModelBase;
 import io.swagger.annotations.*;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.MediaType;
@@ -35,14 +36,14 @@ import java.util.List;
 /**
  * Specific implementation methods for the fortune service
  */
-public interface IAsyncFortune<K, V> extends IAsyncREST<K, V> {
+public interface IAsyncFortune<K, V extends ModelBase> extends IAsyncREST<K, V> {
 
     // Collections
 
     /**
      * GET - Requests data from a specified resource
      *
-     * @return Return selected entity or 'Not Modified' if version matched
+     * @return Return selected entities
      */
     @RequestMapping(path = "/list/named", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Read all entities", notes = "Retrieve all named entities", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -57,7 +58,7 @@ public interface IAsyncFortune<K, V> extends IAsyncREST<K, V> {
     /**
      * GET - Requests data from a specified resource
      *
-     * @return Return selected entity or 'Not Modified' if version matched
+     * @return Return selected entities
      */
     @RequestMapping(path = "/list/anon", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Read all entities", notes = "Retrieve all named entities", produces = MediaType.APPLICATION_JSON_VALUE)

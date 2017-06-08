@@ -186,7 +186,7 @@ public interface IREST<K, V> {
      *
      * @param page Data page to read
      * @param size Size of page
-     * @return Return selected entity or 'Not Modified' if version matched
+     * @return Return Return selected entities
      */
     @RequestMapping(path = "/list", params = {"page", "size"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Read all entities", notes = "Retrieve all entities in a paged manner if required", produces = MediaType.APPLICATION_JSON_VALUE)

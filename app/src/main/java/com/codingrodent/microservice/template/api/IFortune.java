@@ -43,7 +43,7 @@ public interface IFortune<K, V> extends IREST<K, V> {
      *
      * @param page Data page to read
      * @param size Size of page
-     * @return Return selected entity or 'Not Modified' if version matched
+     * @return Return selected entities
      */
     @RequestMapping(path = "/list/named", params = {"page", "size"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Read all entities", notes = "Retrieve all named entities in a paged manner if required", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -61,7 +61,7 @@ public interface IFortune<K, V> extends IREST<K, V> {
      *
      * @param page Data page to read
      * @param size Size of page
-     * @return Return selected entity or 'Not Modified' if version matched
+     * @return Return selected entities
      */
     @RequestMapping(path = "/list/anon", params = {"page", "size"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Read all entities", notes = "Retrieve all anonymous entities in a paged manner if required", produces = MediaType.APPLICATION_JSON_VALUE)
