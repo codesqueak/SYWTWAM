@@ -25,14 +25,14 @@
 package com.codingrodent.microservice.template.service.impl;
 
 import com.codingrodent.microservice.template.entity.FortuneEntity;
-import com.codingrodent.microservice.template.model.Fortune;
+import com.codingrodent.microservice.template.model.*;
 import com.codingrodent.microservice.template.repository.api.IASyncFortuneRepository;
 import com.codingrodent.microservice.template.service.api.*;
 import org.springframework.stereotype.Service;
 import rx.Observable;
 
 import javax.inject.Inject;
-import java.util.UUID;
+import java.util.*;
 
 import static com.codingrodent.microservice.template.converter.Converter.toFortuneModel;
 
@@ -51,28 +51,85 @@ public class AsyncFortuneService implements IAsyncFortuneService<Fortune> {
         this.logger = logger;
     }
 
-    @Override
-    public Observable<Fortune> saveAsync(final UUID uuid, final Fortune fortune) {
-        throw new UnsupportedOperationException("Get an entity not implemented");
+    /**
+     * Create an entity
+     *
+     * @param uuid    UUID of model object to save
+     * @param fortune Model to create as an entity
+     * @param version Version (if required)
+     * @return Saved model observable
+     */
+    public Observable<ModelVersion<Fortune>> save(UUID uuid, Fortune fortune, Optional<Long> version) {
+        throw new UnsupportedOperationException("Save an entity not implemented");
     }
 
+    /**
+     * Create an entity
+     *
+     * @param fortune Model object to create
+     * @param version Version (if required)
+     * @return Saved model observable
+     */
     @Override
-    public Observable<Fortune> loadAsync(final UUID uuid) {
-        throw new UnsupportedOperationException("Get an entity not implemented");
+    public Observable<ModelVersion<Fortune>> create(Fortune fortune, Optional<Long> version) {
+        throw new UnsupportedOperationException("Create an entity not implemented");
     }
 
+    /**
+     * Load an entity by its key
+     *
+     * @param uuid Key
+     * @return The entity or an empty optional observable
+     */
     @Override
-    public Observable<Fortune> findAllAsync() {
+    public Observable<Optional<ModelVersion<Fortune>>> load(String uuid) {
+        throw new UnsupportedOperationException("Load an entity not implemented");
+    }
+
+    /**
+     * Delete an entity by its key
+     *
+     * @param uuid Key
+     */
+    @Override
+    public void delete(String uuid) {
+        throw new UnsupportedOperationException("Delete an entity not implemented");
+    }
+
+    /**
+     * Get a page of entities
+     *
+     * @param page Page to retrieve
+     * @param size Size of page
+     * @return Model list observable
+     */
+    @Override
+    public Observable<Fortune> findAll(int page, int size) {
         return repository.findAll().map(toFortuneModel::convert);
     }
 
+    /**
+     * Get a page of fortunes with named authors
+     *
+     * @param page Page to retrieve
+     * @param size Size of page
+     * @return Model list
+     */
     @Override
-    public Observable<Fortune> findAnonAsync() {
+    public Observable<Fortune> findNamed(int page, int size) {
+        return repository.findAllNamed(null).map(toFortuneModel::convert);
+    }
+
+    /**
+     * Get a page of fortunes with anonymous authors
+     *
+     * @param page Page to retrieve
+     * @param size Size of page
+     * @return Model list
+     */
+    @Override
+    public Observable<Fortune> findAnon(int page, int size) {
         return repository.findAllAnon(null).map(toFortuneModel::convert);
     }
 
-    @Override
-    public Observable<Fortune> findNamedAsync() {
-        return repository.findAllNamed(null).map(toFortuneModel::convert);
-    }
 }

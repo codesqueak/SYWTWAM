@@ -186,6 +186,17 @@ public class FortuneController extends RestBase<Fortune> implements IFortune<UUI
     }
 
     /**
+     * Get all allowed methods for the RESTful interface
+     *
+     * @return Set of allowed HTTP methods
+     */
+    public Set<HttpMethod> getOptions() {
+        return ALLOWED_OPTIONS;
+    }
+
+    // Collections
+
+    /**
      * GET - Requests data from a specified resource
      *
      * @param page Data page to read
@@ -196,17 +207,6 @@ public class FortuneController extends RestBase<Fortune> implements IFortune<UUI
     public ResponseEntity<List<Resource<Fortune>>> listAll(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
                                                            @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
         return getListResponseEntity(fortuneService.listAll(page, size));
-    }
-
-    // Collections
-
-    /**
-     * Get all allowed methods for the RESTful interface
-     *
-     * @return Set of allowed HTTP methods
-     */
-    public Set<HttpMethod> getOptions() {
-        return ALLOWED_OPTIONS;
     }
 
     /**

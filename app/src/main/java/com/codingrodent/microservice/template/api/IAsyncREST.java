@@ -30,6 +30,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -41,11 +42,14 @@ public interface IAsyncREST<K, V> {
 
     // GET (200)
     @RequestMapping(path = "/{uuid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Read an entity", notes = "Retrieve an entity identified by the Request-URI")
+    @ApiOperation(value = "Read an entity", notes = "Retrieve an entity identified by the Request-URI", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = { //
-            @ApiResponse(code = 200, message = "Response entity in body"), //
-            @ApiResponse(code = 404, message = "No matching entity exists")})
-    default DeferredResult<ResponseEntity<V>> read(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid) {
+            @ApiResponse(code = 200, message = "OK, response entity in body"), //
+            @ApiResponse(code = 304, message = "Not modified"), //
+            @ApiResponse(code = 410, message = "No matching entity exists"), //
+            @ApiResponse(code = 412, message = "Precondition Failed")})
+    default DeferredResult<ResponseEntity<V>> read(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, HttpServletRequest
+            request) {
         throw new UnsupportedOperationException("Get an entity not implemented");
     }
 

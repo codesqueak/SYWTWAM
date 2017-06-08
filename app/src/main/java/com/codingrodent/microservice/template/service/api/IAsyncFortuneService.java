@@ -24,24 +24,29 @@
  */
 package com.codingrodent.microservice.template.service.api;
 
-import com.codingrodent.microservice.template.model.Fortune;
 import rx.Observable;
-
-import java.util.UUID;
 
 /**
  * Fortune service interface - Async
  */
-public interface IAsyncFortuneService<M> {
+public interface IAsyncFortuneService<M> extends IAsyncService<M> {
 
-    Observable<Fortune> saveAsync(final UUID uuid, final Fortune fortune);
+    /**
+     * Get a page of fortunes with named authors
+     *
+     * @param page Page to retrieve
+     * @param size Size of page
+     * @return Model observable
+     */
+    Observable<M> findNamed(int page, int size);
 
-    Observable<Fortune> loadAsync(final UUID uuid);
-
-    Observable<Fortune> findAllAsync();
-
-    Observable<Fortune> findAnonAsync();
-
-    Observable<Fortune> findNamedAsync();
+    /**
+     * Get a page of fortunes with anonymous authors
+     *
+     * @param page Page to retrieve
+     * @param size Size of page
+     * @return Model observable
+     */
+    Observable<M> findAnon(int page, int size);
 
 }

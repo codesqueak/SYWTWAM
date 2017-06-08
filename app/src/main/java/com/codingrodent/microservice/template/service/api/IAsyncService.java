@@ -73,8 +73,8 @@ public interface IAsyncService<M> {
      *
      * @param page Page to retrieve
      * @param size Size of page
-     * @return Model list observable
+     * @return Model observable
      */
-    Observable<List<M>> listAll(int page, int size);
+    Observable<M> findAll(int page, int size);
 
 }
