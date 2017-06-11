@@ -32,7 +32,7 @@ import java.util.*;
  * Fortune data record from initialization array - used to set up default values
  */
 
-public class FortuneElement {
+class FortuneElement {
 
     @JsonProperty("key")
     private final UUID key;

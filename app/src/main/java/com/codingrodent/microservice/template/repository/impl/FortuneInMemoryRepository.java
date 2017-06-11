@@ -24,7 +24,7 @@
  */
 package com.codingrodent.microservice.template.repository.impl;
 
-import com.codingrodent.microservice.template.entity.FortuneEntity;
+import com.codingrodent.microservice.template.entity.*;
 import com.codingrodent.microservice.template.exception.ApplicationFaultException;
 import com.codingrodent.microservice.template.repository.api.ISyncFortuneRepository;
 import org.springframework.context.annotation.Profile;
@@ -48,7 +48,7 @@ public class FortuneInMemoryRepository implements ISyncFortuneRepository<Fortune
 
     public FortuneInMemoryRepository() {
         try {
-            versionField = FortuneEntity.class.getDeclaredField("version");
+            versionField = EntityBase.class.getDeclaredField("version");
         } catch (NoSuchFieldException e) {
             throw new ApplicationFaultException("Unable to gain access to the FortuneEntity version field");
         }

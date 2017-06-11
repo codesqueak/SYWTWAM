@@ -35,7 +35,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
  * Advice for HTTP response operations
  */
 @ControllerAdvice
-public class ResponseAdvice implements ResponseBodyAdvice {
+class ResponseAdvice implements ResponseBodyAdvice {
 
     /**
      * @see org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice#supports

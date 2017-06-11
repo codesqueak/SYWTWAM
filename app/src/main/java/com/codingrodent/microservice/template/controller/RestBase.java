@@ -36,7 +36,7 @@ import java.util.function.Function;
 abstract class RestBase<V> {
 
     private final static String ETAG_WILDCARD = "\"*\"";
-    protected final Function<String, Long> extractETag = v -> Long.parseLong(v.replace("\"", ""));
+    final Function<String, Long> extractETag = v -> Long.parseLong(v.replace("\"", ""));
     private final Function<Long, String> makeETag = v -> "\"" + v + "\"";
 
     /**
@@ -46,7 +46,7 @@ abstract class RestBase<V> {
      * @param modelVersion Resource entity being requested
      * @return Matching status
      */
-    protected boolean ifMatch(final Optional<String> etag, final Optional<ModelVersion<V>> modelVersion) {
+    boolean ifMatch(final Optional<String> etag, final Optional<ModelVersion<V>> modelVersion) {
         // basic check - must have a field
         if (!etag.isPresent())
             return false;

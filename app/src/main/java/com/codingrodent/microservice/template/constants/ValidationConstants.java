@@ -27,7 +27,7 @@ package com.codingrodent.microservice.template.constants;
 /**
  * Various constants used in data validation operations
  */
-public class ValidationConstants {
+class ValidationConstants {
 
     public final static String UUID_V4_REGEX = "(?i)[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}";
 

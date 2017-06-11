@@ -43,30 +43,36 @@ public interface IAsyncFortune<K, V extends ModelBase> extends IAsyncREST<K, V> 
     /**
      * GET - Requests data from a specified resource
      *
+     * @param page Page to retrieve
+     * @param size Size of page
      * @return Return selected entities
      */
-    @RequestMapping(path = "/list/named", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(path = "/list/named", params = {"page", "size"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Read all entities", notes = "Retrieve all named entities", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = { //
             @ApiResponse(code = 200, message = "OK, response entity in body"), //
             @ApiResponse(code = 410, message = "No matching entity exists"), //
             @ApiResponse(code = 412, message = "Precondition Failed")})
-    default DeferredResult<List<Resource<V>>> listNamed() {
+    default DeferredResult<List<Resource<V>>> listNamed(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
+                                                        @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
         throw new UnsupportedOperationException("List named not implemented");
     }
 
     /**
      * GET - Requests data from a specified resource
      *
+     * @param page Page to retrieve
+     * @param size Size of page
      * @return Return selected entities
      */
-    @RequestMapping(path = "/list/anon", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(path = "/list/anon", params = {"page", "size"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Read all entities", notes = "Retrieve all named entities", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = { //
             @ApiResponse(code = 200, message = "OK, response entity in body"), //
             @ApiResponse(code = 410, message = "No matching entity exists"), //
             @ApiResponse(code = 412, message = "Precondition Failed")})
-    default DeferredResult<List<Resource<V>>> listAnon() {
+    default DeferredResult<List<Resource<V>>> listAnon(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
+                                                       @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
         throw new UnsupportedOperationException("List anonymous not implemented");
     }
 

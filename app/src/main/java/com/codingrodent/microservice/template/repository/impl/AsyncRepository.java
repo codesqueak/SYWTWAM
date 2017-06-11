@@ -32,6 +32,7 @@ import com.couchbase.client.java.document.JsonDocument;
 import com.couchbase.client.java.document.json.JsonObject;
 import com.couchbase.client.java.view.*;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
+import org.springframework.data.domain.Pageable;
 import rx.Observable;
 
 import java.io.IOException;
@@ -79,12 +80,12 @@ public abstract class AsyncRepository<T extends EntityBase> implements IAsyncCru
     }
 
     @Override
-    public Observable<T> findAll() {
-        return findByView(VIEW_ALL);
+    public Observable<T> findAll(final Pageable pageable) {
+        return findByView(VIEW_ALL).skip(pageable.getPageNumber() * pageable.getPageSize()).take(pageable.getPageSize());
     }
 
     @Override
-    public Observable<T> findAll(final Iterable<String> keys) {
+    public Observable<T> findAll(final Pageable pageable, final Iterable<String> keys) {
         return Observable.from(keys).flatMap(this::findOne);
     }
 
@@ -128,7 +129,7 @@ public abstract class AsyncRepository<T extends EntityBase> implements IAsyncCru
     /**
      * Function to convert a Couchbase JsonDocument to an entity.
      * <p>
-     * The function also lifts the docvuments ID and CAS values from the containg document and inserts them in the json ready for deserialization
+     * The function also lifts the documents ID and CAS values from the containing document and inserts them in the json ready for deserialization
      */
     private final Function<JsonDocument, T> docToEntity = doc -> {
         JsonObject entity = doc.content();

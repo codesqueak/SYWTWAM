@@ -25,10 +25,11 @@
 package com.codingrodent.microservice.template.controller;
 
 import com.codingrodent.microservice.template.api.IAsyncFortune;
-import com.codingrodent.microservice.template.model.Fortune;
+import com.codingrodent.microservice.template.model.*;
 import com.codingrodent.microservice.template.service.api.IAsyncFortuneService;
 import io.swagger.annotations.Api;
 import org.springframework.hateoas.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
@@ -52,6 +53,24 @@ public class ASyncFortuneController implements IAsyncFortune<UUID, Fortune> {
         this.fortuneService = fortuneService;
     }
 
+    /**
+     * GET - Requests data from a the Fortune resource
+     *
+     * @param uuid    Identifier of fortune to fetch
+     * @param version Fortune version identifier
+     * @return Return selected fortune or 'Not Modified' if version matched
+     */
+    @Override
+    public DeferredResult<Resource<Fortune>> read(@PathVariable UUID uuid, @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false) Optional<String> version) {
+        DeferredResult<Resource<Fortune>> result = new DeferredResult<>();
+        fortuneService.load(uuid.toString()).
+                lift(new SaveStateOperator<>()).
+                map(ModelVersion::getModel).
+                map(fortune -> new Resource<>(fortune, getRelLink(fortune))).
+                subscribe(result::setResult, (t) -> result.setErrorResult(new RuntimeException(t)));
+        return result;
+    }
+
     // Collections
 
     /**
@@ -60,8 +79,8 @@ public class ASyncFortuneController implements IAsyncFortune<UUID, Fortune> {
      * @return Return selected entities
      */
     @Override
-    public DeferredResult<List<Resource<Fortune>>> listAll() {
-        return getListDeferredResult(fortuneService.findAll(0, 0));
+    public DeferredResult<List<Resource<Fortune>>> listAll(final int page, final int size) {
+        return getListDeferredResult(fortuneService.findAll(page, size));
     }
 
     /**
@@ -70,8 +89,8 @@ public class ASyncFortuneController implements IAsyncFortune<UUID, Fortune> {
      * @return Return selected entities
      */
     @Override
-    public DeferredResult<List<Resource<Fortune>>> listAnon() {
-        return getListDeferredResult(fortuneService.findAnon(0, 0));
+    public DeferredResult<List<Resource<Fortune>>> listAnon(final int page, final int size) {
+        return getListDeferredResult(fortuneService.findAnon(page, size));
     }
 
     /**
@@ -80,12 +99,8 @@ public class ASyncFortuneController implements IAsyncFortune<UUID, Fortune> {
      * @return Return selected entities
      */
     @Override
-    public DeferredResult<List<Resource<Fortune>>> listNamed() {
-        return getListDeferredResult(fortuneService.findNamed(0, 0));
+    public DeferredResult<List<Resource<Fortune>>> listNamed(final int page, final int size) {
+        return getListDeferredResult(fortuneService.findNamed(page, size));
     }
-
-    // Utilities
-
-
 
 }

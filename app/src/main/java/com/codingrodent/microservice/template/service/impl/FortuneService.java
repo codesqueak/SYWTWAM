@@ -145,7 +145,7 @@ public class FortuneService implements IFortuneService<Fortune> {
      * @return Fortunes
      */
     @Override
-    public List<Fortune> listAll(int page, int size) {
+    public List<Fortune> listAll(final int page, final int size) {
         return getFortunes(repository.findAll(new PageRequest(page, size)).getContent());
     }
 
@@ -159,7 +159,7 @@ public class FortuneService implements IFortuneService<Fortune> {
      * @return Fortunes
      */
     @Override
-    public List<Fortune> listNamed(int page, int size) {
+    public List<Fortune> listNamed(final int page, final int size) {
         return getFortunes(repository.findAllNamed(new PageRequest(page, size)));
     }
 
@@ -171,7 +171,7 @@ public class FortuneService implements IFortuneService<Fortune> {
      * @return Fortunes
      */
     @Override
-    public List<Fortune> listAnon(int page, int size) {
+    public List<Fortune> listAnon(final int page, final int size) {
         return getFortunes(repository.findAllAnon(new PageRequest(page, size)));
     }
 

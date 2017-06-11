@@ -25,38 +25,46 @@
 package com.codingrodent.microservice.template.repository.impl;
 
 import com.codingrodent.microservice.template.entity.FortuneEntity;
-import com.codingrodent.microservice.template.repository.api.IASyncFortuneRepository;
-import com.couchbase.client.java.*;
+import com.codingrodent.microservice.template.repository.api.*;
+import com.couchbase.client.java.Bucket;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import rx.Observable;
 
+import javax.inject.Inject;
+
 /**
- * Manually built async repository - Sprint Data can't auto build this at the moment
- * <p>
- * Repository to be used when Couchbase is  present and selected
+ * In memory version of repository for when Couchbase is unavailable in the environment - minimal implementation of required methods
  */
-
-@Profile({"prod"})
+@Profile({"test", "integration", "aws"})
 @Service
-public class AsyncFortuneRepository extends AsyncRepository<FortuneEntity> implements IASyncFortuneRepository<FortuneEntity> {
+public class AsyncInMemoryFortuneRepository extends AsyncRepository<FortuneEntity> implements IASyncFortuneRepository<FortuneEntity> {
 
-    private final Cluster cluster = CouchbaseCluster.create("localhost");
-    private final Bucket bucket = cluster.openBucket("template", "bucketpassword");
+    private final ISyncFortuneRepository<FortuneEntity> repository;
 
-    protected Bucket getBucket() {
-        return bucket;
+    @Inject
+    public AsyncInMemoryFortuneRepository(ISyncFortuneRepository<FortuneEntity> repository) {
+        this.repository = repository;
     }
 
     @Override
     public Observable<FortuneEntity> findAllNamed(final Pageable pageable) {
-        return findByView(VIEW_NAMED).skip(pageable.getPageNumber() * pageable.getPageSize()).take(pageable.getPageSize());
+        return Observable.from(repository.findAllNamed(pageable));
     }
 
     @Override
     public Observable<FortuneEntity> findAllAnon(final Pageable pageable) {
-        return findByView(VIEW_ANON).skip(pageable.getPageNumber() * pageable.getPageSize()).take(pageable.getPageSize());
+        return Observable.from(repository.findAllAnon(pageable));
     }
 
+    @Override
+    public Observable<FortuneEntity> findAll(final Pageable pageable) {
+        return Observable.from(repository.findAll());
+    }
+
+    @Override
+    protected Bucket getBucket() {
+        return null;
+    }
 }

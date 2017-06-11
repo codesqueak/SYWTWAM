@@ -57,9 +57,9 @@ public interface IAsyncService<M> {
      * Load an entity by its key
      *
      * @param uuid Key
-     * @return The entity or an empty optional observable
+     * @return The entity or throw an error to be handled by the subscriber
      */
-    Observable<Optional<ModelVersion<M>>> load(String uuid);
+    Observable<ModelVersion<M>> load(String uuid);
 
     /**
      * Delete an entity by its key

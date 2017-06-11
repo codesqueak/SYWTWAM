@@ -40,7 +40,7 @@ public abstract class ModelBase {
         this.uuid = uuid;
     }
 
-    public ModelBase() {
+    ModelBase() {
         this.uuid = Optional.empty();
     }
 

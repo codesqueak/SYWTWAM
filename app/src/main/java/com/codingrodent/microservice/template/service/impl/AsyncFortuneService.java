@@ -28,6 +28,7 @@ import com.codingrodent.microservice.template.entity.FortuneEntity;
 import com.codingrodent.microservice.template.model.*;
 import com.codingrodent.microservice.template.repository.api.IASyncFortuneRepository;
 import com.codingrodent.microservice.template.service.api.*;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import rx.Observable;
 
@@ -59,7 +60,7 @@ public class AsyncFortuneService implements IAsyncFortuneService<Fortune> {
      * @param version Version (if required)
      * @return Saved model observable
      */
-    public Observable<ModelVersion<Fortune>> save(UUID uuid, Fortune fortune, Optional<Long> version) {
+    public Observable<ModelVersion<Fortune>> save(final UUID uuid, final Fortune fortune, final Optional<Long> version) {
         throw new UnsupportedOperationException("Save an entity not implemented");
     }
 
@@ -71,7 +72,7 @@ public class AsyncFortuneService implements IAsyncFortuneService<Fortune> {
      * @return Saved model observable
      */
     @Override
-    public Observable<ModelVersion<Fortune>> create(Fortune fortune, Optional<Long> version) {
+    public Observable<ModelVersion<Fortune>> create(final Fortune fortune, final Optional<Long> version) {
         throw new UnsupportedOperationException("Create an entity not implemented");
     }
 
@@ -82,8 +83,11 @@ public class AsyncFortuneService implements IAsyncFortuneService<Fortune> {
      * @return The entity or an empty optional observable
      */
     @Override
-    public Observable<Optional<ModelVersion<Fortune>>> load(String uuid) {
-        throw new UnsupportedOperationException("Load an entity not implemented");
+    public Observable<ModelVersion<Fortune>> load(final String uuid) {
+
+        return repository.findOne(uuid).
+                first().
+                map(entity -> new ModelVersion<>(toFortuneModel.convert(entity), Optional.of(entity.getVersion())));
     }
 
     /**
@@ -92,7 +96,7 @@ public class AsyncFortuneService implements IAsyncFortuneService<Fortune> {
      * @param uuid Key
      */
     @Override
-    public void delete(String uuid) {
+    public void delete(final String uuid) {
         throw new UnsupportedOperationException("Delete an entity not implemented");
     }
 
@@ -104,8 +108,8 @@ public class AsyncFortuneService implements IAsyncFortuneService<Fortune> {
      * @return Model list observable
      */
     @Override
-    public Observable<Fortune> findAll(int page, int size) {
-        return repository.findAll().map(toFortuneModel::convert);
+    public Observable<Fortune> findAll(final int page, final int size) {
+        return repository.findAll(new PageRequest(page, size)).map(toFortuneModel::convert);
     }
 
     /**
@@ -116,8 +120,8 @@ public class AsyncFortuneService implements IAsyncFortuneService<Fortune> {
      * @return Model list
      */
     @Override
-    public Observable<Fortune> findNamed(int page, int size) {
-        return repository.findAllNamed(null).map(toFortuneModel::convert);
+    public Observable<Fortune> findNamed(final int page, final int size) {
+        return repository.findAllNamed(new PageRequest(page, size)).map(toFortuneModel::convert);
     }
 
     /**
@@ -128,8 +132,8 @@ public class AsyncFortuneService implements IAsyncFortuneService<Fortune> {
      * @return Model list
      */
     @Override
-    public Observable<Fortune> findAnon(int page, int size) {
-        return repository.findAllAnon(null).map(toFortuneModel::convert);
+    public Observable<Fortune> findAnon(final int page, final int size) {
+        return repository.findAllAnon(new PageRequest(page, size)).map(toFortuneModel::convert);
     }
 
 }
