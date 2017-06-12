@@ -26,9 +26,13 @@ package com.codingrodent.microservice.template.controller;
 
 import com.codingrodent.microservice.template.model.ModelVersion;
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.servlet.HandlerMapping;
 
 import java.util.Optional;
 import java.util.function.Function;
+
+import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
 
 /**
  * Shared base functionality for Sync Services
@@ -80,16 +84,26 @@ abstract class RestBase<V> {
     }
 
     /**
+     * Get the URL for the present request
+     *
+     * @return Request URL
+     */
+    String getURL() {
+        return RequestContextHolder.currentRequestAttributes().getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE, SCOPE_REQUEST).toString();
+    }
+
+    /**
      * Generate ETag header from version resource (if it exists) and then add any additionally defined headers
      *
-     * @param modelVersion Source of version information
-     * @param additionalHeaders         Additional header keys and values
+     * @param url               Location of resource
+     * @param modelVersion      Source of version information
+     * @param additionalHeaders Additional header keys and values
      * @return Headers with ETag set (if available) and customer values set
      */
-    HttpHeaders getETag(ModelVersion<?> modelVersion, String... additionalHeaders) {
+    HttpHeaders getETagAndHeaders(final String url, final ModelVersion<?> modelVersion, String... additionalHeaders) {
         HttpHeaders headers = new HttpHeaders();
         // Add etag
-        modelVersion.getVersion().ifPresent(version -> headers.setETag("\"" + version + "\""));
+        modelVersion.getVersion().ifPresent(cas -> headers.setETag("\"" + Etag.encodEtag(cas, url) + "\""));
         // Add any others defined (args - key/value/key/value...key/value)
         for (int p = 0; p < additionalHeaders.length; ) {
             headers.set(additionalHeaders[p++], additionalHeaders[p++]);

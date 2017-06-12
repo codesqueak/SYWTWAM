@@ -32,6 +32,7 @@ import io.swagger.annotations.*;
 import org.springframework.hateoas.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.inject.Inject;
 import java.util.*;
@@ -76,7 +77,8 @@ public class FortuneController extends RestBase<Fortune> implements IFortune<UUI
                 // Its changed, return new value
                 Resource<Fortune> resource = new Resource<>(modelVersion.get().getModel());
                 resource.add(getRelLink(uuid));
-                return new ResponseEntity<>(resource, getETag(modelVersion.get()), HttpStatus.OK);
+                RequestContextHolder.currentRequestAttributes();
+                return new ResponseEntity<>(resource, getETagAndHeaders(getURL(), modelVersion.get()), HttpStatus.OK);
             } else {
                 // Its the same as last time !
                 return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
@@ -100,7 +102,8 @@ public class FortuneController extends RestBase<Fortune> implements IFortune<UUI
         Optional<ModelVersion<Fortune>> modelVersion = fortuneService.load(uuid.toString());
         if (!version.isPresent() || ifNoneMatch(version, modelVersion)) {
             // Exists, so just return empty response
-            return modelVersion.map(mv -> new ResponseEntity<Optional>(Optional.empty(), getETag(mv), HttpStatus.NO_CONTENT)).orElseThrow(DocumentNeverFoundException::new);
+            return modelVersion.map(mv -> new ResponseEntity<Optional>(Optional.empty(), getETagAndHeaders(getURL(), mv), HttpStatus.NO_CONTENT)).orElseThrow
+                    (DocumentNeverFoundException::new);
         } else {
             // Its the same as last time !
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
@@ -129,7 +132,7 @@ public class FortuneController extends RestBase<Fortune> implements IFortune<UUI
             Resource<Fortune> resource = new Resource<>(model);
             UUID uuid = model.getUUID().orElseThrow(badRecordCreation);
             resource.add(getRelLink(uuid));
-            return new ResponseEntity<>(resource, getETag(written), HttpStatus.CREATED);
+            return new ResponseEntity<>(resource, getETagAndHeaders(getURL(), written), HttpStatus.CREATED);
         }
     }
 
@@ -159,7 +162,7 @@ public class FortuneController extends RestBase<Fortune> implements IFortune<UUI
             throw new ApplicationFaultException("PUT failed to return a document");
         } else {
             Resource<Fortune> resource = new Resource<>(written.getModel());
-            return new ResponseEntity<>(resource, getETag(written), version.map(e -> HttpStatus.ACCEPTED).orElse(HttpStatus.CREATED));
+            return new ResponseEntity<>(resource, getETagAndHeaders(getURL(), written), version.map(e -> HttpStatus.ACCEPTED).orElse(HttpStatus.CREATED));
         }
     }
 
