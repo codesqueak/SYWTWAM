@@ -78,7 +78,7 @@ public class FortuneController extends RestBase<Fortune> implements IFortune<UUI
                 Resource<Fortune> resource = new Resource<>(modelVersion.get().getModel());
                 resource.add(getRelLink(uuid));
                 RequestContextHolder.currentRequestAttributes();
-                return new ResponseEntity<>(resource, getETagAndHeaders(getURL(), modelVersion.get()), HttpStatus.OK);
+                return new ResponseEntity<>(resource, getETagAndHeaders(modelVersion.get()), HttpStatus.OK);
             } else {
                 // Its the same as last time !
                 return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
@@ -102,7 +102,7 @@ public class FortuneController extends RestBase<Fortune> implements IFortune<UUI
         Optional<ModelVersion<Fortune>> modelVersion = fortuneService.load(uuid.toString());
         if (!version.isPresent() || ifNoneMatch(version, modelVersion)) {
             // Exists, so just return empty response
-            return modelVersion.map(mv -> new ResponseEntity<Optional>(Optional.empty(), getETagAndHeaders(getURL(), mv), HttpStatus.NO_CONTENT)).orElseThrow
+            return modelVersion.map(mv -> new ResponseEntity<Optional>(Optional.empty(), getETagAndHeaders(mv), HttpStatus.NO_CONTENT)).orElseThrow
                     (DocumentNeverFoundException::new);
         } else {
             // Its the same as last time !
@@ -124,7 +124,7 @@ public class FortuneController extends RestBase<Fortune> implements IFortune<UUI
                                                                 Optional<String> version, //
                                                     @ApiParam(name = "Entity", value = "Fortune Value", required = true) @RequestBody Fortune fortune) {
         // Not doing If-Match test as we can guarantee record does not exists due to uuid creation
-        ModelVersion<Fortune> written = fortuneService.create(fortune, version.map(extractETag));
+        ModelVersion<Fortune> written = fortuneService.create(fortune, version.map(extractCAS));
         if (null == written) {
             throw new ApplicationFaultException("POST failed to return a document");
         } else {
@@ -132,7 +132,7 @@ public class FortuneController extends RestBase<Fortune> implements IFortune<UUI
             Resource<Fortune> resource = new Resource<>(model);
             UUID uuid = model.getUUID().orElseThrow(badRecordCreation);
             resource.add(getRelLink(uuid));
-            return new ResponseEntity<>(resource, getETagAndHeaders(getURL(), written), HttpStatus.CREATED);
+            return new ResponseEntity<>(resource, getETagAndHeaders(written), HttpStatus.CREATED);
         }
     }
 
@@ -156,13 +156,13 @@ public class FortuneController extends RestBase<Fortune> implements IFortune<UUI
             if (!ifMatch(version, modelVersion))
                 throw new PreconditionFailedException("PUT If-Match");
         }
-        ModelVersion<Fortune> written = fortuneService.save(uuid, fortune, version.map(extractETag));
+        ModelVersion<Fortune> written = fortuneService.save(uuid, fortune, version.map(extractCAS));
         // As a workaround we will take the version to signify if this is a create or update
         if (null == written) {
             throw new ApplicationFaultException("PUT failed to return a document");
         } else {
             Resource<Fortune> resource = new Resource<>(written.getModel());
-            return new ResponseEntity<>(resource, getETagAndHeaders(getURL(), written), version.map(e -> HttpStatus.ACCEPTED).orElse(HttpStatus.CREATED));
+            return new ResponseEntity<>(resource, getETagAndHeaders(written), version.map(e -> HttpStatus.ACCEPTED).orElse(HttpStatus.CREATED));
         }
     }
 

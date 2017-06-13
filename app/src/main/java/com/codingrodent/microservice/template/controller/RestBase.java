@@ -40,8 +40,6 @@ import static org.springframework.web.context.request.RequestAttributes.SCOPE_RE
 abstract class RestBase<V> {
 
     private final static String ETAG_WILDCARD = "\"*\"";
-    final Function<String, Long> extractETag = v -> Long.parseLong(v.replace("\"", ""));
-    private final Function<Long, String> makeETag = v -> "\"" + v + "\"";
 
     /**
      * Evaluate If-Match
@@ -60,8 +58,8 @@ abstract class RestBase<V> {
         // if (field doesn't match record) return false;
         if (!modelVersion.isPresent() || !modelVersion.get().getVersion().isPresent())
             return false;
-        String version = modelVersion.get().getVersion().map(makeETag).orElse("");
-        return version.equals(etag.get());
+        // See if supplied etag matchches generated etag
+        return generateEtag(modelVersion).equals(etag.get());
     }
 
     /**
@@ -79,8 +77,35 @@ abstract class RestBase<V> {
         if (etag.get().equals(ETAG_WILDCARD))
             return false;
         // if (field matches record) return false;
-        String version = modelVersion.get().getVersion().map(makeETag).orElse("");
-        return !version.equals(etag.get());
+        return !generateEtag(modelVersion).equals(etag.get());
+    }
+
+    /**
+     * Generate ETag header from version resource (if it exists) and then add any additionally defined headers
+     *
+     * @param modelVersion      Source of version information
+     * @param additionalHeaders Additional header keys and values
+     * @return Headers with ETag set (if available) and customer values set
+     */
+    HttpHeaders getETagAndHeaders(final ModelVersion<?> modelVersion, String... additionalHeaders) {
+        HttpHeaders headers = new HttpHeaders();
+        // Add etag
+        modelVersion.getVersion().ifPresent(cas -> headers.setETag(makeETag.apply(cas)));
+        // Add any others defined (args - key/value/key/value...key/value)
+        for (int p = 0; p < additionalHeaders.length; ) {
+            headers.set(additionalHeaders[p++], additionalHeaders[p++]);
+        }
+        return headers;
+    }
+
+    /**
+     * Generate an etag from CAS in the version objects and the active URL
+     *
+     * @param modelVersion Version object
+     * @return etag or empty string no version value present
+     */
+    private String generateEtag(final Optional<ModelVersion<V>> modelVersion) {
+        return modelVersion.get().getVersion().map(makeETag).orElse("");
     }
 
     /**
@@ -88,27 +113,23 @@ abstract class RestBase<V> {
      *
      * @return Request URL
      */
-    String getURL() {
+    private String getURL() {
         return RequestContextHolder.currentRequestAttributes().getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE, SCOPE_REQUEST).toString();
     }
 
     /**
-     * Generate ETag header from version resource (if it exists) and then add any additionally defined headers
-     *
-     * @param url               Location of resource
-     * @param modelVersion      Source of version information
-     * @param additionalHeaders Additional header keys and values
-     * @return Headers with ETag set (if available) and customer values set
+     * Extract a strong etag value from its quotation marks
      */
-    HttpHeaders getETagAndHeaders(final String url, final ModelVersion<?> modelVersion, String... additionalHeaders) {
-        HttpHeaders headers = new HttpHeaders();
-        // Add etag
-        modelVersion.getVersion().ifPresent(cas -> headers.setETag("\"" + Etag.encodEtag(cas, url) + "\""));
-        // Add any others defined (args - key/value/key/value...key/value)
-        for (int p = 0; p < additionalHeaders.length; ) {
-            headers.set(additionalHeaders[p++], additionalHeaders[p++]);
-        }
-        return headers;
-    }
+    final Function<String, Long> extractCAS = headerValue -> {
+        String etag = headerValue.replace("\"", "");
+        if (etag.length() == 12)
+            return Etag.decodeEtag(etag, getURL());
+        return null;
+    };
+
+    /**
+     * Generate a quoted strong etag from a supplied CAS value and the URL attached to the thread
+     */
+    private final Function<Long, String> makeETag = cas -> "\"" + Etag.encodEtag(cas, getURL()) + "\"";
 
 }
