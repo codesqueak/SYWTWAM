@@ -24,9 +24,11 @@
  */
 package com.codingrodent.microservice.template.converter;
 
-import com.codingrodent.microservice.template.entity.FortuneEntity;
+import com.codingrodent.microservice.template.entity.*;
+import com.codingrodent.microservice.template.exception.ApplicationFaultException;
 import com.codingrodent.microservice.template.model.Fortune;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -34,12 +36,31 @@ import java.util.*;
  */
 public class Converter {
 
-    public final static IConvertToEntity<Fortune, FortuneEntity, UUID, Optional<Long>> toFortuneEntity = (id, m, v) -> new FortuneEntity(id.toString(), m.getText(), m.getAuthor
-            ().orElse(""));
+    public final static IConvertToEntity<Fortune, FortuneEntity, String, Optional<Long>> toFortuneEntity = (id, m, version) -> {
+        FortuneEntity entity = new FortuneEntity(id, m.getText(), m.getAuthor().orElse(""));
+        setVersion(entity, version);
+        return entity;
+    };
+
     public final static IConvertToModel<FortuneEntity, Fortune> toFortuneModel = entity -> new Fortune(entity.getText(), Optional.of(entity.getAuthor()), Optional.of(UUID.fromString(entity.getId())));
 
     private Converter() {
         // Do not instantiate.
+    }
+
+    private static void setVersion(final EntityBase entity, Optional<Long> version) {
+        version.ifPresent(v -> {
+            try {
+                Field versionField = EntityBase.class.getDeclaredField("version");
+                versionField.setAccessible(true);
+                versionField.set(entity, v);
+                versionField.setAccessible(false);
+            } catch (NoSuchFieldException e) {
+                throw new ApplicationFaultException("Unable to gain access to the FortuneEntity version field");
+            } catch (IllegalAccessException e) {
+                throw new ApplicationFaultException("Unable to update version field");
+            }
+        });
     }
 
 }

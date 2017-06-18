@@ -68,7 +68,7 @@ public class FortuneController extends RestBase<Fortune> implements IFortune<UUI
      */
     @Override
     public ResponseEntity<Resource<Fortune>> read(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
-                                                  @ApiParam(name = HttpHeaders.IF_NONE_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required =
+                                                  @ApiParam(name = HttpHeaders.IF_NONE_MATCH, value = "ETag Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required =
                                                           false) Optional<String> version) {
 
         Optional<ModelVersion<Fortune>> modelVersion = fortuneService.load(uuid.toString());
@@ -97,7 +97,7 @@ public class FortuneController extends RestBase<Fortune> implements IFortune<UUI
      */
     @Override
     public ResponseEntity<Optional> head(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
-                                         @ApiParam(name = HttpHeaders.IF_NONE_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false)
+                                         @ApiParam(name = HttpHeaders.IF_NONE_MATCH, value = "ETag Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false)
                                                  Optional<String> version) {
         Optional<ModelVersion<Fortune>> modelVersion = fortuneService.load(uuid.toString());
         if (!version.isPresent() || ifNoneMatch(version, modelVersion)) {
@@ -115,16 +115,16 @@ public class FortuneController extends RestBase<Fortune> implements IFortune<UUI
      * <p>
      * Note: Not usually used in REST applications
      *
-     * @param version Fortune version identifier. Match forces overwrite else create (if fortune doesn't exist)
+     * @param etag    Fortune version identifier. Match forces overwrite else create (if fortune doesn't exist)
      * @param fortune Fortune to write
      * @return Fortune entity
      */
     @Override
-    public ResponseEntity<Resource<Fortune>> create(@ApiParam(name = HttpHeaders.IF_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false)
-                                                                Optional<String> version, //
+    public ResponseEntity<Resource<Fortune>> create(@ApiParam(name = HttpHeaders.IF_MATCH, value = "ETag Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false)
+                                                                Optional<String> etag, //
                                                     @ApiParam(name = "Entity", value = "Fortune Value", required = true) @RequestBody Fortune fortune) {
         // Not doing If-Match test as we can guarantee record does not exists due to uuid creation
-        ModelVersion<Fortune> written = fortuneService.create(fortune, version.map(extractCAS));
+        ModelVersion<Fortune> written = fortuneService.create(fortune, etag.map(extractCAS));
         if (null == written) {
             throw new ApplicationFaultException("POST failed to return a document");
         } else {
@@ -140,29 +140,26 @@ public class FortuneController extends RestBase<Fortune> implements IFortune<UUI
      * PUT - Create or update a fortune
      *
      * @param uuid    Identifier of fortune to write
-     * @param version Fortune version identifier
+     * @param etag    Fortune version identifier
      * @param fortune Fortune to write
      * @return Written fortune
      */
     @Override
     public ResponseEntity<Resource<Fortune>> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
-                                                    @ApiParam(name = HttpHeaders.IF_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false)
-                                                            Optional<String> version, //
+                                                    @ApiParam(name = HttpHeaders.IF_MATCH, value = "ETag Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false)
+                                                            Optional<String> etag, //
                                                     @ApiParam(name = "Entity", value = "Fortune Value", required = true) @RequestBody Fortune fortune) {
-
-        if (version.isPresent()) {
-            // Only need  to check if record exists when doing an If-Match
-            Optional<ModelVersion<Fortune>> modelVersion = fortuneService.load(uuid.toString());
-            if (!ifMatch(version, modelVersion))
-                throw new PreconditionFailedException("PUT If-Match");
+        final String key = uuid.toString();
+        if (etag.isPresent()) {
+            // If no etag is supplied then this must be a create, as an etag implies we are doing version matching
+            fortuneService.load(key).orElseThrow(() -> new PreconditionFailedException("PUT If-Match"));
         }
-        ModelVersion<Fortune> written = fortuneService.save(uuid, fortune, version.map(extractCAS));
-        // As a workaround we will take the version to signify if this is a create or update
+        ModelVersion<Fortune> written = fortuneService.save(key, fortune, etag.map(extractCAS));
         if (null == written) {
             throw new ApplicationFaultException("PUT failed to return a document");
         } else {
             Resource<Fortune> resource = new Resource<>(written.getModel());
-            return new ResponseEntity<>(resource, getETagAndHeaders(written), version.map(e -> HttpStatus.ACCEPTED).orElse(HttpStatus.CREATED));
+            return new ResponseEntity<>(resource, getETagAndHeaders(written), etag.map(e -> HttpStatus.ACCEPTED).orElse(HttpStatus.CREATED));
         }
     }
 
@@ -175,7 +172,7 @@ public class FortuneController extends RestBase<Fortune> implements IFortune<UUI
      */
     @Override
     public ResponseEntity<Void> delete(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
-                                       @ApiParam(name = HttpHeaders.IF_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false)
+                                       @ApiParam(name = HttpHeaders.IF_MATCH, value = "ETag Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false)
                                                Optional<String> version) {
 
         if (version.isPresent()) {

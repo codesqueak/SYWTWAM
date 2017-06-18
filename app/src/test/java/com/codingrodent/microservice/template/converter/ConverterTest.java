@@ -27,14 +27,14 @@ public class ConverterTest {
 
         //
         // Convert back to entity and check
-        fortuneEntity = toFortuneEntity.convert(id, model, Optional.of(version));
+        fortuneEntity = toFortuneEntity.convert(id.toString(), model, Optional.of(version));
         assertEquals(id, UUID.fromString(fortuneEntity.getId()));
         assertEquals(text, fortuneEntity.getText());
         assertEquals(author, Optional.of(fortuneEntity.getAuthor()));
 
         //
         // Convert back to entity and check (No version information)
-        fortuneEntity = toFortuneEntity.convert(id, model, Optional.empty());
+        fortuneEntity = toFortuneEntity.convert(id.toString(), model, Optional.empty());
         assertEquals(id, UUID.fromString(fortuneEntity.getId()));
         assertEquals(text, fortuneEntity.getText());
         assertEquals(author, Optional.ofNullable(fortuneEntity.getAuthor()));

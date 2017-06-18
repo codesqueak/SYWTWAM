@@ -24,6 +24,7 @@
  */
 package com.codingrodent.microservice.template.controller;
 
+import com.codingrodent.microservice.template.exception.ApplicationFaultException;
 import com.codingrodent.microservice.template.model.ModelVersion;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -58,8 +59,8 @@ abstract class RestBase<V> {
         // if (field doesn't match record) return false;
         if (!modelVersion.isPresent() || !modelVersion.get().getVersion().isPresent())
             return false;
-        // See if supplied etag matchches generated etag
-        return generateEtag(modelVersion).equals(etag.get());
+        // See if supplied etag matches generated etag
+        return etag.get().equals(generateEtag(modelVersion).orElse(null));
     }
 
     /**
@@ -77,7 +78,8 @@ abstract class RestBase<V> {
         if (etag.get().equals(ETAG_WILDCARD))
             return false;
         // if (field matches record) return false;
-        return !generateEtag(modelVersion).equals(etag.get());
+
+        return !etag.get().equals(generateEtag(modelVersion).orElse(null));
     }
 
     /**
@@ -104,8 +106,8 @@ abstract class RestBase<V> {
      * @param modelVersion Version object
      * @return etag or empty string no version value present
      */
-    private String generateEtag(final Optional<ModelVersion<V>> modelVersion) {
-        return modelVersion.get().getVersion().map(makeETag).orElse("");
+    private Optional<String> generateEtag(final Optional<ModelVersion<V>> modelVersion) {
+        return modelVersion.orElseThrow(() -> new ApplicationFaultException("Cannot generate etag from non versioned model object")).getVersion().map(makeETag);
     }
 
     /**
@@ -118,12 +120,13 @@ abstract class RestBase<V> {
     }
 
     /**
-     * Extract a strong etag value from its quotation marks
+     * Extract a strong etag value from its quotation marks. Return null if not able to find a valid etag
      */
     final Function<String, Long> extractCAS = headerValue -> {
         String etag = headerValue.replace("\"", "");
-        if (etag.length() == 12)
+        if (etag.length() == 12) {
             return Etag.decodeEtag(etag, getURL());
+        }
         return null;
     };
 

@@ -28,6 +28,7 @@ import com.codingrodent.microservice.template.entity.*;
 import com.codingrodent.microservice.template.exception.ApplicationFaultException;
 import com.codingrodent.microservice.template.repository.api.ISyncFortuneRepository;
 import org.springframework.context.annotation.Profile;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
@@ -99,6 +100,9 @@ public class FortuneInMemoryRepository implements ISyncFortuneRepository<Fortune
     public <S extends FortuneEntity> S save(final S entity) {
         FortuneEntity original = store.get(entity.getId());
         long version = (null == original) ? 0L : entity.getVersion();
+        if ((null != original) && (original.getVersion() != version))
+            throw new OptimisticLockingFailureException("Original:" + original.getVersion() + " New:" + entity.getVersion());
+        //
         original = new FortuneEntity(entity.getId(), entity.getText(), entity.getAuthor());
         // No direct access to the version
         try {

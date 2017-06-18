@@ -53,8 +53,8 @@ public interface IREST<K, V> {
             @ApiResponse(code = 410, message = "No matching entity exists"), //
             @ApiResponse(code = 412, message = "Precondition Failed")})
     default ResponseEntity<Resource<V>> read(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
-                                             @ApiParam(name = HttpHeaders.IF_NONE_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false)
-                                           Optional<String> version) {
+                                             @ApiParam(name = HttpHeaders.IF_NONE_MATCH, value = "ETag Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required =
+                                                     false) Optional<String> version) {
         throw new UnsupportedOperationException("Get an entity not implemented");
     }
 
@@ -73,7 +73,7 @@ public interface IREST<K, V> {
             @ApiResponse(code = 410, message = "No matching entity exists"), //
             @ApiResponse(code = 412, message = "Precondition Failed")})
     default ResponseEntity<Optional> head(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
-                                          @ApiParam(name = HttpHeaders.IF_NONE_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false)
+                                          @ApiParam(name = HttpHeaders.IF_NONE_MATCH, value = "ETag Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false)
                                                   Optional<String> version) {
         throw new UnsupportedOperationException("Entity last modified not implemented");
     }
@@ -83,7 +83,7 @@ public interface IREST<K, V> {
      * <p>
      * Note: Not usually used in REST applications
      *
-     * @param version Entity version identifier. Match forces overwrite else create (if entity doesn't exist)
+     * @param etag Entity version identifier. Match forces overwrite else create (if entity doesn't exist)
      * @param value   Entity to write
      * @return Written entity
      */
@@ -95,8 +95,8 @@ public interface IREST<K, V> {
             @ApiResponse(code = 201, message = "Created, response entity in body"), //
             @ApiResponse(code = 409, message = "Conflict, can't update"), //
             @ApiResponse(code = 412, message = "Precondition Failed")})
-    default ResponseEntity<Resource<V>> create(@ApiParam(name = HttpHeaders.IF_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false) Optional<String>
-                                                 version, //
+    default ResponseEntity<Resource<V>> create(@ApiParam(name = HttpHeaders.IF_MATCH, value = "ETag Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false)
+                                                           Optional<String> etag, //
                                                @ApiParam(name = "Entity", value = "Entity Value", required = true) @RequestBody V value) {
         throw new UnsupportedOperationException("Create an entity not implemented");
     }
@@ -104,9 +104,9 @@ public interface IREST<K, V> {
     /**
      * PUT - Create or update an entity
      *
-     * @param uuid    Identifier of entity to write
-     * @param version Entity version identifier
-     * @param value   Entity to write
+     * @param uuid  Identifier of entity to write
+     * @param etag  Entity version identifier
+     * @param value Entity to write
      * @return Written entity
      */
     @RequestMapping(path = "/{uuid}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -118,8 +118,8 @@ public interface IREST<K, V> {
             @ApiResponse(code = 409, message = "Conflict, can't update"), //
             @ApiResponse(code = 412, message = "Precondition Failed")})
     default ResponseEntity<Resource<V>> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
-                                               @ApiParam(name = HttpHeaders.IF_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false) Optional<String>
-                                             version, //
+                                               @ApiParam(name = HttpHeaders.IF_MATCH, value = "ETag Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false)
+                                                       Optional<String> etag, //
                                                @ApiParam(name = "Entity", value = "Entity Value", required = true) @RequestBody V value) {
         throw new UnsupportedOperationException("Update  or create an entity not implemented");
     }
@@ -142,7 +142,7 @@ public interface IREST<K, V> {
             @ApiResponse(code = 409, message = "Conflict, can't update"), //
             @ApiResponse(code = 412, message = "Precondition Failed")})
     default ResponseEntity<Void> patch(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
-                                       @ApiParam(name = HttpHeaders.IF_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false)
+                                       @ApiParam(name = HttpHeaders.IF_MATCH, value = "ETag Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false)
                                                Optional<String> version, //
                                        @ApiParam(name = "Entity", value = "Entity Value", required = true) @RequestBody V value) {
         throw new UnsupportedOperationException("Available options not implemented");
@@ -161,7 +161,7 @@ public interface IREST<K, V> {
             @ApiResponse(code = 204, message = "No content"), //
             @ApiResponse(code = 412, message = "Precondition Failed")})
     default ResponseEntity<Void> delete(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
-                                        @ApiParam(name = HttpHeaders.IF_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false)
+                                        @ApiParam(name = HttpHeaders.IF_MATCH, value = "ETag Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false)
                                                 Optional<String> version) {
         throw new UnsupportedOperationException("Delete an entity not implemented");
     }

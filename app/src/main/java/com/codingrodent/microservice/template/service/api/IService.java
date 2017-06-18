@@ -41,7 +41,7 @@ public interface IService<M> {
      * @param version Version (if required)
      * @return Saved model
      */
-    ModelVersion<M> save(UUID uuid, M model, Optional<Long> version);
+    ModelVersion<M> save(String uuid, M model, Optional<Long> version);
 
     /**
      * Create an entity

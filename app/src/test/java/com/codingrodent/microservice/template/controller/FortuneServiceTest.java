@@ -170,9 +170,9 @@ public class FortuneServiceTest extends MVCTestBase {
 
     @Test
     public void putFortune() throws Exception {
-        when(fortuneService.load(any(String.class))).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion));
-        when(fortuneService.save(any(UUID.class), any(Fortune.class), any(Optional.class))).thenThrow(OptimisticLockingFailureException.class).thenReturn(modelVersion,
-                                                                                                                                                          modelVersion, null);
+        when(fortuneService.load(any(String.class))).thenReturn(Optional.empty(), Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion));
+        when(fortuneService.save(any(String.class), any(Fortune.class), any(Optional.class))).thenThrow(OptimisticLockingFailureException.class).thenReturn(modelVersion,
+                                                                                                                                                            modelVersion, null);
         String url = BASE + randomUUID;
         String etag = "\"" + Etag.encodEtag(cas, url) + "\"";
 
@@ -193,6 +193,13 @@ public class FortuneServiceTest extends MVCTestBase {
         // @formatter:off
         // If-Match precondition fail
         performPut(controller, url, "\"246\"", json)
+                .andExpect(status().isPreconditionFailed())
+                .andReturn();
+        // @formatter:on
+
+        // @formatter:off
+        // Save - fail optimistic locking
+        performPut(controller, url, etag, json)
                 .andExpect(status().isPreconditionFailed())
                 .andReturn();
         // @formatter:on
@@ -231,11 +238,11 @@ public class FortuneServiceTest extends MVCTestBase {
     @Test
     public void postFortune() throws Exception {
         Long version = 789L;
-        when(fortuneService.create(any(Fortune.class), any(Optional.class))).thenThrow(DuplicateKeyException.class).thenReturn(new ModelVersion<>(fortuneWithUUID, Optional.of(cas))).thenAnswer(inv -> new ModelVersion<>(fortuneWithUUID, (Optional) inv.getArguments()[1])).thenReturn(null);
+        when(fortuneService.create(any(Fortune.class), any(Optional.class))).thenThrow(DuplicateKeyException.class).thenReturn(new ModelVersion<>(fortuneWithUUID, Optional.of
+                (cas))).thenAnswer(inv -> new ModelVersion<>(fortuneWithUUID, (Optional) inv.getArguments()[1])).thenReturn(null);
 
-        String url = BASE + randomUUID;
+        String url = BASE;
         String etag = "\"" + Etag.encodEtag(cas, url) + "\"";
-
 
         // @formatter:off
         // No body
@@ -266,7 +273,7 @@ public class FortuneServiceTest extends MVCTestBase {
         performPost(controller, url , etag, json2)
                 .andExpect(status().isCreated())
                 .andExpect(content().json(json2))
-                .andExpect(header().string(HttpHeaders.ETAG, "\""+version+"\""))
+                .andExpect(header().string(HttpHeaders.ETAG, etag))
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE))
                 .andReturn();
         // @formatter:on

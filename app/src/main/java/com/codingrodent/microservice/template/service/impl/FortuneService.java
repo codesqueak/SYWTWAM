@@ -94,8 +94,10 @@ public class FortuneService implements IFortuneService<Fortune> {
      * @return Saved model
      */
     @Override
-    public ModelVersion<Fortune> save(final UUID uuid, final Fortune model, Optional<Long> version) {
-        FortuneEntity entity = repository.save(toFortuneEntity.convert(uuid, model, version));
+    public ModelVersion<Fortune> save(final String uuid, final Fortune model, Optional<Long> version) {
+
+        FortuneEntity z = toFortuneEntity.convert(uuid, model, version);
+        FortuneEntity entity = repository.save(z);
         return new ModelVersion<>(toFortuneModel.convert(entity), Optional.of(entity.getVersion()));
     }
 
@@ -108,7 +110,7 @@ public class FortuneService implements IFortuneService<Fortune> {
      */
     @Override
     public ModelVersion<Fortune> create(final Fortune model, final Optional<Long> version) {
-        FortuneEntity entity = repository.save(toFortuneEntity.convert(UUID.randomUUID(), model, version));
+        FortuneEntity entity = repository.save(toFortuneEntity.convert(UUID.randomUUID().toString(), model, version));
         return new ModelVersion<>(toFortuneModel.convert(entity), Optional.of(entity.getVersion()));
     }
 
