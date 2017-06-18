@@ -24,16 +24,17 @@
  */
 package com.codingrodent.microservice.template.controller;
 
-import com.codingrodent.microservice.template.api.IAsyncREST;
-import com.codingrodent.microservice.template.model.Fortune;
-import com.codingrodent.microservice.template.service.api.IFortuneService;
-import io.swagger.annotations.*;
-import org.springframework.http.*;
+import com.codingrodent.microservice.template.api.IAsyncFortune;
+import com.codingrodent.microservice.template.model.*;
+import com.codingrodent.microservice.template.service.api.IAsyncFortuneService;
+import io.swagger.annotations.Api;
+import org.springframework.hateoas.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.inject.Inject;
-import java.util.UUID;
+import java.util.*;
 
 import static com.codingrodent.microservice.template.constants.SystemConstants.API_VERSION;
 
@@ -43,47 +44,63 @@ import static com.codingrodent.microservice.template.constants.SystemConstants.A
 @RestController
 @Api(tags = "async", value = "asyncfortune", description = "Endpoint for fortune management (async)")
 @RequestMapping("/async/fortune/" + API_VERSION)
-public class ASyncFortuneController implements IAsyncREST<UUID, Fortune> {
+public class ASyncFortuneController implements IAsyncFortune<UUID, Fortune> {
 
-    private final IFortuneService<Fortune> fortuneService;
+    private final IAsyncFortuneService<Fortune> fortuneService;
 
     @Inject
-    public ASyncFortuneController(final IFortuneService<Fortune> fortuneService) {
+    public ASyncFortuneController(final IAsyncFortuneService<Fortune> fortuneService) {
         this.fortuneService = fortuneService;
     }
 
-    // GET (200)
+    /**
+     * GET - Requests data from a the Fortune resource
+     *
+     * @param uuid    Identifier of fortune to fetch
+     * @param version Fortune version identifier
+     * @return Return selected fortune or 'Not Modified' if version matched
+     */
     @Override
-    public DeferredResult<ResponseEntity<Fortune>> read(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable final UUID uuid) {
-        DeferredResult<ResponseEntity<Fortune>> result = new DeferredResult<>();
-        fortuneService.loadAsync(uuid).subscribe(c -> result.setResult(new ResponseEntity<>(c, HttpStatus.OK)));
+    public DeferredResult<Resource<Fortune>> read(@PathVariable UUID uuid, @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false) Optional<String> version) {
+        DeferredResult<Resource<Fortune>> result = new DeferredResult<>();
+        fortuneService.load(uuid.toString()).
+                lift(new SaveStateOperator<>()).
+                map(ModelVersion::getModel).
+                map(fortune -> new Resource<>(fortune, getRelLink(fortune))).
+                subscribe(result::setResult, (t) -> result.setErrorResult(new RuntimeException(t)));
         return result;
     }
 
-    // PUT - Create (201) or Update  (200)
+    // Collections
+
+    /**
+     * GET - Requests data from a specified resource
+     *
+     * @return Return selected entities
+     */
     @Override
-    public DeferredResult<ResponseEntity<Void>> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable final UUID uuid, @RequestBody
-    final Fortune fortune) {
-        DeferredResult<ResponseEntity<Void>> result = new DeferredResult<>();
-        fortuneService.saveAsync(uuid, fortune).subscribe(c -> result.setResult(new ResponseEntity<>(HttpStatus.NO_CONTENT)));
-        return result;
+    public DeferredResult<List<Resource<Fortune>>> listAll(final int page, final int size) {
+        return getListDeferredResult(fortuneService.findAll(page, size));
     }
 
-    // POST - Create (201) - Return URL in location header
+    /**
+     * GET - Requests data from a specified resource
+     *
+     * @return Return selected entities
+     */
     @Override
-    public DeferredResult<ResponseEntity<Void>> create(@RequestBody final Fortune value) {
-        DeferredResult<ResponseEntity<Void>> result = new DeferredResult<>();
-        result.setResult(new ResponseEntity<>(HttpStatus.OK));
-        return result;
+    public DeferredResult<List<Resource<Fortune>>> listAnon(final int page, final int size) {
+        return getListDeferredResult(fortuneService.findAnon(page, size));
     }
 
-    // DELETE (200)
+    /**
+     * GET - Requests data from a specified resource
+     *
+     * @return Return selected entities
+     */
     @Override
-    public DeferredResult<ResponseEntity<Void>> delete(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable final UUID uuid) {
-        System.out.println("Delete: " + uuid);
-        DeferredResult<ResponseEntity<Void>> result = new DeferredResult<>();
-        result.setResult(new ResponseEntity<>(HttpStatus.OK));
-        return result;
+    public DeferredResult<List<Resource<Fortune>>> listNamed(final int page, final int size) {
+        return getListDeferredResult(fortuneService.findNamed(page, size));
     }
 
 }

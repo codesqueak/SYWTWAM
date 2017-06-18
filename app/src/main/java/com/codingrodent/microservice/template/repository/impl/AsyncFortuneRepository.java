@@ -22,18 +22,41 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.repository.api;
+package com.codingrodent.microservice.template.repository.impl;
 
 import com.codingrodent.microservice.template.entity.FortuneEntity;
+import com.codingrodent.microservice.template.repository.api.IASyncFortuneRepository;
+import com.couchbase.client.java.*;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import rx.Observable;
 
 /**
- * Let spring build basic repository - we don't have to supply a body for this
+ * Manually built async repository - Sprint Data can't auto build this at the moment
  * <p>
  * Repository to be used when Couchbase is  present and selected
  */
 
-@Profile("prod")
-public interface ICouchFortuneRepository extends ISyncFortuneRepository<FortuneEntity> {
+@Profile({"prod"})
+@Service
+public class AsyncFortuneRepository extends AsyncRepository<FortuneEntity> implements IASyncFortuneRepository<FortuneEntity> {
+
+    private final Cluster cluster = CouchbaseCluster.create("localhost");
+    private final Bucket bucket = cluster.openBucket("template", "bucketpassword");
+
+    protected Bucket getBucket() {
+        return bucket;
+    }
+
+    @Override
+    public Observable<FortuneEntity> findAllNamed(final Pageable pageable) {
+        return findByView(VIEW_NAMED).skip(pageable.getPageNumber() * pageable.getPageSize()).take(pageable.getPageSize());
+    }
+
+    @Override
+    public Observable<FortuneEntity> findAllAnon(final Pageable pageable) {
+        return findByView(VIEW_ANON).skip(pageable.getPageNumber() * pageable.getPageSize()).take(pageable.getPageSize());
+    }
 
 }

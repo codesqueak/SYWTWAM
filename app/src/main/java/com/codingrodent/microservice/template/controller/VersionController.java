@@ -43,7 +43,7 @@ import static org.springframework.http.HttpMethod.*;
 @RestController
 @Api(tags = "version", value = "version", description = "Endpoint for version Information - Don't do this in a production system as it gives away too much " + "information")
 @RequestMapping("/version/" + API_VERSION)
-public class SyncVersionController {
+public class VersionController {
 
     private final static Set<HttpMethod> ALLOWED_OPTIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(GET, OPTIONS)));
 
@@ -67,7 +67,7 @@ public class SyncVersionController {
     private final TemplateMetrics metrics;
 
     @Inject
-    public SyncVersionController(final TemplateMetrics metrics) {
+    public VersionController(final TemplateMetrics metrics) {
         this.metrics = metrics;
     }
 

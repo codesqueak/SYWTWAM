@@ -24,6 +24,7 @@
  */
 package com.codingrodent.microservice.template.repository.api;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.*;
 import rx.Observable;
 
@@ -72,17 +73,19 @@ public interface IAsyncCrudRepository<T> extends Repository<T, String> {
     /**
      * Returns all instances of the type.
      *
+     * @param pageable Pagination information
      * @return all entities
      */
-    Observable<T> findAll();
+    Observable<T> findAll(Pageable pageable);
 
     /**
      * Returns all instances of the type with the given IDs.
      *
-     * @param ids ID's of entities to read
+     * @param pageable Pagination information
+     * @param ids      ID's of entities to read
      * @return All matching entities
      */
-    Observable<T> findAll(Iterable<String> ids);
+    Observable<T> findAll(Pageable pageable, Iterable<String> ids);
 
     /**
      * Returns the number of entities available.

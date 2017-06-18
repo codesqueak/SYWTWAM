@@ -31,7 +31,6 @@ import com.codingrodent.microservice.template.service.api.*;
 import com.codingrodent.microservice.template.utility.Utility;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import rx.Observable;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -47,13 +46,11 @@ import static com.codingrodent.microservice.template.converter.Converter.*;
 @Service
 public class FortuneService implements IFortuneService<Fortune> {
 
-    // Both sync and async implementations. Normally use only one but this is for demo purposes
-
-    private final ISyncFortuneRepository<FortuneEntity, String> repository;
+    private final ISyncFortuneRepository<FortuneEntity> repository;
     private final ILogger logger;
 
     @Inject
-    public FortuneService(final ILogger logger, final ISyncFortuneRepository<FortuneEntity, String> repository) {
+    public FortuneService(final ILogger logger, final ISyncFortuneRepository<FortuneEntity> repository) {
         this.repository = repository;
         this.logger = logger;
     }
@@ -88,18 +85,6 @@ public class FortuneService implements IFortuneService<Fortune> {
         return entityList.stream().map(toFortuneModel::convert).collect(Collectors.toList());
     }
 
-    @Override
-    public Observable<Fortune> saveAsync(final UUID uuid, final Fortune fortune) {
-        //   return asyncRepository.saveAsync(toFortuneEntity.convert(uuid, fortune, Optional.empty())).map(toFortuneModel::convert);
-        throw new UnsupportedOperationException("Get an entity not implemented");
-    }
-
-    @Override
-    public Observable<Fortune> loadAsync(final UUID uuid) {
-        // return asyncRepository.findOneAsync(uuid).map(toFortuneModel::convert);
-        throw new UnsupportedOperationException("Get an entity not implemented");
-    }
-
     /**
      * Create an entity
      *
@@ -109,8 +94,10 @@ public class FortuneService implements IFortuneService<Fortune> {
      * @return Saved model
      */
     @Override
-    public ModelVersion<Fortune> save(final UUID uuid, final Fortune model, Optional<Long> version) {
-        FortuneEntity entity = repository.save(toFortuneEntity.convert(uuid, model, version));
+    public ModelVersion<Fortune> save(final String uuid, final Fortune model, Optional<Long> version) {
+
+        FortuneEntity z = toFortuneEntity.convert(uuid, model, version);
+        FortuneEntity entity = repository.save(z);
         return new ModelVersion<>(toFortuneModel.convert(entity), Optional.of(entity.getVersion()));
     }
 
@@ -123,7 +110,7 @@ public class FortuneService implements IFortuneService<Fortune> {
      */
     @Override
     public ModelVersion<Fortune> create(final Fortune model, final Optional<Long> version) {
-        FortuneEntity entity = repository.save(toFortuneEntity.convert(UUID.randomUUID(), model, version));
+        FortuneEntity entity = repository.save(toFortuneEntity.convert(UUID.randomUUID().toString(), model, version));
         return new ModelVersion<>(toFortuneModel.convert(entity), Optional.of(entity.getVersion()));
     }
 
@@ -160,7 +147,7 @@ public class FortuneService implements IFortuneService<Fortune> {
      * @return Fortunes
      */
     @Override
-    public List<Fortune> listAll(int page, int size) {
+    public List<Fortune> listAll(final int page, final int size) {
         return getFortunes(repository.findAll(new PageRequest(page, size)).getContent());
     }
 
@@ -174,7 +161,7 @@ public class FortuneService implements IFortuneService<Fortune> {
      * @return Fortunes
      */
     @Override
-    public List<Fortune> listNamed(int page, int size) {
+    public List<Fortune> listNamed(final int page, final int size) {
         return getFortunes(repository.findAllNamed(new PageRequest(page, size)));
     }
 
@@ -186,7 +173,7 @@ public class FortuneService implements IFortuneService<Fortune> {
      * @return Fortunes
      */
     @Override
-    public List<Fortune> listAnon(int page, int size) {
+    public List<Fortune> listAnon(final int page, final int size) {
         return getFortunes(repository.findAllAnon(new PageRequest(page, size)));
     }
 

@@ -1,12 +1,13 @@
 package com.codingrodent.microservice.template.config;
 
+import com.codingrodent.microservice.template.constants.SystemConstants;
 import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.*;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.async.DeferredResult;
-import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.builders.*;
 import springfox.documentation.schema.WildcardType;
 import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
@@ -88,13 +89,12 @@ public class SwaggerConfig {
      * @return Product API information Swagger bean
      */
     private ApiInfo apiInfo() {
-        return new ApiInfo("Template Core Server API", //
-                           "Standard REST API template", //
-                           "0.1", //
-                           null, //
-                           new Contact("admin", "https://github.com/codesqueak/SYWTWAM", "codesqueak@gmail.com"), //
-                           "The MIT License (MIT)", //
-                           "https://opensource.org/licenses/MIT");
+        return new ApiInfoBuilder().
+                title("Template Core Server API").
+                description("\"Standard REST API template\"").
+                version(SystemConstants.API_VERSION).
+                contact(new Contact("admin", "https://github.com/codesqueak/SYWTWAM", "codesqueak@gmail.com")).
+                license("The MIT License (MIT)").licenseUrl("https://opensource.org/licenses/MIT").build();
     }
 
     /**

@@ -22,36 +22,34 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.entity;
+package com.codingrodent.microservice.template.controller;
 
-import com.couchbase.client.java.repository.annotation.Field;
-import com.fasterxml.jackson.annotation.*;
-import org.springframework.data.couchbase.core.mapping.Document;
+import org.junit.Test;
+
+import java.util.*;
+
+import static org.junit.Assert.*;
 
 /**
- * Fortune persistence class
+ * Etag utility tests
  */
-@Document
-public class FortuneEntity extends EntityBase {
+public class EtagTest {
 
-    @Field
-    private final String text;
-    @Field
-    private final String author;
-
-    @JsonCreator
-    public FortuneEntity(@JsonProperty("id") final String id, @JsonProperty("text") final String text, @JsonProperty("author") final String author) {
-        super(id);
-        this.text = text;
-        this.author = author;
+    @Test
+    public void encodDecodeEtagMatch() throws Exception {
+        String url = "/a/test/url/" + UUID.randomUUID();
+        long cas = (new Random()).nextLong();
+        String etag = Etag.encodEtag(cas, url);
+        assertEquals(cas, Etag.decodeEtag(etag, url));
     }
 
-    public String getText() {
-        return text;
-    }
-
-    public String getAuthor() {
-        return author;
+    @Test
+    public void encodDecodeEtagNoMatch() throws Exception {
+        String url = "/a/test/url/" + UUID.randomUUID();
+        String anotherUrl = "/a/test/url/" + UUID.randomUUID();
+        long cas = (new Random()).nextLong();
+        String etag = Etag.encodEtag(cas, url);
+        assertNotEquals(cas, Etag.decodeEtag(etag, anotherUrl));
     }
 
 }

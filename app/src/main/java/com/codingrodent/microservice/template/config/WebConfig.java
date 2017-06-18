@@ -49,4 +49,5 @@ public class WebConfig extends WebMvcConfigurerAdapter {
                 .defaultContentType(MediaType.APPLICATION_JSON) // If unknown, assume JSON
                 .mediaType("json", MediaType.APPLICATION_JSON); // If its .json, then its JSON
     }
+
 }

@@ -22,36 +22,41 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.entity;
+package com.codingrodent.microservice.template.repository.api;
 
-import com.couchbase.client.java.repository.annotation.Field;
-import com.fasterxml.jackson.annotation.*;
-import org.springframework.data.couchbase.core.mapping.Document;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.NoRepositoryBean;
+import rx.Observable;
+
+import java.util.List;
 
 /**
- * Fortune persistence class
+ * Additional async repository access methods based on Couchbase views
  */
-@Document
-public class FortuneEntity extends EntityBase {
+@NoRepositoryBean
+public interface IASyncFortuneRepository<T> extends IAsyncCrudRepository<T> {
 
-    @Field
-    private final String text;
-    @Field
-    private final String author;
+    String VIEW_ANON = "anon";
+    String VIEW_NAMED = "named";
 
-    @JsonCreator
-    public FortuneEntity(@JsonProperty("id") final String id, @JsonProperty("text") final String text, @JsonProperty("author") final String author) {
-        super(id);
-        this.text = text;
-        this.author = author;
-    }
+    /**
+     * Returns a {@link List} of entities meeting the paging restriction provided in the {@code Pageable} object.
+     * <p>
+     * This returns entities from the 'named' view
+     *
+     * @param pageable Pagination information
+     * @return a list of entities
+     */
+    Observable<T> findAllNamed(Pageable pageable);
 
-    public String getText() {
-        return text;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
+    /**
+     * Returns a {@link List} of entities meeting the paging restriction provided in the {@code Pageable} object.
+     * <p>
+     * This returns entities from the 'anon' view
+     *
+     * @param pageable Pagination information
+     * @return a list of entities
+     */
+    Observable<T> findAllAnon(Pageable pageable);
 }
+

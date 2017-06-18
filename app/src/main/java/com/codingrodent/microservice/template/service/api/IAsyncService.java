@@ -24,28 +24,57 @@
  */
 package com.codingrodent.microservice.template.service.api;
 
-import java.util.List;
+import com.codingrodent.microservice.template.model.ModelVersion;
+import rx.Observable;
+
+import java.util.*;
 
 /**
- * Fortune service interface - Specific operations for handling Fortune entities
+ * Async Service Interface - standard business logic operations
  */
-public interface IFortuneService<M> extends IService<M> {
+public interface IAsyncService<M> {
 
     /**
-     * Get a page of fortunes with named authors
+     * Create an entity
+     *
+     * @param uuid    UUID of model object to save
+     * @param model   Model to create as an entity
+     * @param version Version (if required)
+     * @return Saved model observable
+     */
+    Observable<ModelVersion<M>> save(UUID uuid, M model, Optional<Long> version);
+
+    /**
+     * Create an entity
+     *
+     * @param model   Model object to create
+     * @param version Version (if required)
+     * @return Saved model observable
+     */
+    Observable<ModelVersion<M>> create(M model, Optional<Long> version);
+
+    /**
+     * Load an entity by its key
+     *
+     * @param uuid Key
+     * @return The entity or throw an error to be handled by the subscriber
+     */
+    Observable<ModelVersion<M>> load(String uuid);
+
+    /**
+     * Delete an entity by its key
+     *
+     * @param uuid Key
+     */
+    void delete(String uuid);
+
+    /**
+     * Get a page of entities
      *
      * @param page Page to retrieve
      * @param size Size of page
-     * @return Model list
+     * @return Model observable
      */
-    List<M> listNamed(int page, int size);
+    Observable<M> findAll(int page, int size);
 
-    /**
-     * Get a page of fortunes with anonymous authors
-     *
-     * @param page Page to retrieve
-     * @param size Size of page
-     * @return Model list
-     */
-    List<M> listAnon(int page, int size);
 }

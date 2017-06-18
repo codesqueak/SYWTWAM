@@ -22,36 +22,42 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.entity;
+package com.codingrodent.microservice.template.controller;
 
-import com.couchbase.client.java.repository.annotation.Field;
-import com.fasterxml.jackson.annotation.*;
-import org.springframework.data.couchbase.core.mapping.Document;
+import java.nio.ByteBuffer;
+import java.util.Base64;
 
 /**
- * Fortune persistence class
+ * Utility methods for handling etag encode / decode operations
  */
-@Document
-public class FortuneEntity extends EntityBase {
+class Etag {
 
-    @Field
-    private final String text;
-    @Field
-    private final String author;
-
-    @JsonCreator
-    public FortuneEntity(@JsonProperty("id") final String id, @JsonProperty("text") final String text, @JsonProperty("author") final String author) {
-        super(id);
-        this.text = text;
-        this.author = author;
+    /**
+     * Generate an etag value from an entity CAS value and its URL
+     *
+     * @param cas Entity CAS value
+     * @param url Location entity held at
+     * @return A fairly unique etag
+     */
+    static String encodEtag(final long cas, final String url) {
+        int hash = url.hashCode();
+        long v = cas ^ (hash << 32 + hash);
+        ByteBuffer buffer = ByteBuffer.allocate(8).putLong(v);
+        return Base64.getUrlEncoder().encodeToString(buffer.array());
     }
 
-    public String getText() {
-        return text;
-    }
-
-    public String getAuthor() {
-        return author;
+    /**
+     * Regenerate a CAS value from an etag and its associated URL
+     *
+     * @param etag Etag holding encoded CAS value
+     * @param url  Location entity held at
+     * @return The original CAS value
+     */
+    static long decodeEtag(final String etag, final String url) {
+        int hash = url.hashCode();
+        byte[] parts = Base64.getUrlDecoder().decode(etag);
+        long v = ByteBuffer.wrap(parts).getLong();
+        return v ^ (hash << 32 + hash);
     }
 
 }

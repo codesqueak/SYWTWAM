@@ -24,7 +24,7 @@
  */
 package com.codingrodent.microservice.template.utility;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 /**
@@ -32,7 +32,8 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
  */
 public class Utility {
 
-    private final static ObjectMapper objectMapper = new ObjectMapper().registerModule(new Jdk8Module());
+    private final static ObjectMapper objectMapper = new ObjectMapper().registerModule(new Jdk8Module()).
+            configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     private Utility() {
         // Stop instantiation

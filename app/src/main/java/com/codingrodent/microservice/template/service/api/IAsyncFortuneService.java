@@ -22,36 +22,31 @@
  * SOFTWARE.
  *
  */
-package com.codingrodent.microservice.template.entity;
+package com.codingrodent.microservice.template.service.api;
 
-import com.couchbase.client.java.repository.annotation.Field;
-import com.fasterxml.jackson.annotation.*;
-import org.springframework.data.couchbase.core.mapping.Document;
+import rx.Observable;
 
 /**
- * Fortune persistence class
+ * Fortune service interface - Async
  */
-@Document
-public class FortuneEntity extends EntityBase {
+public interface IAsyncFortuneService<M> extends IAsyncService<M> {
 
-    @Field
-    private final String text;
-    @Field
-    private final String author;
+    /**
+     * Get a page of fortunes with named authors
+     *
+     * @param page Page to retrieve
+     * @param size Size of page
+     * @return Model observable
+     */
+    Observable<M> findNamed(int page, int size);
 
-    @JsonCreator
-    public FortuneEntity(@JsonProperty("id") final String id, @JsonProperty("text") final String text, @JsonProperty("author") final String author) {
-        super(id);
-        this.text = text;
-        this.author = author;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
+    /**
+     * Get a page of fortunes with anonymous authors
+     *
+     * @param page Page to retrieve
+     * @param size Size of page
+     * @return Model observable
+     */
+    Observable<M> findAnon(int page, int size);
 
 }

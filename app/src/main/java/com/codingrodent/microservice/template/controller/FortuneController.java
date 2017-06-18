@@ -32,6 +32,7 @@ import io.swagger.annotations.*;
 import org.springframework.hateoas.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.inject.Inject;
 import java.util.*;
@@ -48,13 +49,13 @@ import static org.springframework.http.HttpMethod.*;
 @RestController
 @Api(tags = "sync", value = "syncfortune", description = "Endpoint for fortune management")
 @RequestMapping("/sync/fortune/" + API_VERSION)
-public class SyncFortuneController extends RestBase<Fortune> implements IFortune<UUID, Fortune> {
+public class FortuneController extends RestBase<Fortune> implements IFortune<UUID, Fortune> {
 
     private final static Set<HttpMethod> ALLOWED_OPTIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(GET, HEAD, POST, PUT, PATCH, DELETE)));
     private final IFortuneService<Fortune> fortuneService;
 
     @Inject
-    public SyncFortuneController(final IFortuneService<Fortune> fortuneService) {
+    public FortuneController(final IFortuneService<Fortune> fortuneService) {
         this.fortuneService = fortuneService;
     }
 
@@ -67,7 +68,7 @@ public class SyncFortuneController extends RestBase<Fortune> implements IFortune
      */
     @Override
     public ResponseEntity<Resource<Fortune>> read(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
-                                                  @ApiParam(name = HttpHeaders.IF_NONE_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required =
+                                                  @ApiParam(name = HttpHeaders.IF_NONE_MATCH, value = "ETag Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required =
                                                           false) Optional<String> version) {
 
         Optional<ModelVersion<Fortune>> modelVersion = fortuneService.load(uuid.toString());
@@ -76,7 +77,8 @@ public class SyncFortuneController extends RestBase<Fortune> implements IFortune
                 // Its changed, return new value
                 Resource<Fortune> resource = new Resource<>(modelVersion.get().getModel());
                 resource.add(getRelLink(uuid));
-                return new ResponseEntity<>(resource, getETag(modelVersion.get()), HttpStatus.OK);
+                RequestContextHolder.currentRequestAttributes();
+                return new ResponseEntity<>(resource, getETagAndHeaders(modelVersion.get()), HttpStatus.OK);
             } else {
                 // Its the same as last time !
                 return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
@@ -95,12 +97,13 @@ public class SyncFortuneController extends RestBase<Fortune> implements IFortune
      */
     @Override
     public ResponseEntity<Optional> head(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
-                                         @ApiParam(name = HttpHeaders.IF_NONE_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false)
+                                         @ApiParam(name = HttpHeaders.IF_NONE_MATCH, value = "ETag Value") @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false)
                                                  Optional<String> version) {
         Optional<ModelVersion<Fortune>> modelVersion = fortuneService.load(uuid.toString());
         if (!version.isPresent() || ifNoneMatch(version, modelVersion)) {
             // Exists, so just return empty response
-            return modelVersion.map(mv -> new ResponseEntity<Optional>(Optional.empty(), getETag(mv), HttpStatus.NO_CONTENT)).orElseThrow(DocumentNeverFoundException::new);
+            return modelVersion.map(mv -> new ResponseEntity<Optional>(Optional.empty(), getETagAndHeaders(mv), HttpStatus.NO_CONTENT)).orElseThrow
+                    (DocumentNeverFoundException::new);
         } else {
             // Its the same as last time !
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
@@ -112,16 +115,16 @@ public class SyncFortuneController extends RestBase<Fortune> implements IFortune
      * <p>
      * Note: Not usually used in REST applications
      *
-     * @param version Fortune version identifier. Match forces overwrite else create (if fortune doesn't exist)
+     * @param etag    Fortune version identifier. Match forces overwrite else create (if fortune doesn't exist)
      * @param fortune Fortune to write
      * @return Fortune entity
      */
     @Override
-    public ResponseEntity<Resource<Fortune>> create(@ApiParam(name = HttpHeaders.IF_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false)
-                                                                Optional<String> version, //
+    public ResponseEntity<Resource<Fortune>> create(@ApiParam(name = HttpHeaders.IF_MATCH, value = "ETag Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false)
+                                                                Optional<String> etag, //
                                                     @ApiParam(name = "Entity", value = "Fortune Value", required = true) @RequestBody Fortune fortune) {
         // Not doing If-Match test as we can guarantee record does not exists due to uuid creation
-        ModelVersion<Fortune> written = fortuneService.create(fortune, version.map(extractETag));
+        ModelVersion<Fortune> written = fortuneService.create(fortune, etag.map(extractCAS));
         if (null == written) {
             throw new ApplicationFaultException("POST failed to return a document");
         } else {
@@ -129,7 +132,7 @@ public class SyncFortuneController extends RestBase<Fortune> implements IFortune
             Resource<Fortune> resource = new Resource<>(model);
             UUID uuid = model.getUUID().orElseThrow(badRecordCreation);
             resource.add(getRelLink(uuid));
-            return new ResponseEntity<>(resource, getETag(written), HttpStatus.CREATED);
+            return new ResponseEntity<>(resource, getETagAndHeaders(written), HttpStatus.CREATED);
         }
     }
 
@@ -137,29 +140,26 @@ public class SyncFortuneController extends RestBase<Fortune> implements IFortune
      * PUT - Create or update a fortune
      *
      * @param uuid    Identifier of fortune to write
-     * @param version Fortune version identifier
+     * @param etag    Fortune version identifier
      * @param fortune Fortune to write
      * @return Written fortune
      */
     @Override
     public ResponseEntity<Resource<Fortune>> upsert(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
-                                                    @ApiParam(name = HttpHeaders.IF_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false)
-                                                            Optional<String> version, //
+                                                    @ApiParam(name = HttpHeaders.IF_MATCH, value = "ETag Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false)
+                                                            Optional<String> etag, //
                                                     @ApiParam(name = "Entity", value = "Fortune Value", required = true) @RequestBody Fortune fortune) {
-
-        if (version.isPresent()) {
-            // Only need  to check if record exists when doing an If-Match
-            Optional<ModelVersion<Fortune>> modelVersion = fortuneService.load(uuid.toString());
-            if (!ifMatch(version, modelVersion))
-                throw new PreconditionFailedException("PUT If-Match");
+        final String key = uuid.toString();
+        if (etag.isPresent()) {
+            // If no etag is supplied then this must be a create, as an etag implies we are doing version matching
+            fortuneService.load(key).orElseThrow(() -> new PreconditionFailedException("PUT If-Match"));
         }
-        ModelVersion<Fortune> written = fortuneService.save(uuid, fortune, version.map(extractETag));
-        // As a workaround we will take the version to signify if this is a create or update
+        ModelVersion<Fortune> written = fortuneService.save(key, fortune, etag.map(extractCAS));
         if (null == written) {
             throw new ApplicationFaultException("PUT failed to return a document");
         } else {
             Resource<Fortune> resource = new Resource<>(written.getModel());
-            return new ResponseEntity<>(resource, getETag(written), version.map(e -> HttpStatus.ACCEPTED).orElse(HttpStatus.CREATED));
+            return new ResponseEntity<>(resource, getETagAndHeaders(written), etag.map(e -> HttpStatus.ACCEPTED).orElse(HttpStatus.CREATED));
         }
     }
 
@@ -172,7 +172,7 @@ public class SyncFortuneController extends RestBase<Fortune> implements IFortune
      */
     @Override
     public ResponseEntity<Void> delete(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, //
-                                       @ApiParam(name = HttpHeaders.IF_MATCH, value = "CAS Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false)
+                                       @ApiParam(name = HttpHeaders.IF_MATCH, value = "ETag Value") @RequestHeader(value = HttpHeaders.IF_MATCH, required = false)
                                                Optional<String> version) {
 
         if (version.isPresent()) {
@@ -186,6 +186,17 @@ public class SyncFortuneController extends RestBase<Fortune> implements IFortune
     }
 
     /**
+     * Get all allowed methods for the RESTful interface
+     *
+     * @return Set of allowed HTTP methods
+     */
+    public Set<HttpMethod> getOptions() {
+        return ALLOWED_OPTIONS;
+    }
+
+    // Collections
+
+    /**
      * GET - Requests data from a specified resource
      *
      * @param page Data page to read
@@ -196,17 +207,6 @@ public class SyncFortuneController extends RestBase<Fortune> implements IFortune
     public ResponseEntity<List<Resource<Fortune>>> listAll(@ApiParam(name = "page", value = "Page to retrieve", required = true) @RequestParam int page, //
                                                            @ApiParam(name = "size", value = "Items per page", required = true) @RequestParam int size) {
         return getListResponseEntity(fortuneService.listAll(page, size));
-    }
-
-    // Collections
-
-    /**
-     * Get all allowed methods for the RESTful interface
-     *
-     * @return Set of allowed HTTP methods
-     */
-    public Set<HttpMethod> getOptions() {
-        return ALLOWED_OPTIONS;
     }
 
     /**
@@ -242,7 +242,7 @@ public class SyncFortuneController extends RestBase<Fortune> implements IFortune
      * @return Link to key
      */
     private Link getRelLink(final UUID uuid) {
-        return linkTo(methodOn(SyncFortuneController.class).read(uuid, Optional.empty())).withSelfRel();
+        return linkTo(methodOn(FortuneController.class).read(uuid, Optional.empty())).withSelfRel();
     }
 
     /**

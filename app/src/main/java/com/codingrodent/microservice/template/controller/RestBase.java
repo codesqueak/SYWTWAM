@@ -24,11 +24,16 @@
  */
 package com.codingrodent.microservice.template.controller;
 
+import com.codingrodent.microservice.template.exception.ApplicationFaultException;
 import com.codingrodent.microservice.template.model.ModelVersion;
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.servlet.HandlerMapping;
 
 import java.util.Optional;
 import java.util.function.Function;
+
+import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
 
 /**
  * Shared base functionality for Sync Services
@@ -36,8 +41,6 @@ import java.util.function.Function;
 abstract class RestBase<V> {
 
     private final static String ETAG_WILDCARD = "\"*\"";
-    protected final Function<String, Long> extractETag = v -> Long.parseLong(v.replace("\"", ""));
-    private final Function<Long, String> makeETag = v -> "\"" + v + "\"";
 
     /**
      * Evaluate If-Match
@@ -46,7 +49,7 @@ abstract class RestBase<V> {
      * @param modelVersion Resource entity being requested
      * @return Matching status
      */
-    protected boolean ifMatch(final Optional<String> etag, final Optional<ModelVersion<V>> modelVersion) {
+    boolean ifMatch(final Optional<String> etag, final Optional<ModelVersion<V>> modelVersion) {
         // basic check - must have a field
         if (!etag.isPresent())
             return false;
@@ -56,8 +59,8 @@ abstract class RestBase<V> {
         // if (field doesn't match record) return false;
         if (!modelVersion.isPresent() || !modelVersion.get().getVersion().isPresent())
             return false;
-        String version = modelVersion.get().getVersion().map(makeETag).orElse("");
-        return version.equals(etag.get());
+        // See if supplied etag matches generated etag
+        return etag.get().equals(generateEtag(modelVersion).orElse(null));
     }
 
     /**
@@ -75,26 +78,61 @@ abstract class RestBase<V> {
         if (etag.get().equals(ETAG_WILDCARD))
             return false;
         // if (field matches record) return false;
-        String version = modelVersion.get().getVersion().map(makeETag).orElse("");
-        return !version.equals(etag.get());
+
+        return !etag.get().equals(generateEtag(modelVersion).orElse(null));
     }
 
     /**
      * Generate ETag header from version resource (if it exists) and then add any additionally defined headers
      *
-     * @param modelVersion Source of version information
-     * @param additionalHeaders         Additional header keys and values
+     * @param modelVersion      Source of version information
+     * @param additionalHeaders Additional header keys and values
      * @return Headers with ETag set (if available) and customer values set
      */
-    HttpHeaders getETag(ModelVersion<?> modelVersion, String... additionalHeaders) {
+    HttpHeaders getETagAndHeaders(final ModelVersion<?> modelVersion, String... additionalHeaders) {
         HttpHeaders headers = new HttpHeaders();
         // Add etag
-        modelVersion.getVersion().ifPresent(version -> headers.setETag("\"" + version + "\""));
+        modelVersion.getVersion().ifPresent(cas -> headers.setETag(makeETag.apply(cas)));
         // Add any others defined (args - key/value/key/value...key/value)
         for (int p = 0; p < additionalHeaders.length; ) {
             headers.set(additionalHeaders[p++], additionalHeaders[p++]);
         }
         return headers;
     }
+
+    /**
+     * Generate an etag from CAS in the version objects and the active URL
+     *
+     * @param modelVersion Version object
+     * @return etag or empty string no version value present
+     */
+    private Optional<String> generateEtag(final Optional<ModelVersion<V>> modelVersion) {
+        return modelVersion.orElseThrow(() -> new ApplicationFaultException("Cannot generate etag from non versioned model object")).getVersion().map(makeETag);
+    }
+
+    /**
+     * Get the URL for the present request
+     *
+     * @return Request URL
+     */
+    private String getURL() {
+        return RequestContextHolder.currentRequestAttributes().getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE, SCOPE_REQUEST).toString();
+    }
+
+    /**
+     * Extract a strong etag value from its quotation marks. Return null if not able to find a valid etag
+     */
+    final Function<String, Long> extractCAS = headerValue -> {
+        String etag = headerValue.replace("\"", "");
+        if (etag.length() == 12) {
+            return Etag.decodeEtag(etag, getURL());
+        }
+        return null;
+    };
+
+    /**
+     * Generate a quoted strong etag from a supplied CAS value and the URL attached to the thread
+     */
+    private final Function<Long, String> makeETag = cas -> "\"" + Etag.encodEtag(cas, getURL()) + "\"";
 
 }
