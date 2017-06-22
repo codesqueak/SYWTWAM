@@ -26,7 +26,6 @@ package com.codingrodent.microservice.template.repository.impl;
 
 import com.codingrodent.microservice.template.entity.*;
 import com.codingrodent.microservice.template.exception.ApplicationFaultException;
-import com.codingrodent.microservice.template.repository.api.ISyncFortuneRepository;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.*;
@@ -42,7 +41,7 @@ import java.util.stream.Collectors;
  */
 @Profile({"test", "integration", "aws"})
 @Service
-public class FortuneInMemoryRepository implements ISyncFortuneRepository<FortuneEntity> {
+public class FortuneInMemoryRepository extends InMemoryRepository<FortuneEntity> {
 
     private final ConcurrentHashMap<String, FortuneEntity> store = new ConcurrentHashMap<>();
     private final Field versionField;
@@ -58,14 +57,18 @@ public class FortuneInMemoryRepository implements ISyncFortuneRepository<Fortune
 
     @Override
     public List<FortuneEntity> findAllNamed(final Pageable pageable) {
-        List<FortuneEntity> l = store.keySet().stream().map(store::get).filter(model -> !model.getAuthor().equals("")).collect(Collectors.toList());
-        return getFortunes(pageable.getPageNumber(), pageable.getPageSize(), l).getContent();
+        List<FortuneEntity> list = store.keySet().
+                stream().
+                map(store::get).
+                filter(model -> !"".equals(model.getAuthor())).
+                collect(Collectors.toList());
+        return getFortunes(pageable.getPageNumber(), pageable.getPageSize(), list).getContent();
     }
 
     @Override
     public List<FortuneEntity> findAllAnon(final Pageable pageable) {
-        List<FortuneEntity> l = store.keySet().stream().map(store::get).filter(model -> model.getAuthor().equals("")).collect(Collectors.toList());
-        return getFortunes(pageable.getPageNumber(), pageable.getPageSize(), l).getContent();
+        List<FortuneEntity> list = store.keySet().stream().map(store::get).filter(model -> model.getAuthor().equals("")).collect(Collectors.toList());
+        return getFortunes(pageable.getPageNumber(), pageable.getPageSize(), list).getContent();
     }
 
     @Override
@@ -75,8 +78,8 @@ public class FortuneInMemoryRepository implements ISyncFortuneRepository<Fortune
 
     @Override
     public Page<FortuneEntity> findAll(final Pageable pageable) {
-        List<FortuneEntity> l = store.keySet().stream().map(store::get).collect(Collectors.toList());
-        return getFortunes(pageable.getPageNumber(), pageable.getPageSize(), l);
+        List<FortuneEntity> list = store.keySet().stream().map(store::get).collect(Collectors.toList());
+        return getFortunes(pageable.getPageNumber(), pageable.getPageSize(), list);
     }
 
     private PageImpl<FortuneEntity> getFortunes(final int page, final int size, final List<FortuneEntity> l) {
@@ -110,7 +113,8 @@ public class FortuneInMemoryRepository implements ISyncFortuneRepository<Fortune
         } catch (IllegalAccessException e) {
             throw new ApplicationFaultException("Unable to update version field");
         }
-        return (S) store.put(entity.getId(), original);
+        store.put(entity.getId(), original);
+        return (S) original;
     }
 
     @Override
