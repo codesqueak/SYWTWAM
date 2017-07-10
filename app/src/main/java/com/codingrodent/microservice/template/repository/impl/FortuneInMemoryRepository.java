@@ -24,16 +24,13 @@
  */
 package com.codingrodent.microservice.template.repository.impl;
 
-import com.codingrodent.microservice.template.entity.*;
-import com.codingrodent.microservice.template.exception.ApplicationFaultException;
+import com.codingrodent.microservice.template.entity.FortuneEntity;
+import com.codingrodent.microservice.template.repository.api.ISyncFortuneRepository;
 import org.springframework.context.annotation.Profile;
-import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Field;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -41,129 +38,31 @@ import java.util.stream.Collectors;
  */
 @Profile({"test", "integration", "aws"})
 @Service
-public class FortuneInMemoryRepository extends InMemoryRepository<FortuneEntity> {
-
-    private final ConcurrentHashMap<String, FortuneEntity> store = new ConcurrentHashMap<>();
-    private final Field versionField;
+public class FortuneInMemoryRepository extends InMemoryRepository<FortuneEntity> implements ISyncFortuneRepository<FortuneEntity> {
 
     public FortuneInMemoryRepository() {
-        try {
-            versionField = EntityBase.class.getDeclaredField("version");
-        } catch (NoSuchFieldException e) {
-            throw new ApplicationFaultException("Unable to gain access to the FortuneEntity version field");
-        }
-        versionField.setAccessible(true);
+        super();
+    }
+
+    @Override
+    FortuneEntity copy(final FortuneEntity original) {
+        return new FortuneEntity(original.getId(), original.getText(), original.getAuthor());
     }
 
     @Override
     public List<FortuneEntity> findAllNamed(final Pageable pageable) {
-        List<FortuneEntity> list = store.keySet().
+        List<FortuneEntity> list = getStore().keySet().
                 stream().
-                map(store::get).
+                map(getStore()::get).
                 filter(model -> !"".equals(model.getAuthor())).
                 collect(Collectors.toList());
-        return getFortunes(pageable.getPageNumber(), pageable.getPageSize(), list).getContent();
+        return getPage(pageable.getPageNumber(), pageable.getPageSize(), list).getContent();
     }
 
     @Override
     public List<FortuneEntity> findAllAnon(final Pageable pageable) {
-        List<FortuneEntity> list = store.keySet().stream().map(store::get).filter(model -> model.getAuthor().equals("")).collect(Collectors.toList());
-        return getFortunes(pageable.getPageNumber(), pageable.getPageSize(), list).getContent();
+        List<FortuneEntity> list = getStore().keySet().stream().map(getStore()::get).filter(model -> model.getAuthor().equals("")).collect(Collectors.toList());
+        return getPage(pageable.getPageNumber(), pageable.getPageSize(), list).getContent();
     }
 
-    @Override
-    public Iterable<FortuneEntity> findAll(final Sort sort) {
-        throw new UnsupportedOperationException("Not implemented - findAll(sort)");
-    }
-
-    @Override
-    public Page<FortuneEntity> findAll(final Pageable pageable) {
-        List<FortuneEntity> list = store.keySet().stream().map(store::get).collect(Collectors.toList());
-        return getFortunes(pageable.getPageNumber(), pageable.getPageSize(), list);
-    }
-
-    private PageImpl<FortuneEntity> getFortunes(final int page, final int size, final List<FortuneEntity> l) {
-        int start = page * size;
-        if (start >= l.size())
-            return new PageImpl<>(new ArrayList<>(0));
-        int last = start + size;
-        if (last > l.size())
-            last = l.size();
-        return new PageImpl<>(l.subList(start, last));
-    }
-
-    /**
-     * Saves a given entity. Use the returned instance for further operations as the save operation might have changed the
-     * entity instance completely.
-     *
-     * @param entity Entity to save
-     * @return the saved entity
-     */
-    @Override
-    public <S extends FortuneEntity> S save(final S entity) {
-        FortuneEntity original = store.get(entity.getId());
-        long version = (null == original) ? 0L : entity.getVersion();
-        if ((null != original) && (original.getVersion() != version))
-            throw new OptimisticLockingFailureException("Original:" + original.getVersion() + " New:" + entity.getVersion());
-        //
-        original = new FortuneEntity(entity.getId(), entity.getText(), entity.getAuthor());
-        // No direct access to the version
-        try {
-            versionField.set(original, version);
-        } catch (IllegalAccessException e) {
-            throw new ApplicationFaultException("Unable to update version field");
-        }
-        store.put(entity.getId(), original);
-        return (S) original;
-    }
-
-    @Override
-    public <S extends FortuneEntity> Iterable<S> save(final Iterable<S> entities) {
-        throw new UnsupportedOperationException("Not implemented - Iterable");
-    }
-
-    @Override
-    public FortuneEntity findOne(final String s) {
-        return store.get(s);
-    }
-
-    @Override
-    public boolean exists(final String s) {
-        return store.containsKey(s);
-    }
-
-    @Override
-    public Iterable<FortuneEntity> findAll() {
-        throw new UnsupportedOperationException("Not implemented - findAll");
-    }
-
-    @Override
-    public Iterable<FortuneEntity> findAll(final Iterable<String> strings) {
-        throw new UnsupportedOperationException("Not implemented - finaAll(Iterable)");
-    }
-
-    @Override
-    public long count() {
-        throw new UnsupportedOperationException("Not implemented - count");
-    }
-
-    @Override
-    public void delete(final String s) {
-        throw new UnsupportedOperationException("Not implemented - delete(string)");
-    }
-
-    @Override
-    public void delete(final FortuneEntity entity) {
-        throw new UnsupportedOperationException("Not implemented - delete(entity)");
-    }
-
-    @Override
-    public void delete(final Iterable<? extends FortuneEntity> entities) {
-        throw new UnsupportedOperationException("Not implemented - delete(iterable)");
-    }
-
-    @Override
-    public void deleteAll() {
-        throw new UnsupportedOperationException("Not implemented - deleteAll");
-    }
 }

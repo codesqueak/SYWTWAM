@@ -24,6 +24,7 @@
  */
 package com.codingrodent.microservice.template.repository.api;
 
+import com.codingrodent.microservice.template.entity.EntityBase;
 import org.springframework.data.couchbase.core.query.View;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.*;
@@ -34,7 +35,7 @@ import java.util.List;
  * Additional sync repository access methods based on Couchbase views
  */
 @NoRepositoryBean
-public interface ISyncFortuneRepository<T> extends PagingAndSortingRepository<T, String> {
+public interface ISyncFortuneRepository<T extends EntityBase> extends PagingAndSortingRepository<T, String> {
 
     String VIEW_ANON = "anon";
     String VIEW_NAMED = "named";
