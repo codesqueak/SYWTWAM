@@ -28,7 +28,6 @@ import com.codingrodent.microservice.template.api.IREST;
 import com.codingrodent.microservice.template.config.advice.RestAdvice;
 import com.codingrodent.microservice.template.constants.SystemConstants;
 import com.codingrodent.microservice.template.model.Fortune;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.runner.RunWith;
 import org.slf4j.MDC;
 import org.springframework.http.*;
@@ -52,7 +51,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 public abstract class MVCTestBase {
 
     protected final static String BAD_UUID = "abc-123";
-    protected final ObjectMapper mapper = new ObjectMapper();
     private final MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
 
     /**
@@ -62,6 +60,7 @@ public abstract class MVCTestBase {
         MDC.put(SystemConstants.SYSTEM_NAME, "Unit");
         MDC.put(SystemConstants.SUBSYSTEM_NAME, "Test");
     }
+
     /**
      * Generate a default mock MVC environment for a controller
      *

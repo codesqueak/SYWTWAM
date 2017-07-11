@@ -44,7 +44,7 @@ public class FortuneControllerIntegrationTest extends IntegrationTestBase {
     private final static String BASE = "/sync/fortune" + "/" + SystemConstants.API_VERSION;
 
     @Test
-    public void getBadRequestTest() throws Exception {
+    public void getBadRequestTestAll() throws Exception {
         ResponseEntity response = restTemplate.getForEntity(BASE + "/list", String.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         //
@@ -56,25 +56,62 @@ public class FortuneControllerIntegrationTest extends IntegrationTestBase {
         //
         response = restTemplate.getForEntity(BASE + "/list?page=0&size=0", String.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-
     }
 
     @Test
-    public void getListTest() throws Exception {
-        ResponseEntity response = restTemplate.getForEntity(BASE + "/list?page=0&size=10", String.class);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        DocumentContext body = JsonPath.parse(response.getBody().toString());
-        assertEquals("5", body.read("$.length()").toString());
+    public void getBadRequestTestAnon() throws Exception {
+        ResponseEntity response = restTemplate.getForEntity(BASE + "/list/anon", String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         //
-        response = restTemplate.getForEntity(BASE + "/list?page=0&size=3", String.class);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        body = JsonPath.parse(response.getBody().toString());
-        assertEquals("3", body.read("$.length()").toString());
+        response = restTemplate.getForEntity(BASE + "/list/anon?page=0", String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         //
-        response = restTemplate.getForEntity(BASE + "/list?page=1&size=3", String.class);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        body = JsonPath.parse(response.getBody().toString());
-        assertEquals("2", body.read("$.length()").toString());
+        response = restTemplate.getForEntity(BASE + "/list/anon?size=10", String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        //
+        response = restTemplate.getForEntity(BASE + "/list/anon?page=0&size=0", String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
+    @Test
+    public void getBadRequestTestNamed() throws Exception {
+        ResponseEntity response = restTemplate.getForEntity(BASE + "/list/named", String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        //
+        response = restTemplate.getForEntity(BASE + "/list/named?page=0", String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        //
+        response = restTemplate.getForEntity(BASE + "/list/named?size=10", String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        //
+        response = restTemplate.getForEntity(BASE + "/list/named?page=0&size=0", String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void getListAllTest() throws Exception {
+        check(restTemplate.getForEntity(BASE + "/list?page=0&size=10", String.class), "5");
+        check(restTemplate.getForEntity(BASE + "/list?page=0&size=3", String.class), "3");
+        check(restTemplate.getForEntity(BASE + "/list?page=1&size=3", String.class), "2");
+    }
+
+    @Test
+    public void getListNamedTest() throws Exception {
+        check(restTemplate.getForEntity(BASE + "/list/named?page=0&size=10", String.class), "1");
+        check(restTemplate.getForEntity(BASE + "/list/named?page=0&size=3", String.class), "1");
+        check(restTemplate.getForEntity(BASE + "/list/named?page=1&size=3", String.class), "0");
+    }
+
+    @Test
+    public void getListAnonTest() throws Exception {
+        check(restTemplate.getForEntity(BASE + "/list/anon?page=0&size=10", String.class), "4");
+        check(restTemplate.getForEntity(BASE + "/list/anon?page=0&size=3", String.class), "3");
+        check(restTemplate.getForEntity(BASE + "/list/anon?page=1&size=3", String.class), "1");
+    }
+
+    private void check(final ResponseEntity response, final String count) {
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        DocumentContext body = JsonPath.parse(response.getBody().toString());
+        assertEquals(count, body.read("$.length()").toString());
+    }
 }

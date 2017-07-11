@@ -36,7 +36,6 @@ public class FortuneTest {
     @Test
     public void basicTest() {
         UUID id = UUID.randomUUID();
-        Long version = 12345L;
         String text = "A fortune";
         Optional<String> author = Optional.of("An author");
         //

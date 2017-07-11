@@ -150,10 +150,8 @@ public class FortuneController extends RestBase<Fortune> implements IFortune<UUI
                                                             Optional<String> etag, //
                                                     @ApiParam(name = "Entity", value = "Fortune Value", required = true) @RequestBody Fortune fortune) {
         final String key = uuid.toString();
-        if (etag.isPresent()) {
-            // If no etag is supplied then this must be a create, as an etag implies we are doing version matching
-            fortuneService.load(key).orElseThrow(() -> new PreconditionFailedException("PUT If-Match"));
-        }
+        // If no etag is supplied then this must be a create, as an etag implies we are doing version matching
+        etag.ifPresent(s -> fortuneService.load(key).orElseThrow(() -> new PreconditionFailedException("PUT If-Match")));
         ModelVersion<Fortune> written = fortuneService.save(key, fortune, etag.map(extractCAS));
         if (null == written) {
             throw new ApplicationFaultException("PUT failed to return a document");
