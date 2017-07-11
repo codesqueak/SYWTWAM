@@ -54,6 +54,8 @@ abstract class InMemoryRepository<T extends EntityBase> implements PagingAndSort
 
     @Override
     public Page<T> findAll(final Pageable pageable) {
+        if (null == pageable)
+            throw new IllegalArgumentException();
         List<T> list = store.keySet().stream().map(this::findOne).filter(Objects::nonNull).collect(Collectors.toList());
         return getPage(pageable.getPageNumber(), pageable.getPageSize(), list);
     }
@@ -67,6 +69,8 @@ abstract class InMemoryRepository<T extends EntityBase> implements PagingAndSort
      */
     @Override
     public <S extends T> S save(final S entity) {
+        if (null == entity)
+            throw new IllegalArgumentException();
         T original = store.get(entity.getId());
         long version = (null == original) ? 0L : entity.getVersion();
         if ((null != original) && (original.getVersion() != version))
@@ -94,6 +98,8 @@ abstract class InMemoryRepository<T extends EntityBase> implements PagingAndSort
 
     @Override
     public T findOne(final String s) {
+        if (null == s)
+            throw new IllegalArgumentException();
         T entity = store.get(s);
         if (entity == null)
             return null;
@@ -102,6 +108,8 @@ abstract class InMemoryRepository<T extends EntityBase> implements PagingAndSort
 
     @Override
     public boolean exists(final String s) {
+        if (null == s)
+            throw new IllegalArgumentException();
         return store.containsKey(s);
     }
 
@@ -151,7 +159,7 @@ abstract class InMemoryRepository<T extends EntityBase> implements PagingAndSort
     // Helper methods
 
     /**
-     * Extractg one page from a list and return
+     * Extracting one page from a list and return
      *
      * @param page Page to return
      * @param size Page size
@@ -180,7 +188,7 @@ abstract class InMemoryRepository<T extends EntityBase> implements PagingAndSort
     /**
      * Make a copy of the entity being stored
      *
-     * @param original Oribal entity
+     * @param original Original entity
      * @return Copy
      */
     abstract T copy(T original);

@@ -37,4 +37,14 @@ public class ApplicationFaultException extends RuntimeException {
     public ApplicationFaultException(String message) {
         super(message);
     }
+
+    /**
+     * Constructs an <code>ApplicationFaultException</code> with the specified detail message.
+     *
+     * @param message the detail message
+     * @param cause   the root cause from the data access API in use
+     */
+    public ApplicationFaultException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

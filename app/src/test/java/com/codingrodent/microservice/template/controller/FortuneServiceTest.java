@@ -46,14 +46,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class FortuneServiceTest extends MVCTestBase {
 
     private final static String json = "{\"text\":\"A fortune\",\"author\":\"An author\"}";
-    private final static String json2 = "{\"text\":\"A fortune with uuid\",\"author\":\"An author with uuid\"}";
+    private final static String jsonWithUUID1 = "{\"text\":\"A fortune with uuid\",\"author\":\"An author with uuid\"}";
+    private final static String jsonWithUUID2 = "{\"text\":\"A fortune with uuid 2\",\"author\":\"An author with uuid 2\"}";
     private final static String BASE = "/sync/fortune/" + API_VERSION + "/";
-    //
-    private Random random = new Random();
+    private final Random random = new Random();
     //
     private ModelVersion<Fortune> modelVersion;
     private FortuneController controller;
-    private Fortune fortune, fortuneWithUUID;
+    private Fortune fortuneWithUUID1, fortuneWithUUID2;
     private long cas;
     private UUID randomUUID;
     @Mock
@@ -61,8 +61,9 @@ public class FortuneServiceTest extends MVCTestBase {
 
     @Before
     public void init() throws JsonProcessingException {
-        fortune = new Fortune("A fortune", Optional.of("An author"));
-        fortuneWithUUID = new Fortune("A fortune with uuid", Optional.of("An author with uuid"), Optional.of(UUID.randomUUID()));
+        Fortune fortune = new Fortune("A fortune", Optional.of("An author"));
+        fortuneWithUUID1 = new Fortune("A fortune with uuid", Optional.of("An author with uuid"), Optional.of(UUID.randomUUID()));
+        fortuneWithUUID2 = new Fortune("A fortune with uuid 2", Optional.of("An author with uuid 2"), Optional.of(UUID.randomUUID()));
         cas = random.nextLong();
         modelVersion = new ModelVersion<>(fortune, Optional.of(cas));
         controller = new FortuneController(fortuneService);
@@ -237,9 +238,8 @@ public class FortuneServiceTest extends MVCTestBase {
 
     @Test
     public void postFortune() throws Exception {
-        Long version = 789L;
-        when(fortuneService.create(any(Fortune.class), any(Optional.class))).thenThrow(DuplicateKeyException.class).thenReturn(new ModelVersion<>(fortuneWithUUID, Optional.of
-                (cas))).thenAnswer(inv -> new ModelVersion<>(fortuneWithUUID, (Optional) inv.getArguments()[1])).thenReturn(null);
+        when(fortuneService.create(any(Fortune.class), any(Optional.class))).thenThrow(DuplicateKeyException.class).thenReturn(new ModelVersion<>(fortuneWithUUID1, Optional.of
+                (cas))).thenAnswer(inv -> new ModelVersion<>(fortuneWithUUID2, (Optional) inv.getArguments()[1])).thenReturn(null);
 
         String url = BASE;
         String etag = "\"" + Etag.encodEtag(cas, url) + "\"";
@@ -260,9 +260,9 @@ public class FortuneServiceTest extends MVCTestBase {
 
         // @formatter:off
         // Create - no eTag
-        performPost(controller, url , null, json2)
+        performPost(controller, url , null, jsonWithUUID1)
                 .andExpect(status().isCreated())
-                .andExpect(content().json(json2))
+                .andExpect(content().json(jsonWithUUID1))
                 .andExpect(header().string(HttpHeaders.ETAG, etag))
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE))
                 .andReturn();
@@ -270,9 +270,9 @@ public class FortuneServiceTest extends MVCTestBase {
 
         // @formatter:off
         // Create with eTag
-        performPost(controller, url , etag, json2)
+        performPost(controller, url , etag, jsonWithUUID2)
                 .andExpect(status().isCreated())
-                .andExpect(content().json(json2))
+                .andExpect(content().json(jsonWithUUID2))
                 .andExpect(header().string(HttpHeaders.ETAG, etag))
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE))
                 .andReturn();
@@ -337,6 +337,135 @@ public class FortuneServiceTest extends MVCTestBase {
                 .andReturn();
         // @formatter:on
     }
+
+    @Test
+    public void getAllFortunes() throws Exception {
+
+        List<Fortune> list1 = new LinkedList<>();
+        list1.add(fortuneWithUUID1);
+        List<Fortune> list2 = new LinkedList<>();
+        list2.addAll(list1);
+        list2.add(fortuneWithUUID2);
+        List<Fortune> list3 = new LinkedList<>();
+
+        when(fortuneService.listAll(anyInt(), anyInt())).thenReturn(list1, list2, list3);
+
+        String url = BASE + "/list?page=0&size=99";
+
+        // @formatter:off
+        // one return value
+        performGet(controller, url, null)
+                .andExpect(status().isOk())
+                .andExpect(content().json("["+jsonWithUUID1+"]"))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE ))
+                .andReturn();
+        // @formatter:on
+
+        // @formatter:off
+        // two return values
+        performGet(controller, url, null)
+                .andExpect(status().isOk())
+                .andExpect(content().json("["+jsonWithUUID1+","+jsonWithUUID2+"]"))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE ))
+                .andReturn();
+        // @formatter:on
+
+        // @formatter:off
+        // no return values
+        performGet(controller, url, null)
+                .andExpect(status().isOk())
+                .andExpect(content().json("[]"))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE ))
+                .andReturn();
+        // @formatter:on
+    }
+
+    @Test
+    public void getNamedFortunes() throws Exception {
+
+        List<Fortune> list1 = new LinkedList<>();
+        list1.add(fortuneWithUUID1);
+        List<Fortune> list2 = new LinkedList<>();
+        list2.addAll(list1);
+        list2.add(fortuneWithUUID2);
+        List<Fortune> list3 = new LinkedList<>();
+
+        when(fortuneService.listNamed(anyInt(), anyInt())).thenReturn(list1, list2, list3);
+
+        String url = BASE + "/list/named?page=0&size=0";
+
+        // @formatter:off
+        // one return value
+        performGet(controller, url, null)
+                .andExpect(status().isOk())
+                .andExpect(content().json("["+jsonWithUUID1+"]"))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE ))
+                .andReturn();
+        // @formatter:on
+
+        // @formatter:off
+        // two return values
+        performGet(controller, url, null)
+                .andExpect(status().isOk())
+                .andExpect(content().json("["+jsonWithUUID1+","+jsonWithUUID2+"]"))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE ))
+                .andReturn();
+        // @formatter:on
+
+        // @formatter:off
+        // no return values
+        performGet(controller, url, null)
+                .andExpect(status().isOk())
+                .andExpect(content().json("[]"))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE ))
+                .andReturn();
+        // @formatter:on
+
+    }
+
+    @Test
+    public void getAnonFortunes() throws Exception {
+
+        List<Fortune> list1 = new LinkedList<>();
+        list1.add(fortuneWithUUID1);
+        List<Fortune> list2 = new LinkedList<>();
+        list2.addAll(list1);
+        list2.add(fortuneWithUUID2);
+        List<Fortune> list3 = new LinkedList<>();
+
+        when(fortuneService.listAnon(anyInt(), anyInt())).thenReturn(list1, list2, list3);
+
+        String url = BASE + "/list/anon?page=0&size=99";
+
+        // @formatter:off
+        // one return value
+        performGet(controller, url, null)
+                .andExpect(status().isOk())
+                .andExpect(content().json("["+jsonWithUUID1+"]"))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE ))
+                .andReturn();
+        // @formatter:on
+
+        // @formatter:off
+        // two return values
+        performGet(controller, url, null)
+                .andExpect(status().isOk())
+                .andExpect(content().json("["+jsonWithUUID1+","+jsonWithUUID2+"]"))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE ))
+                .andReturn();
+        // @formatter:on
+
+        // @formatter:off
+        // no return values
+        performGet(controller, url, null)
+                .andExpect(status().isOk())
+                .andExpect(content().json("[]"))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE ))
+                .andReturn();
+        // @formatter:on
+
+    }
+
 }
 
 

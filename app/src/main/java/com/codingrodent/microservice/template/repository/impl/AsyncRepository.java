@@ -25,6 +25,7 @@
 package com.codingrodent.microservice.template.repository.impl;
 
 import com.codingrodent.microservice.template.entity.EntityBase;
+import com.codingrodent.microservice.template.exception.ApplicationFaultException;
 import com.codingrodent.microservice.template.repository.api.IAsyncCrudRepository;
 import com.codingrodent.microservice.template.utility.Utility;
 import com.couchbase.client.java.Bucket;
@@ -44,7 +45,6 @@ import java.util.function.Function;
 public abstract class AsyncRepository<T extends EntityBase> implements IAsyncCrudRepository<T> {
 
     private static final String DESIGN = "fortuneEntity";
-
     private static final String ID = "id";
     private static final String VERSION = "version";
     private static final String _CLASS = "_class";
@@ -140,8 +140,7 @@ public abstract class AsyncRepository<T extends EntityBase> implements IAsyncCru
         } catch (IOException e) {
             throw new InvalidDataAccessResourceUsageException("JSON deerialization failed", e);
         } catch (ClassNotFoundException e) {
-            return null;
-            // throw new ApplicationFaultException("Unable to find class " + clazzName + " for deserialization", e);
+            throw new ApplicationFaultException("Unable to find class for deserialization", e);
         }
     };
 
