@@ -76,7 +76,8 @@ bootRepackage {
 
 
 import java.text.SimpleDateFormat
-def buildTime() {
+
+static def buildTime() {
     final dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ")
     dateFormat.timeZone = TimeZone.getTimeZone('GMT')
     dateFormat.format(new Date())
