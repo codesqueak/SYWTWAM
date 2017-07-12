@@ -43,7 +43,7 @@ If you just want to see the microservice built and running, head over to the [qu
 | Metrics | [Dropwizard](http://www.dropwizard.io/) | ![alt text](docs/images/tick.png "Implemented") | [Metrics](docs/metrics.md)
 | Crypto /JCA | [Spring Security](http://docs.oracle.com/javase/7/docs/technotes/guides/security/crypto/CryptoSpec.html) | ![alt text](docs/images/cross.png "Not Implemented") |
 | SSL / x509 handling | [Spring Security](http://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/) | ![alt text](docs/images/cross.png "Not Implemented") |
-| HATEOAS | [Spring HATEOAS](http://docs.spring.io/autorepo/docs/spring-hateoas/0.20.x/reference/html/) | ![alt text](docs/images/cross.png "Not Implemented") |
+| HATEOAS | [Spring HATEOAS](http://docs.spring.io/autorepo/docs/spring-hateoas/0.20.x/reference/html/) | ![alt text](docs/images/tick.png "Implemented") | [HATEOAS](docs/hateoas.md) |
 | Authorization / JWT | [Spring Security](http://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/) | ![alt text](docs/images/cross.png "Not Implemented") |
 | JSON | [Jackson](https://github.com/FasterXML/jackson) / [gson](https://github.com/google/gson) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Persistence | [Spring Data](http://projects.spring.io/spring-data/) | ![alt text](docs/images/cross.png "Not Implemented") |

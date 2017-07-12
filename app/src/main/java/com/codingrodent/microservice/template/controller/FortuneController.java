@@ -157,6 +157,7 @@ public class FortuneController extends RestBase<Fortune> implements IFortune<UUI
             throw new ApplicationFaultException("PUT failed to return a document");
         } else {
             Resource<Fortune> resource = new Resource<>(written.getModel());
+            resource.add(getRelLink(uuid));
             return new ResponseEntity<>(resource, getETagAndHeaders(written), etag.map(e -> HttpStatus.ACCEPTED).orElse(HttpStatus.CREATED));
         }
     }
