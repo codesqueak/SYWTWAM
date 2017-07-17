@@ -13,10 +13,10 @@
                     converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
 
     <property name="CONSOLE_LOG_PATTERN"
-              value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p){red} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %X{SYSTEM:-${SYSTEM}} %X{SUBSYSTEM:-${SUBSYSTEM}} %clr(%-60.60logger{59}){blue} %clr(:){faint} %m%n%wex"/>
+              value="%clr(%d{yyyy-MM-dd'T'HH:mm:ss.SSSZZ}){faint} %clr(%5p){red} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %X{SYSTEM:-${SYSTEM}} %X{SUBSYSTEM:-${SUBSYSTEM}} %clr(%-60.60logger{59}){blue} %clr(:){faint} %m%n%wex"/>
 
     <property name="FILE_LOG_PATTERN"
-              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5level ${PID:- } --- [%thread] %X{SYSTEM:-${SYSTEM}} %X{SUBSYSTEM:-${SUBSYSTEM}} %-60.60logger{59} : %m%n%wex"/>
+              value="%d{yyyy-MM-dd'T'HH:mm:ss.SSSZZ} %5level ${PID:- } --- [%thread] %X{SYSTEM:-${SYSTEM}} %X{SUBSYSTEM:-${SUBSYSTEM}} %-60.60logger{59} : %m%n%wex"/>
 
     <appender name="DEBUG_LEVEL_REMAPPER"
               class="org.springframework.boot.logging.logback.LevelRemappingAppender">
@@ -40,6 +40,9 @@
 
     <property name="LOG_FILE"
               value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}/}spring.log}"/>
+
+    <property name="JSON_FILE"
+              value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}/}spring.json}"/>
 
 
     <!-- Console appender logback configuration provided for import, equivalent to the programmatic initialization performed
@@ -71,12 +74,47 @@
         </triggeringPolicy>
     </appender>
 
+    <appender name="JSON" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>log/sywtwam.json</File>
+
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+
+                <logLevel/>
+                <threadName/>
+                <pattern>
+                    <pattern>
+                        {
+                        "timestamp": "%date{yyyy-MM-dd'T'HH:mm:ss.SSSZZ}",
+                        "PID": "${PID}",
+                        "system": "${SYSTEM}",
+                        "subsystem": "${SUBSYSTEM}",
+                        "class": "%class{60}"
+                        }
+                    </pattern>
+                </pattern>
+                <message/>
+            </providers>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>log/sywtwam.json.%i</fileNamePattern>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>10MB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
+
 
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
+        <appender-ref ref="JSON"/>
     </root>
 
 
     <logger name="org.springframework.web" level="INFO"/>
+
+    <logger name="com.codingrodent.microservice.template" level="INFO"/>
+
+
 </configuration>
