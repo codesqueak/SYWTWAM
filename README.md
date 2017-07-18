@@ -85,7 +85,7 @@ If you just want to see the microservice built and running, head over to the [qu
 |-----------------|---------------------|:---------------------:|:---------------------:|
 | Data storage / persistence | [MongoDB](https://www.mongodb.com/) / [Coucbase](http://www.couchbase.com/) / [PostgrSQL](https://www.postgresql.org/)  | ![alt text](docs/images/cross.png "Not Implemented") |
 | Cache | [Hazelcast](https://hazelcast.com/) / [memcached](https://memcached.org/)  | ![alt text](docs/images/cross.png "Not Implemented") |
-| Logging | [ELK (Elastic search / Logstash / Kibana)](https://www.elastic.co/webinars/introduction-elk-stack)  | ![alt text](docs/images/tick.png "Implemented") | [Jenkins](docs/elk.md) |
+| Logging | [ELK (Elastic search / Logstash / Kibana)](https://www.elastic.co/webinars/introduction-elk-stack)  | ![alt text](docs/images/tick.png "Implemented") | [ELK](docs/elk.md) |
 | Message bus | [RabbitMQ](https://www.rabbitmq.com/)   | ![alt text](docs/images/cross.png "Not Implemented") |
 | Event bus  |  | ![alt text](docs/images/cross.png "Not Implemented") |
 | Configuration | [Consul](https://www.consul.io/)  | ![alt text](docs/images/tick.png "Implemented") | [Config](docs/config.md) |
