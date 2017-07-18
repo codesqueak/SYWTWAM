@@ -39,7 +39,7 @@ If you just want to see the microservice built and running, head over to the [qu
 | Fallback  | [Hystrix](https://github.com/Netflix/Hystrix) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Fail Fast | [Hystrix](https://github.com/Netflix/Hystrix) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Bulkhead | [Hystrix](https://github.com/Netflix/Hystrix) | ![alt text](docs/images/cross.png "Not Implemented") |
-| Logging | [logback](http://logback.qos.ch/) / [log4j](http://logging.apache.org/log4j/2.x/) | ![alt text](docs/images/tick.png "Implemented") |
+| Logging | [logback](http://logback.qos.ch/) / [log4j](http://logging.apache.org/log4j/2.x/) | ![alt text](docs/images/tick.png "Implemented") | [Logback](docs/logback.md) |
 | Metrics | [Dropwizard](http://www.dropwizard.io/) | ![alt text](docs/images/tick.png "Implemented") | [Metrics](docs/metrics.md)
 | Crypto /JCA | [Spring Security](http://docs.oracle.com/javase/7/docs/technotes/guides/security/crypto/CryptoSpec.html) | ![alt text](docs/images/cross.png "Not Implemented") |
 | SSL / x509 handling | [Spring Security](http://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/) | ![alt text](docs/images/cross.png "Not Implemented") |
@@ -85,7 +85,7 @@ If you just want to see the microservice built and running, head over to the [qu
 |-----------------|---------------------|:---------------------:|:---------------------:|
 | Data storage / persistence | [MongoDB](https://www.mongodb.com/) / [Coucbase](http://www.couchbase.com/) / [PostgrSQL](https://www.postgresql.org/)  | ![alt text](docs/images/cross.png "Not Implemented") |
 | Cache | [Hazelcast](https://hazelcast.com/) / [memcached](https://memcached.org/)  | ![alt text](docs/images/cross.png "Not Implemented") |
-| Logging | [ELK (Elastic search / Logstash / Kibana)](https://www.elastic.co/webinars/introduction-elk-stack)  | ![alt text](docs/images/cross.png "Not Implemented") |
+| Logging | [ELK (Elastic search / Logstash / Kibana)](https://www.elastic.co/webinars/introduction-elk-stack)  | ![alt text](docs/images/tick.png "Implemented") | [Jenkins](docs/elk.md) |
 | Message bus | [RabbitMQ](https://www.rabbitmq.com/)   | ![alt text](docs/images/cross.png "Not Implemented") |
 | Event bus  |  | ![alt text](docs/images/cross.png "Not Implemented") |
 | Configuration | [Consul](https://www.consul.io/)  | ![alt text](docs/images/tick.png "Implemented") | [Config](docs/config.md) |
