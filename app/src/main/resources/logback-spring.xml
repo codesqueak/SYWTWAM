@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <!-- Base logback configuration provided for compatibility with Spring Boot 1.1 -->
-
-    <!-- <include resource="org/springframework/boot/logging/logback/defaults.xml" /> -->
-
-    <!-- Default logback configuration provided for import, equivalent to the programmatic initialization performed by Boot -->
-
     <conversionRule conversionWord="clr"
                     converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
     <conversionRule conversionWord="wex"
                     converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+
+    <!-- Various configuration properties -->
 
     <property name="CONSOLE_LOG_PATTERN"
               value="%clr(%d{yyyy-MM-dd'T'HH:mm:ss.SSSZZ}){faint} %clr(%5p){red} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %X{SYSTEM:-${SYSTEM}} %X{SUBSYSTEM:-${SUBSYSTEM}} %clr(%-60.60logger{59}){blue} %clr(:){faint} %m%n%wex"/>
@@ -18,36 +14,16 @@
     <property name="FILE_LOG_PATTERN"
               value="%d{yyyy-MM-dd'T'HH:mm:ss.SSSZZ} %5level ${PID:- } --- [%thread] %X{SYSTEM:-${SYSTEM}} %X{SUBSYSTEM:-${SUBSYSTEM}} %-60.60logger{59} : %m%n%wex"/>
 
+    <property name="LOGGER_FILE" value="${LOG_PATH}/${LOG_FILE}.log"/>
+
+    <property name="JSON_FILE" value="${LOG_PATH}/${LOG_FILE}.json"/>
+
+    <!-- appenders -->
+
     <appender name="DEBUG_LEVEL_REMAPPER"
               class="org.springframework.boot.logging.logback.LevelRemappingAppender">
         <destinationLogger>org.springframework.boot</destinationLogger>
     </appender>
-
-    <logger name="org.hibernate.validator.internal.util.Version" level="WARN"/>
-    <logger name="org.springframework.boot.actuate.endpoint.jmx" additivity="false">
-        <appender-ref ref="DEBUG_LEVEL_REMAPPER"/>
-    </logger>
-    <logger name="org.thymeleaf" additivity="false">
-        <appender-ref ref="DEBUG_LEVEL_REMAPPER"/>
-    </logger>
-
-    <logger name="org.springframework.security"
-            level="INFO"/> <!-- to debug security related issues (DEBUG) -->
-    <logger name="org.springframework.web.servlet.mvc"
-            level="INFO"/> <!-- some serialization issues are at trace level here: org.springframework.web.servlet.mvc.method.annotation
-            .ServletInvocableHandlerMethod -->
-
-
-    <property name="LOG_FILE"
-              value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}/}spring.log}"/>
-
-    <property name="JSON_FILE"
-              value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}/}spring.json}"/>
-
-
-    <!-- Console appender logback configuration provided for import, equivalent to the programmatic initialization performed
-        by Boot -->
-
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -56,18 +32,16 @@
         </encoder>
     </appender>
 
-
-    <!-- File appender logback configuration provided for import, equivalent to the programmatic initialization performed by
-        Boot -->
-
-
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <encoder>
             <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
         </encoder>
-        <file>${LOG_FILE}</file>
+        <file>${LOGGER_FILE}</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${LOG_FILE}.%i</fileNamePattern>
+            <fileNamePattern>${LOGGER_FILE}.%i</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>10</maxIndex>
         </rollingPolicy>
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
             <MaxFileSize>10MB</MaxFileSize>
@@ -75,11 +49,9 @@
     </appender>
 
     <appender name="JSON" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>log/sywtwam.json</File>
-
+        <File>${JSON_FILE}</File>
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
             <providers>
-
                 <logLevel/>
                 <threadName/>
                 <pattern>
@@ -97,24 +69,45 @@
             </providers>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>log/sywtwam.json.%i</fileNamePattern>
+            <fileNamePattern>${JSON_FILE}.%i</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>10</maxIndex>
         </rollingPolicy>
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
             <MaxFileSize>10MB</MaxFileSize>
         </triggeringPolicy>
     </appender>
 
+    <!-- Loggers -->
+
+    <logger name="org.hibernate.validator.internal.util.Version" level="WARN"/>
+
+    <logger name="org.springframework.boot.actuate.endpoint.jmx" additivity="false">
+        <appender-ref ref="DEBUG_LEVEL_REMAPPER"/>
+    </logger>
+
+    <logger name="org.thymeleaf" additivity="false">
+        <appender-ref ref="DEBUG_LEVEL_REMAPPER"/>
+    </logger>
+
+    <logger name="org.springframework.security"
+            level="INFO"/> <!-- to debug security related issues (DEBUG) -->
+
+    <logger name="org.springframework.web.servlet.mvc"
+            level="INFO"/> <!-- some serialization issues are at trace level here: org.springframework.web.servlet.mvc.method.annotation
+            .ServletInvocableHandlerMethod -->
+
+    <logger name="org.springframework.web" level="INFO"/>
+
+    <logger name="com.codingrodent.microservice.template" level="INFO"/>
+
+
+    <!-- default logging levels for all appenders -->
 
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
         <appender-ref ref="JSON"/>
     </root>
-
-
-    <logger name="org.springframework.web" level="INFO"/>
-
-    <logger name="com.codingrodent.microservice.template" level="INFO"/>
-
 
 </configuration>
