@@ -3,13 +3,14 @@
     "sywtwam": {
       "properties": {
         "timestamp": {
-          "type": "date"
+          "type": "date",
+          "format": "yyyy-MM-dd'\''T'\''HH:mm:ss.SSSZZ"
         },
         "level": {
           "type": "keyword"
         },
-        "thread_name": {
-          "type": "keyword"
+        "threadname": {
+          "type": "text"
         },
         "PID": {
           "type": "long"
@@ -23,7 +24,7 @@
         "class": {
           "type": "keyword"
         },
-        "message": {
+        "msg": {
           "type": "text"
         }
       }
@@ -31,16 +32,6 @@
   }
 }
 
-{
-  "@timestamp": "2017-07-15T12:40:36.609+01:00",
-  "level": "INFO",
-  "thread_name": "cb-io-5-2",
-  "PID": "8652",
-  "system": "Template",
-  "subsystem": "Spring",
-  "class": "com.couchbase.client.core.logging.Slf4JLogger",
-  "message": "[null][ViewEndpoint]: Got notified from Channel as inactive, attempting reconnect."
-}
 
 
 
@@ -57,8 +48,8 @@ curl -XPUT 'localhost:9200/sywtwam_idx?pretty' -H 'Content-Type: application/jso
         "level": {
           "type": "keyword"
         },
-        "thread_name": {
-          "type": "keyword"
+        "threadname": {
+          "type": "text"
         },
         "PID": {
           "type": "long"
@@ -72,7 +63,7 @@ curl -XPUT 'localhost:9200/sywtwam_idx?pretty' -H 'Content-Type: application/jso
         "class": {
           "type": "keyword"
         },
-        "message": {
+        "msg": {
           "type": "text"
         }
       }

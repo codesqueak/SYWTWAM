@@ -106,7 +106,7 @@ The full appender is defined as:
                     }
                 </pattern>
             </pattern>
-            <message/>
+            <message fieldname="msg"/>
         </providers>
     </encoder>
     <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
