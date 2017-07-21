@@ -55,12 +55,13 @@ filter {
       tag_on_failure => true
       break_on_match => true
   }
+  
   # if invalid, delete
   if "_grokparsefailure" in [tags] { drop {} }
 
   # use the log file timestamp, not the logstash one
   date {
-	match => ["timestamp", "yyyy-MM-dd'T'HH:mm:ss.SSSZ"]
+	match => ["timestamp", "ISO8601"]
 	target => "@timestamp"
 	}
 
@@ -69,7 +70,6 @@ filter {
       remove_field => ["message","path","timestamp"]
     }
 }
-
 
 output {
    stdout { codec => rubydebug }

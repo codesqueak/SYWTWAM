@@ -143,11 +143,11 @@ the `LogstashSocketAppender` or `LogstashTcpSocketAppender` appender. A disadvan
 ## A Note on Timestamps
 
 It is important to have consistent timestamp information from Logback through Logstash and through to Elasticsearch.  Failure to do this will lead to missing log records. The simplest way
-to ensure correct handling is to decide on a format and specify this wherever timestamp information is handled. In this instance, the following format was chosen:
+to ensure correct handling is to decide on a format and specify this wherever timestamp information is generated. In this instance, the following ISO8601 compliant format is used
 ```
 yyyy-MM-dd'T'HH:mm:ss.SSSZZ
 ```
-Which gives timestamps such as: _2017-07-20T00:11:23.320+0100_
+Which gives timestamps such as: _2017-07-20T00:11:23.320+0100_ 
 
 
 
