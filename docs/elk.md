@@ -52,7 +52,6 @@ filter {
    # valid log line ?
    grok {
       match => [ "message", "%{TIMESTAMP_ISO8601:timestamp}%{SPACE}%{WORD:level}%{SPACE}%{NUMBER:PID}%{SPACE}---%{SPACE}%{SYSLOG5424SD:threadname}%{SPACE}%{SYSTEM:system}%{SPACE}%{SUBSYSTEM:subsystem}%{SPACE}%{JAVACLASSSHORT:class}%{SPACE}:%{SPACE}%{GREEDYDATA:msg}" ]
-      tag_on_failure => true
       break_on_match => true
   }
   
@@ -94,10 +93,87 @@ It can be difficult to generate correct grok expressions.  Debugging is made sig
 
 ## Elasticsearch
 
+Elasticsearch is a distributed, RESTful search and analytics engine based on [Lucene](https://lucene.apache.org/). It is used in the ELK stack as the repository of log information for search, 
+analysis and visulaization tasks from Kibana.
+
 ### Install
 
+Elasticsearch is installed by downloading and then unpacking to a convenient directoy.  
+Full details are given in the Elasticsearch [documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html)
+
+Once it has been unpacked and is ready to run, we need to describe the log file data being.  This is done by setting a mapping associated to an index.  The index in this instance is `sywtwam_idx`.  We also 
+need to tell Logstash to associate log records with this index.
+
+To generate the mapping, start Elasticsearch and execute the following curl command:
+
+```bash
+curl -XPUT 'localhost:9200/sywtwam_idx?pretty' -H 'Content-Type: application/json' -d'
+{
+  "mappings": {
+    "sywtwam": {
+      "properties": {
+        "@timestamp": {
+          "type": "date",
+          "format": "yyyy-MM-dd'\''T'\''HH:mm:ss.SSSZZ"
+        },
+        "level": {
+          "type": "keyword"
+        },
+        "threadname": {
+          "type": "text"
+        },
+        "PID": {
+          "type": "long"
+        },
+        "system": {
+          "type": "keyword"
+        },
+        "subsystem": {
+          "type": "keyword"
+        },
+        "class": {
+          "type": "keyword"
+        },
+        "msg": {
+          "type": "text"
+        }
+      }
+    }
+  }
+}
+'
+
+```
+
+The Logstash output step needs to be updated to:
+
+````text
+output {
+   elasticsearch { hosts => "localhost:9200" index=>"sywtwam_idx" document_type => "logs"}
+   stdout { codec => rubydebug }
+}
+````
+This will send logs to Elasticsearch as well as display them on the console.
 
 ## Kibana
 
+Now we have log data saved away into Elasticsearch, we need to install and configure Kibana to visualize this.
+
 ### Install
+
+Kibana is installed by downloading and then unpacking to a convenient directoy.  
+Full details are given in the Kibana [documentation](https://www.elastic.co/guide/en/kibana/current/install.html).
+
+On first execution of Kibana, we need to identify the index pattern being used, in this case `sywtwam_idx`.  This is done by going to the Management -> Index Patterns page, and entereing `sywtwam_idx` 
+into the *index name or pattern* box.  The *Time Filter field name* should auto-populate to `@timestamp`. Press *Create* to finish installation.
+
+## Useful Links
+
+| Action | Link |
+|----------------|-----------------|
+| Kibana | http://localhost:5601
+| Kibana health page | http://localhost:5601/status
+| List Indexes | curl -XGET 'localhost:9200/_cat/indices?v&pretty'
+| Delete index | curl -XDELETE 'localhost:9200/sywtwam_idx?pretty&pretty'
+
 
