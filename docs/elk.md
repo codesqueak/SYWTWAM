@@ -1,12 +1,10 @@
 # ELK Stack (Elastic Stack) - Elasticsearch / Logstash / Kibana
 
-
-
 ## Logstash
 
 ### Install
 
-Logstash is installed by downloading and then unpacking to a convenient directoy.  Full details are given in the Logstash [documentation](https://www.elastic.co/guide/en/logstash/current/installing-logstash.html)
+Logstash is installed by downloading and then unpacking to a convenient directory.  Full details are given in the Logstash [documentation](https://www.elastic.co/guide/en/logstash/current/installing-logstash.html)
 
 Once it has been unpacked and is ready to run, some basic configuration is required.
 
@@ -75,7 +73,7 @@ output {
 }
 ```
 
-Before you can use this, you will need to add definitions for the non standard patterns _SYSTEM, SUBSYSTEM_ and _JAVACLASSSHORT_.  These are described to Logstash 
+Before you can use this, you will need to add definitions for the non-standard patterns _SYSTEM, SUBSYSTEM_ and _JAVACLASSSHORT_.  These are described to Logstash 
 by defining a file `patterns.txt` under the `/patterns` directory with the following content:
 
 ```text
@@ -94,12 +92,11 @@ It can be difficult to generate correct grok expressions.  Debugging is made sig
 ## Elasticsearch
 
 Elasticsearch is a distributed, RESTful search and analytics engine based on [Lucene](https://lucene.apache.org/). It is used in the ELK stack as the repository of log information for search, 
-analysis and visulaization tasks from Kibana.
+analysis and visualization tasks from Kibana.
 
 ### Install
 
-Elasticsearch is installed by downloading and then unpacking to a convenient directoy.  
-Full details are given in the Elasticsearch [documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html)
+Elasticsearch is installed by downloading and then unpacking to a convenient directory.  Full details are given in the Elasticsearch [documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html)
 
 Once it has been unpacked and is ready to run, we need to describe the log file data being.  This is done by setting a mapping associated to an index.  The index in this instance is `sywtwam_idx`.  We also 
 need to tell Logstash to associate log records with this index.
@@ -161,10 +158,9 @@ Now we have log data saved away into Elasticsearch, we need to install and confi
 
 ### Install
 
-Kibana is installed by downloading and then unpacking to a convenient directoy.  
-Full details are given in the Kibana [documentation](https://www.elastic.co/guide/en/kibana/current/install.html).
+Kibana is installed by downloading and then unpacking to a convenient directory.  Full details are given in the Kibana [documentation](https://www.elastic.co/guide/en/kibana/current/install.html).
 
-On first execution of Kibana, we need to identify the index pattern being used, in this case `sywtwam_idx`.  This is done by going to the Management -> Index Patterns page, and entereing `sywtwam_idx` 
+On first execution of Kibana, we need to identify the index pattern being used, in this case `sywtwam_idx`.  This is done by going to the Management -> Index Patterns page, and entering `sywtwam_idx` 
 into the *index name or pattern* box.  The *Time Filter field name* should auto-populate to `@timestamp`. Press *Create* to finish installation.
 
 ## Useful Links
