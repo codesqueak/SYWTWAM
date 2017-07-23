@@ -83,7 +83,7 @@ JSON logging is designed to feed Logstash and is not intended to be used directl
 
 The appender uses `FixedWindowRollingPolicy` and `SizeBasedTriggeringPolicy` in a similar manner to the FILE appender to control file size and rollover.
 
-The information to be encoded into JSON is controller by the `LoggingEventCompositeJsonEncoder` which uses a set of `providers` to define fields.  Full usage and configuration details are
+The information to be encoded into JSON is controlled by the `LoggingEventCompositeJsonEncoder` which uses a set of `providers` to define fields.  Full usage and configuration details are
 defined [here](https://github.com/logstash/logstash-logback-encoder) in the Logstash documentation.
 
 The full appender is defined as:
@@ -143,7 +143,7 @@ the `LogstashSocketAppender` or `LogstashTcpSocketAppender` appender. A disadvan
 ## A Note on Timestamps
 
 It is important to have consistent timestamp information from Logback through Logstash and through to Elasticsearch.  Failure to do this will lead to missing log records. The simplest way
-to ensure correct handling is to decide on a format and specify this wherever timestamp information is generated. In this instance, the following ISO8601 compliant format is used
+to ensure correct handling is to decide on a format and specify this wherever timestamp information is generated. In this example, the following ISO8601 compliant format is used
 ```
 yyyy-MM-dd'T'HH:mm:ss.SSSZZ
 ```
