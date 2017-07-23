@@ -39,7 +39,7 @@ public class SaveStateOperator<T> implements Observable.Operator<T, T> {
     private final RequestAttributes requestAttributes;
 
     /**
-     * Grab the state of teh request attributes at construction time.  This makes them available for restoration at any point in the future on whatever thread is calling the
+     * Grab the state of the request attributes at construction time.  This makes them available for restoration at any point in the future on whatever thread is calling the
      * onNext() method
      */
     public SaveStateOperator() {

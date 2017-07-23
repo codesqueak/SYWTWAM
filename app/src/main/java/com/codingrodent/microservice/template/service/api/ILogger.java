@@ -42,4 +42,12 @@ public interface ILogger {
      * @param message Message to write
      */
     void info(String message);
+
+    /**
+     * Write debug message
+     *
+     * @param message Message to write
+     */
+    void debug(String message);
+
 }

@@ -233,6 +233,8 @@ dependencies {
     // metrics
     compile group: 'io.dropwizard.metrics', name: 'metrics-core', version: '3.2.2'
     compile group: 'io.dropwizard.metrics', name: 'metrics-jvm', version: '3.2.2'
+    // https://mvnrepository.com/artifact/net.logstash.logback/logstash-logback-encoder
+    compile group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '4.11'
 }
 
 

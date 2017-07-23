@@ -45,11 +45,18 @@ public class LoggingService implements ILogger {
     }
 
     /**
-     *
      * @see ILogger#info
      */
     @Override
     public void info(final String msg) {
         logger.info(msg);
+    }
+
+    /**
+     * @see ILogger#debug
+     */
+    @Override
+    public void debug(final String msg) {
+        logger.debug(msg);
     }
 }
