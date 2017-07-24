@@ -42,7 +42,8 @@ If you just want to see the microservice built and running, head over to the [qu
 | Logging | [logback](http://logback.qos.ch/) / [log4j](http://logging.apache.org/log4j/2.x/) | ![alt text](docs/images/tick.png "Implemented") | [Logback](docs/logback.md) |
 | Metrics | [Dropwizard](http://www.dropwizard.io/) | ![alt text](docs/images/tick.png "Implemented") | [Metrics](docs/metrics.md)
 | Crypto /JCA | [Spring Security](http://docs.oracle.com/javase/7/docs/technotes/guides/security/crypto/CryptoSpec.html) | ![alt text](docs/images/cross.png "Not Implemented") |
-| SSL / x509 handling | [Spring Security](http://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/) | ![alt text](docs/images/cross.png "Not Implemented") |
+| SSL  | [Spring Security](http://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/) | ![alt text](docs/images/cross.png "Not Implemented") |
+| x509 handling | [Spring Security](http://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/) | ![alt text](docs/images/cross.png "Not Implemented") |
 | HATEOAS | [Spring HATEOAS](http://docs.spring.io/autorepo/docs/spring-hateoas/0.20.x/reference/html/) | ![alt text](docs/images/tick.png "Implemented") | [HATEOAS](docs/hateoas.md) |
 | Authorization / JWT | [Spring Security](http://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/) | ![alt text](docs/images/cross.png "Not Implemented") |
 | JSON | [Jackson](https://github.com/FasterXML/jackson) / [gson](https://github.com/google/gson) | ![alt text](docs/images/cross.png "Not Implemented") |
@@ -63,7 +64,7 @@ If you just want to see the microservice built and running, head over to the [qu
 | Stress test | [Chaos monkey](https://github.com/Netflix/SimianArmy/wiki/Chaos-Monkey) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Security audit | [Coverity](http://www.coverity.com/products/code-advisor/) | ![alt text](docs/images/cross.png "Not Implemented") |
 | Code quality | [PMD](https://pmd.github.io/) | ![alt text](docs/images/cross.png "Not Implemented") |
-| Static analysis | [findbugs](http://findbugs.sourceforge.net/) | ![alt text](docs/images/cross.png "Not Implemented") |
+| Static analysis | [findbugs](http://findbugs.sourceforge.net/) | ![alt text](docs/images/tick.png "Implemented") | [Findbugs](docs/findbugs.md) |
 | CI | [Jenkins](https://jenkins.io/) / [Bamboo](https://www.atlassian.com/software/bamboo) | ![alt text](docs/images/tick.png "Implemented") | [Jenkins](docs/ci.md) |
 | Mocking | [Mockito](http://site.mockito.org/) / [EasyMock](http://site.mockito.org/) ... and all the others | ![alt text](docs/images/tick.png "Implemented") |
 | Mock Services | [WireMock](http://wiremock.org/) | ![alt text](docs/images/tick.png "Implemented") |

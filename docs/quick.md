@@ -18,9 +18,13 @@ git clone https://github.com/codesqueak/SYWTWAM.git
 
 ## Build
 
-For windows: ```gradlew clean build test```
+For windows:
+ 
+ ```gradlew clean build test```
 
-For Linux: ```./gradlew clean build test```
+For Linux:
+ 
+ ```./gradlew clean build test```
 
 This will pull down all required libraries, compile and test the application.
 
@@ -28,9 +32,13 @@ This will pull down all required libraries, compile and test the application.
 ## Run
 
 
-For Windows: ```java -Dspring.cloud.consul.enabled=false -Dspring.cloud.bus.enabled=false -jar app/build/libs/SYWTWAM-0.2.1-SNAPSHOT-BOOT.jar --spring.profiles.active=aws```
+For Windows:
+ 
+ ```java -Dspring.cloud.consul.enabled=false -Dspring.cloud.bus.enabled=false -jar app/build/libs/SYWTWAM-0.2.1-SNAPSHOT-BOOT.jar --spring.profiles.active=aws```
 
-For Linux: ```java -Dspring.cloud.consul.enabled=false -Dspring.cloud.bus.enabled=false -jar app/build\libs\SYWTWAM-0.2.1-SNAPSHOT-BOOT.jar --spring.profiles.active=aws```
+For Linux:
+ 
+ ```java -Dspring.cloud.consul.enabled=false -Dspring.cloud.bus.enabled=false -jar app/build\libs\SYWTWAM-0.2.1-SNAPSHOT-BOOT.jar --spring.profiles.active=aws```
 
 ### Notes
 
@@ -41,4 +49,6 @@ If you have configured Consul, you can run without the **-Dspring.cloud.consul.e
 
 ## Play
 
-The Swagger interface to the application is now available at: ```http://localhost:8081/swagger-ui.html```
+The Swagger interface to the application is now available at:
+ 
+ ```http://localhost:8081/swagger-ui.html```
