@@ -24,7 +24,7 @@
  */
 package com.codingrodent.microservice.template.controller;
 
-import com.codingrodent.microservice.template.metrics.TemplateMetrics;
+import com.codingrodent.microservice.template.metrics.api.ITemplateMetrics;
 import io.swagger.annotations.*;
 import org.springframework.core.SpringVersion;
 import org.springframework.http.*;
@@ -41,7 +41,7 @@ import static org.springframework.http.HttpMethod.*;
  */
 
 @RestController
-@Api(tags = "version", value = "version", description = "Endpoint for version Information - Don't do this in a production system as it gives away too much " + "information")
+@Api(tags = "version", value = "version", description = "Endpoint for version Information - Don't do this in a production system as it gives away too much information")
 @RequestMapping("/version/" + API_VERSION)
 public class VersionController {
 
@@ -64,10 +64,10 @@ public class VersionController {
         optionsResponse = new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
-    private final TemplateMetrics metrics;
+    private final ITemplateMetrics metrics;
 
     @Inject
-    public VersionController(final TemplateMetrics metrics) {
+    public VersionController(final ITemplateMetrics metrics) {
         this.metrics = metrics;
     }
 
