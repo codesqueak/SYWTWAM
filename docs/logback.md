@@ -135,10 +135,24 @@ The full appender is defined as:
 }
 ```
 
-## Other Delivery Methods
+## Over The Network
 
-It is possible to deliver log records over a network which bypasses the use of the file system completely. This may be done via UDP or TCP using
-the `LogstashSocketAppender` or `LogstashTcpSocketAppender` appender. A disadvantage of this is the possibility of log loss due to network issues.  
+It is possible to deliver log records over a network which bypasses the use of the file system completely. The functionality is depdendent on the target system used.  With Logstash 
+this may be done via UDP or TCP using the `LogstashSocketAppender` or `LogstashTcpSocketAppender` appender. 
+A disadvantage of this is the possibility of log loss due to network issues. However a certain level of buffering can be configured.
+
+Example network appender:
+
+```xml
+<appender name="STASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+    <destination>localhost:9500</destination>
+    <encoder>
+        <pattern>${FILE_LOG_PATTERN}</pattern>
+        <charset>utf8</charset>
+    </encoder>
+</appender>
+```
+
 
 ## A Note on Timestamps
 

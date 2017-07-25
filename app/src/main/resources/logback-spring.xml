@@ -25,12 +25,16 @@
         <destinationLogger>org.springframework.boot</destinationLogger>
     </appender>
 
+    <!-- Colour coded console appender -->
+
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>${CONSOLE_LOG_PATTERN}</pattern>
             <charset>utf8</charset>
         </encoder>
     </appender>
+
+    <!-- File line format appender -->
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <encoder>
@@ -47,6 +51,8 @@
             <MaxFileSize>10MB</MaxFileSize>
         </triggeringPolicy>
     </appender>
+
+    <!-- File JSON format appender -->
 
     <appender name="JSON" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <File>${JSON_FILE}</File>
@@ -76,6 +82,16 @@
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
             <MaxFileSize>10MB</MaxFileSize>
         </triggeringPolicy>
+    </appender>
+
+    <!-- TCP line format appender -->
+
+    <appender name="STASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>localhost:9500</destination>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
     </appender>
 
     <!-- Loggers -->
@@ -108,6 +124,7 @@
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
         <appender-ref ref="JSON"/>
+        <appender-ref ref="STASH"/>
     </root>
 
 </configuration>

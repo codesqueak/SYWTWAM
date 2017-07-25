@@ -89,6 +89,27 @@ Refer to the Logstash [documentation](https://www.elastic.co/guide/en/logstash/c
 
 It can be difficult to generate correct grok expressions.  Debugging is made significantly simpler by using the [Grok Debugger](https://grokdebug.herokuapp.com/)
 
+### Network Logging
+
+If reading local log files is not a desired solution, then it is possible to send / receive logs directly across the network.  If we change the *input* step to the following we can
+listen for log data.
+
+```
+input {
+  tcp {
+     port => 9500
+     host => "localhost"
+     codec => plain {
+	charset => "UTF-8"
+	}
+   }
+}
+```
+
+This allows Logstash to be either situated with the application (e.g. in the same conatiner) or anywhere else across the network which opens up the possible
+use of multiple instances / load balancers etc
+
+
 ## Elasticsearch
 
 Elasticsearch is a distributed, RESTful search and analytics engine based on [Lucene](https://lucene.apache.org/). It is used in the ELK stack as the repository of log information for search, 
