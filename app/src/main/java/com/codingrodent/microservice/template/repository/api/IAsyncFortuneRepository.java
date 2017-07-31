@@ -34,7 +34,7 @@ import java.util.List;
  * Additional async repository access methods based on Couchbase views
  */
 @NoRepositoryBean
-public interface IASyncFortuneRepository<T> extends IAsyncCrudRepository<T> {
+public interface IAsyncFortuneRepository<T> extends IAsyncCrudRepository<T> {
 
     String VIEW_ANON = "anon";
     String VIEW_NAMED = "named";

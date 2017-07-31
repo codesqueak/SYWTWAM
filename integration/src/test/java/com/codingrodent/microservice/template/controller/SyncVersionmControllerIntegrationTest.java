@@ -43,8 +43,15 @@ public class SyncVersionmControllerIntegrationTest extends IntegrationTestBase {
     private TestRestTemplate restTemplate;
 
     @Test
-    public void versionTest() throws Exception {
-        ResponseEntity response = restTemplate.getForEntity("/version/" + SystemConstants.API_VERSION, String.class);
+    public void versionTestSync() throws Exception {
+        ResponseEntity response = restTemplate.getForEntity("/version/" + SystemConstants.API_VERSION + "/sync", String.class);
+        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        JSONAssert.assertEquals(json, response.getBody().toString(), true);
+    }
+
+    @Test
+    public void versionTestAsync() throws Exception {
+        ResponseEntity response = restTemplate.getForEntity("/version/" + SystemConstants.API_VERSION + "/async", String.class);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         JSONAssert.assertEquals(json, response.getBody().toString(), true);
     }

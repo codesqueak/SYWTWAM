@@ -33,12 +33,14 @@ import org.mockito.Mock;
 import org.springframework.core.SpringVersion;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.*;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static com.codingrodent.microservice.template.constants.SystemConstants.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static com.codingrodent.microservice.template.matchers.ExtraHeaderResultMatchers.extra;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -64,13 +66,38 @@ public class VersionControllerTest extends MVCTestBase {
     }
 
     @Test
-    public void getVersion() throws Exception {
-        MockHttpServletRequestBuilder builder = get(BASE).characterEncoding(CHAR_ENCODING);
+    public void getVersionSync() throws Exception {
+        MockHttpServletRequestBuilder builder = get(BASE + "/sync").characterEncoding(CHAR_ENCODING);
         // @formatter:off
         mvc.perform(builder)
                 .andExpect(status().isOk())
                 .andExpect(content().json(json))
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE ));
+        verify(templateMetrics, times(1)).inc(METRIC_VERSION_GET);
+        // @formatter:on
+    }
+
+    @Test
+    public void getVersionAsync() throws Exception {
+        MockHttpServletRequestBuilder builder = get(BASE + "/async").characterEncoding(CHAR_ENCODING);
+        MvcResult result = mvc.perform(builder).andReturn();
+        // @formatter:off
+        mvc.perform(asyncDispatch(result))
+                .andExpect(status().isOk())
+                .andExpect(content().json(json))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE,CONTENT_TYPE ));
+        verify(templateMetrics, times(1)).inc(METRIC_VERSION_GET);
+        // @formatter:on
+    }
+
+    @Test
+    public void getOptions() throws Exception {
+        MockHttpServletRequestBuilder builder = options(BASE).characterEncoding(CHAR_ENCODING);
+        // @formatter:off
+        mvc.perform(builder)
+                .andExpect(status().isOk())
+                .andExpect(extra().options("GET,OPTIONS"));
+         verify(templateMetrics, times(1)).inc(METRIC_VERSION_OPTIONS);
         // @formatter:on
     }
 }
