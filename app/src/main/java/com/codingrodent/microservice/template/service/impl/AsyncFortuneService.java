@@ -26,7 +26,7 @@ package com.codingrodent.microservice.template.service.impl;
 
 import com.codingrodent.microservice.template.entity.FortuneEntity;
 import com.codingrodent.microservice.template.model.*;
-import com.codingrodent.microservice.template.repository.api.IASyncFortuneRepository;
+import com.codingrodent.microservice.template.repository.api.IAsyncFortuneRepository;
 import com.codingrodent.microservice.template.service.api.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -43,11 +43,11 @@ import static com.codingrodent.microservice.template.converter.Converter.toFortu
 @Service
 public class AsyncFortuneService implements IAsyncFortuneService<Fortune> {
 
-    private final IASyncFortuneRepository<FortuneEntity> repository;
+    private final IAsyncFortuneRepository<FortuneEntity> repository;
     private final ILogger logger;
 
     @Inject
-    public AsyncFortuneService(final ILogger logger, final IASyncFortuneRepository<FortuneEntity> repository) {
+    public AsyncFortuneService(final ILogger logger, final IAsyncFortuneRepository<FortuneEntity> repository) {
         this.repository = repository;
         this.logger = logger;
     }

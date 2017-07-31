@@ -24,11 +24,13 @@
  */
 package com.codingrodent.microservice.template.controller;
 
-import com.codingrodent.microservice.template.metrics.TemplateMetrics;
+import com.codingrodent.microservice.template.metrics.api.ITemplateMetrics;
 import io.swagger.annotations.*;
 import org.springframework.core.SpringVersion;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.async.DeferredResult;
+import rx.Observable;
 
 import javax.inject.Inject;
 import java.util.*;
@@ -39,9 +41,8 @@ import static org.springframework.http.HttpMethod.*;
 /**
  * Simple sync REST controller to return version information
  */
-
 @RestController
-@Api(tags = "version", value = "version", description = "Endpoint for version Information - Don't do this in a production system as it gives away too much " + "information")
+@Api(tags = "version", value = "version", description = "Endpoint for version Information - Don't do this in a production system as it gives away too much information")
 @RequestMapping("/version/" + API_VERSION)
 public class VersionController {
 
@@ -64,21 +65,33 @@ public class VersionController {
         optionsResponse = new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
-    private final TemplateMetrics metrics;
+    private final ITemplateMetrics metrics;
 
     @Inject
-    public VersionController(final TemplateMetrics metrics) {
+    public VersionController(final ITemplateMetrics metrics) {
         this.metrics = metrics;
     }
 
     // GET (200) - Recover version information
-    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Read version information", notes = "Version Information - For Demo Only")
+    @RequestMapping(path = "/sync", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Read version information", notes = "Version Information (Sync) - For Demo Only", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = { //
             @ApiResponse(code = 200, message = "Version information in body")})
-    public ResponseEntity<Map<String, String>> read() {
+    public ResponseEntity<Map<String, String>> readSync() {
         metrics.inc(METRIC_VERSION_GET);
         return getResponse;
+    }
+
+    // GET (200) - Recover version information
+    @RequestMapping(path = "/async", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Read version information", notes = "Version Information (Async) - For Demo Only", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses(value = { //
+            @ApiResponse(code = 200, message = "Version information in body")})
+    public DeferredResult<Map<String, String>> readAsync() {
+        metrics.inc(METRIC_VERSION_GET);
+        DeferredResult<Map<String, String>> result = new DeferredResult<>();
+        Observable.just(versions).subscribe(result::setResult, (t) -> result.setErrorResult(new RuntimeException(t)));
+        return result;
     }
 
     // OPTIONS (200)
@@ -88,4 +101,5 @@ public class VersionController {
         metrics.inc(METRIC_VERSION_OPTIONS);
         return optionsResponse;
     }
+
 }

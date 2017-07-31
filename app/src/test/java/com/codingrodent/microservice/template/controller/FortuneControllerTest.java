@@ -41,9 +41,9 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Controller unit tests
+ * Sync Fortune Controller unit tests
  */
-public class FortuneServiceTest extends MVCTestBase {
+public class FortuneControllerTest extends MVCTestBase {
 
     private final static String json = "{\"text\":\"A fortune\",\"author\":\"An author\"}";
     private final static String jsonWithUUID1 = "{\"text\":\"A fortune with uuid\",\"author\":\"An author with uuid\"}";

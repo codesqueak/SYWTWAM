@@ -25,7 +25,7 @@
 package com.codingrodent.microservice.template.repository.impl;
 
 import com.codingrodent.microservice.template.entity.FortuneEntity;
-import com.codingrodent.microservice.template.repository.api.IASyncFortuneRepository;
+import com.codingrodent.microservice.template.repository.api.IAsyncFortuneRepository;
 import com.couchbase.client.java.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Pageable;
@@ -40,7 +40,7 @@ import rx.Observable;
 
 @Profile({"prod"})
 @Service
-public class AsyncFortuneRepository extends AsyncRepository<FortuneEntity> implements IASyncFortuneRepository<FortuneEntity> {
+public class AsyncFortuneRepository extends AsyncRepository<FortuneEntity> implements IAsyncFortuneRepository<FortuneEntity> {
 
     private final Cluster cluster = CouchbaseCluster.create("localhost");
     private final Bucket bucket = cluster.openBucket("template", "bucketpassword");
