@@ -39,7 +39,7 @@ import javax.inject.Inject;
  */
 @Profile({"test", "integration", "aws"})
 @Service
-public class AsyncInMemoryFortuneRepository extends AsyncRepository<FortuneEntity> implements IASyncFortuneRepository<FortuneEntity> {
+public class AsyncInMemoryFortuneRepository extends AsyncRepository<FortuneEntity> implements IAsyncFortuneRepository<FortuneEntity> {
 
     private final ISyncFortuneRepository<FortuneEntity> repository;
 

@@ -24,13 +24,14 @@
  */
 package com.codingrodent.microservice.template.metrics;
 
+import com.codingrodent.microservice.template.metrics.api.ITemplateMetrics;
 import org.springframework.stereotype.Service;
 
 /**
  * Service to handle custom application metrics
  */
 @Service
-public class TemplateMetrics {
+public class TemplateMetrics implements ITemplateMetrics {
 
     private final AppMetricsRegistry registry;
 
@@ -43,6 +44,7 @@ public class TemplateMetrics {
      *
      * @param name Name of metric
      */
+    @Override
     public void inc(final String name) {
         registry.counter(name).inc();
     }

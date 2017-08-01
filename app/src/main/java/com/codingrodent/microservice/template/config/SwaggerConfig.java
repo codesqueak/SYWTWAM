@@ -54,7 +54,7 @@ public class SwaggerConfig {
                 .apiInfo(apiInfo())
                 // Tags used to identify components - purely documentation
                 .tags(new Tag("sync", "Sync demo interface"), //
-                      new Tag("version", "Async demo interface"), //
+                      new Tag("version", "Sync & Async demo interface"), //
                       new Tag("async", "Async demo interface"))
                 // Model substitution rule
                 .directModelSubstitute(LocalDate.class, String.class)
