@@ -27,12 +27,18 @@ package com.codingrodent.microservice.template;
 import com.codingrodent.microservice.template.constants.SystemConstants;
 import org.springframework.boot.*;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
+import org.springframework.cloud.netflix.hystrix.EnableHystrix;
+import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboard;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 /**
  * Application execution root
  */
+@EnableCircuitBreaker
+@EnableHystrix
+@EnableHystrixDashboard
 @SpringBootApplication(scanBasePackages = {"com.codingrodent.microservice.template"})
 public class Application {
 

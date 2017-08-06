@@ -25,6 +25,7 @@
 package com.codingrodent.microservice.template.controller;
 
 import com.codingrodent.microservice.template.metrics.api.ITemplateMetrics;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import io.swagger.annotations.*;
 import org.springframework.core.SpringVersion;
 import org.springframework.http.*;
@@ -77,6 +78,7 @@ public class VersionController {
     @ApiOperation(value = "Read version information", notes = "Version Information (Sync) - For Demo Only", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = { //
             @ApiResponse(code = 200, message = "Version information in body")})
+    @HystrixCommand(fallbackMethod = "readSyncFallback")
     public ResponseEntity<Map<String, String>> readSync() {
         metrics.inc(METRIC_VERSION_GET);
         return getResponse;
@@ -102,4 +104,8 @@ public class VersionController {
         return optionsResponse;
     }
 
+    public ResponseEntity<Map<String, String>> readSyncFallback() {
+        metrics.inc(METRIC_VERSION_GET);
+        return new ResponseEntity<>(new HashMap<String, String>(), HttpStatus.OK);
+    }
 }
