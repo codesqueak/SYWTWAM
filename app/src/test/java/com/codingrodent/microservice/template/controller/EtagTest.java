@@ -39,7 +39,7 @@ public class EtagTest {
     public void encodeDecodeEtagMatch() {
         String url = "/a/test/url/" + UUID.randomUUID();
         long cas = (new Random()).nextLong();
-        String etag = Etag.encodEtag(cas, url);
+        String etag = Etag.encodeEtag(cas, url);
         assertEquals(cas, Etag.decodeEtag(etag, url));
     }
 
@@ -48,7 +48,7 @@ public class EtagTest {
         String url = "/a/test/url/" + UUID.randomUUID();
         String anotherUrl = "/a/test/url/" + UUID.randomUUID();
         long cas = (new Random()).nextLong();
-        String etag = Etag.encodEtag(cas, url);
+        String etag = Etag.encodeEtag(cas, url);
         assertNotEquals(cas, Etag.decodeEtag(etag, anotherUrl));
     }
 

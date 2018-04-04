@@ -75,7 +75,7 @@ public class FortuneControllerTest extends MVCTestBase {
         when(fortuneService.load(any(String.class))).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion), Optional.empty());
 
         String url = BASE + randomUUID;
-        String etag = "\"" + Etag.encodEtag(cas, url) + "\"";
+        String etag = "\"" + Etag.encodeEtag(cas, url) + "\"";
 
         // @formatter:off
         // Invalid UUID
@@ -124,7 +124,7 @@ public class FortuneControllerTest extends MVCTestBase {
     public void headFortune() throws Exception {
         when(fortuneService.load(any(String.class))).thenReturn(Optional.of(modelVersion), Optional.of(modelVersion), Optional.of(modelVersion), Optional.empty());
         String url = BASE + randomUUID;
-        String etag = "\"" + Etag.encodEtag(cas, url) + "\"";
+        String etag = "\"" + Etag.encodeEtag(cas, url) + "\"";
         // @formatter:off
         // Invalid UUID
         performHead(controller, BASE + BAD_UUID, null)
@@ -174,7 +174,7 @@ public class FortuneControllerTest extends MVCTestBase {
         when(fortuneService.save(any(String.class), any(Fortune.class), any(Optional.class))).thenThrow(OptimisticLockingFailureException.class).thenReturn(modelVersion,
                                                                                                                                                             modelVersion, null);
         String url = BASE + randomUUID;
-        String etag = "\"" + Etag.encodEtag(cas, url) + "\"";
+        String etag = "\"" + Etag.encodeEtag(cas, url) + "\"";
 
         // @formatter:off
         // No body
@@ -241,7 +241,7 @@ public class FortuneControllerTest extends MVCTestBase {
                 (cas))).thenAnswer(inv -> new ModelVersion<>(fortuneWithUUID2, (Optional) inv.getArguments()[1])).thenReturn(null);
 
         String url = BASE;
-        String etag = "\"" + Etag.encodEtag(cas, url) + "\"";
+        String etag = "\"" + Etag.encodeEtag(cas, url) + "\"";
 
         // @formatter:off
         // No body
@@ -291,7 +291,7 @@ public class FortuneControllerTest extends MVCTestBase {
     public void deleteFortune() throws Exception {
         when(fortuneService.load(any())).thenReturn(Optional.of(modelVersion));
         String url = BASE + randomUUID;
-        String etag = "\"" + Etag.encodEtag(cas, url) + "\"";
+        String etag = "\"" + Etag.encodeEtag(cas, url) + "\"";
 
         // @formatter:off
         // Invalid UUID
