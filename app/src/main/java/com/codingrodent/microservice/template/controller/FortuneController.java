@@ -111,7 +111,7 @@ public class FortuneController extends RestBase<Fortune> implements IFortune<UUI
     }
 
     /**
-     * POST - Submits fortune data to be processed to a specified resource (Return URL in location header etag)
+     * POST - Submits fortune data to be processed to a specified resource
      * <p>
      * Note: Not usually used in REST applications
      *

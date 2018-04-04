@@ -26,12 +26,10 @@ package com.codingrodent.microservice.template.config;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
-
 public class SpringDataCouchbaseTest {
 
     @Test
     public void basicTest() {
-        assertNotNull(new SpringDataCouchbaseConfig());
+        new SpringDataCouchbaseConfig();
     }
 }

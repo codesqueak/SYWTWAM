@@ -42,7 +42,7 @@ import static org.mockito.Mockito.when;
 public class WebConfigTest {
 
     @Test
-    public void configureContentNegotiation() throws Exception {
+    public void configureContentNegotiation() {
         WebConfig webConfig = new WebConfig();
         ContentNegotiationConfigurer contentNegotiationConfigurer = Mockito.mock(ContentNegotiationConfigurer.class);
 

@@ -138,7 +138,7 @@ public abstract class AsyncRepository<T extends EntityBase> implements IAsyncCru
         try {
             return Utility.getObjectMapper().readValue(entity.toString(), (Class<T>) Class.forName(entity.getString(_CLASS)));
         } catch (IOException e) {
-            throw new InvalidDataAccessResourceUsageException("JSON deerialization failed", e);
+            throw new InvalidDataAccessResourceUsageException("JSON deserialization failed", e);
         } catch (ClassNotFoundException e) {
             throw new ApplicationFaultException("Unable to find class for deserialization", e);
         }

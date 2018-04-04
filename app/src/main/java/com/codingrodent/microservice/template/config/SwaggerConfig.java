@@ -12,7 +12,7 @@ import springfox.documentation.schema.WildcardType;
 import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger.web.UiConfiguration;
+import springfox.documentation.swagger.web.*;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import javax.inject.Inject;
@@ -42,7 +42,7 @@ public class SwaggerConfig {
      * @return Template swagger configuration
      */
     @Bean
-    public Docket panopticonApi() {
+    public Docket templateAPI() {
         Docket docket = new Docket(DocumentationType.SWAGGER_2)
                 // Unique docklet name - only required if more than one present
                 .groupName("template-api")
@@ -104,14 +104,22 @@ public class SwaggerConfig {
      */
     @Bean
     UiConfiguration uiConfig() {
-        return new UiConfiguration(null,// url - switch off validation
-                                   "none",       // docExpansion          => none | listAll
-                                   "alpha",      // apiSorter             => alpha
-                                   "schema",     // defaultModelRendering => schema
-                                   new String[]{"get", "post", "put", "delete", "patch", "head", "options"}, // add head and options as not set by default
-                                   false,        // enableJsonEditor      => true | false
-                                   true,         // showRequestHeaders    => true | false
-                                   60000L);      // requestTimeout => in milliseconds, defaults to null (uses jquery xh timeout)
+
+        return UiConfigurationBuilder.builder().
+                validatorUrl(null).
+                docExpansion(DocExpansion.NONE).
+                operationsSorter(OperationsSorter.ALPHA).
+                defaultModelRendering(ModelRendering.MODEL).
+                displayRequestDuration(true).build();
+
+        //        return new UiConfiguration(null,// url - switch off validation
+        //                                   "none",       // docExpansion          => none | listAll
+        //                                   "alpha",      // apiSorter             => alpha
+        //                                   "schema",     // defaultModelRendering => schema
+        //                                   new String[]{"get", "post", "put", "delete", "patch", "head", "options"}, // add head and options as not set by default
+        //                                   false,        // enableJsonEditor      => true | false
+        //                                   true,         // showRequestHeaders    => true | false
+        //                                   60000L);      // requestTimeout => in milliseconds, defaults to null (uses jquery xh timeout)
     }
 
     /**

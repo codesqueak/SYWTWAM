@@ -66,8 +66,9 @@ public interface IREST<K, V> {
      * @return Return Empty result or 'Not Modified' if version matched
      */
     @RequestMapping(path = "/{uuid}", method = RequestMethod.HEAD, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Find Out When a Resource Was Last Modified", notes = "As per GET but do not return body", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Find out When a Resource Was Last Modified", notes = "As per GET but do not return body", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = { //
+            @ApiResponse(code = 200, message = "OK"), //
             @ApiResponse(code = 204, message = "No content"), //
             @ApiResponse(code = 304, message = "Not modified"), //
             @ApiResponse(code = 410, message = "No matching entity exists"), //
@@ -79,7 +80,7 @@ public interface IREST<K, V> {
     }
 
     /**
-     * POST - Submits data to be processed to a specified resource (Return URL in location header etag)
+     * POST - Submits data to be processed to a specified resource
      * <p>
      * Note: Not usually used in REST applications
      *

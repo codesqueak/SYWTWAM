@@ -86,7 +86,7 @@ public class FortuneService implements IFortuneService<Fortune> {
     }
 
     /**
-     * Create an entity
+     * Save an entity
      *
      * @param uuid    UUID of model object to save
      * @param model   Model to create as an entity
@@ -96,8 +96,8 @@ public class FortuneService implements IFortuneService<Fortune> {
     @Override
     public ModelVersion<Fortune> save(final String uuid, final Fortune model, Optional<Long> version) {
 
-        FortuneEntity z = toFortuneEntity.convert(uuid, model, version);
-        FortuneEntity entity = repository.save(z);
+        FortuneEntity entity = toFortuneEntity.convert(uuid, model, version);
+        entity = repository.save(entity);
         return new ModelVersion<>(toFortuneModel.convert(entity), Optional.of(entity.getVersion()));
     }
 

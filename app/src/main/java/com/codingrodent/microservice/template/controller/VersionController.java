@@ -106,6 +106,6 @@ public class VersionController {
 
     public ResponseEntity<Map<String, String>> readSyncFallback() {
         metrics.inc(METRIC_VERSION_GET);
-        return new ResponseEntity<>(new HashMap<String, String>(), HttpStatus.OK);
+        return new ResponseEntity<>(new HashMap<>(), HttpStatus.OK);
     }
 }

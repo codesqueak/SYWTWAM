@@ -27,7 +27,7 @@ package com.codingrodent.microservice.template.config;
 import com.fasterxml.classmate.TypeResolver;
 import org.junit.*;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger.web.UiConfiguration;
+import springfox.documentation.swagger.web.*;
 
 import static org.junit.Assert.*;
 
@@ -41,16 +41,16 @@ public class SwaggerConfigTest {
     }
 
     @Test
-    public void panopticonApi() throws Exception {
-        Docket docket = swaggerConfig.panopticonApi();
+    public void templateApi() {
+        Docket docket = swaggerConfig.templateAPI();
         assertEquals("template-api", docket.getGroupName());
     }
 
     @Test
-    public void uiConfig() throws Exception {
+    public void uiConfig() {
         UiConfiguration uiConfig = swaggerConfig.uiConfig();
-        assertEquals(60000L, uiConfig.getRequestTimeout().longValue());
-        assertArrayEquals(new String[]{"get", "post", "put", "delete", "patch", "head", "options"}, uiConfig.getSupportedSubmitMethods());
+        assertNull(uiConfig.getValidatorUrl());
+        assertEquals(uiConfig.getDefaultModelRendering(), ModelRendering.MODEL);
     }
 
 }

@@ -42,7 +42,7 @@ public class FortuneInMemoryRepositoryTest {
     private int authors;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         repository = new FortuneInMemoryRepository();
         uuids = new HashSet<>();
         authors = 0;
@@ -62,7 +62,7 @@ public class FortuneInMemoryRepositoryTest {
 
 
     @Test
-    public void findAllNamed() throws Exception {
+    public void findAllNamed() {
         List<FortuneEntity> list = repository.findAllNamed(new PageRequest(0, 999));
         assertEquals(authors, list.size());
         for (FortuneEntity entity : list)
@@ -88,7 +88,7 @@ public class FortuneInMemoryRepositoryTest {
     }
 
     @Test
-    public void findAllAnon() throws Exception {
+    public void findAllAnon() {
         List<FortuneEntity> list = repository.findAllAnon(new PageRequest(0, 999));
         assertEquals(uuids.size() - authors, list.size());
         for (FortuneEntity entity : list)
@@ -114,12 +114,12 @@ public class FortuneInMemoryRepositoryTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void findAllPageable1() throws Exception {
+    public void findAllPageable1() {
         repository.findAll((Pageable) null).getContent();
     }
 
     @Test
-    public void findAllPageable2() throws Exception {
+    public void findAllPageable2() {
         List<FortuneEntity> list = repository.findAll(new PageRequest(0, 999)).getContent();
         assertEquals(uuids.size(), list.size());
         for (FortuneEntity entity : list)
@@ -145,12 +145,12 @@ public class FortuneInMemoryRepositoryTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void save1() throws Exception {
+    public void save1() {
         repository.save((FortuneEntity) null);
     }
 
     @Test
-    public void save2() throws Exception {
+    public void save2() {
         String uuid = UUID.randomUUID().toString();
         FortuneEntity entity = repository.save(new FortuneEntity(uuid, "text", "author"));
         assertEquals("author", entity.getAuthor());
@@ -160,12 +160,12 @@ public class FortuneInMemoryRepositoryTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void saveIterable1() throws Exception {
+    public void saveIterable1() {
         repository.save((Iterable<FortuneEntity>) null);
     }
 
     @Test
-    public void saveIterable2() throws Exception {
+    public void saveIterable2() {
         final int size = 7;
         Set<String> uuids = new HashSet<>();
         List<FortuneEntity> entities = new LinkedList<>();
@@ -187,31 +187,31 @@ public class FortuneInMemoryRepositoryTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void findOne1() throws Exception {
+    public void findOne1() {
         repository.findOne(null);
     }
 
     @Test
-    public void findOne2() throws Exception {
+    public void findOne2() {
         for (String uuid : uuids)
             assertNotNull(repository.findOne(uuid));
         assertNull(repository.findOne(UUID.randomUUID().toString()));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void exists1() throws Exception {
+    public void exists1() {
         assertTrue(repository.exists(null));
     }
 
     @Test
-    public void exists2() throws Exception {
+    public void exists2() {
         for (String uuid : uuids)
             assertTrue(repository.exists(uuid));
         assertFalse(repository.exists(UUID.randomUUID().toString()));
     }
 
     @Test
-    public void findAll() throws Exception {
+    public void findAll() {
         Iterable<FortuneEntity> iterable = repository.findAll();
         // check
         int count = 0;
@@ -223,19 +223,19 @@ public class FortuneInMemoryRepositoryTest {
     }
 
     @Test
-    public void count() throws Exception {
+    public void count() {
         assertEquals(uuids.size(), repository.count());
         repository.save(new FortuneEntity(UUID.randomUUID().toString(), "text", "author"));
         assertEquals(uuids.size() + 1, repository.count());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void delete1() throws Exception {
+    public void delete1() {
         repository.delete((String) null);
     }
 
     @Test
-    public void delete2() throws Exception {
+    public void delete2() {
         // make sure nothing happens with random uuid
         assertEquals(uuids.size(), repository.count());
         repository.delete(UUID.randomUUID().toString());
@@ -248,24 +248,24 @@ public class FortuneInMemoryRepositoryTest {
     }
 
     @Test
-    public void deleteAll() throws Exception {
+    public void deleteAll() {
         assertEquals(uuids.size(), repository.count());
         repository.deleteAll();
         assertEquals(0, repository.count());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void deleteEntity1() throws Exception {
+    public void deleteEntity1() {
         repository.delete((FortuneEntity) null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void deleteEntity2() throws Exception {
+    public void deleteEntity2() {
         repository.delete(new FortuneEntity(null, "text", "author"));
     }
 
     @Test
-    public void deleteEntity3() throws Exception {
+    public void deleteEntity3() {
         assertEquals(uuids.size(), repository.count());
         String uuid = uuids.toArray(new String[0])[0];
         repository.delete(new FortuneEntity(uuid, "text", "author"));
@@ -273,12 +273,12 @@ public class FortuneInMemoryRepositoryTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void findAllIterable1() throws Exception {
+    public void findAllIterable1() {
         repository.findAll((Iterable<String>) null);
     }
 
     @Test
-    public void findAllIterable2() throws Exception {
+    public void findAllIterable2() {
         Set<String> toFind = new HashSet<>();
         String[] allUuids = uuids.toArray(new String[0]);
         toFind.add(allUuids[0]);
@@ -290,12 +290,12 @@ public class FortuneInMemoryRepositoryTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void deleteIterable1() throws Exception {
+    public void deleteIterable1() {
         repository.delete((Iterable<FortuneEntity>) null);
     }
 
     @Test
-    public void deleteIterable2() throws Exception {
+    public void deleteIterable2() {
         LinkedList<String> toDelete = new LinkedList<>();
         String[] allUuids = uuids.toArray(new String[0]);
         toDelete.add(allUuids[0]);
@@ -307,12 +307,12 @@ public class FortuneInMemoryRepositoryTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void findAllSort1() throws Exception {
+    public void findAllSort1() {
         repository.findAll(new Sort(new Sort.Order("xyzzy")));
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void findAllSort2() throws Exception {
+    public void findAllSort2() {
         repository.findAll(new Sort(new Sort.Order("xyzzy")));
     }
 

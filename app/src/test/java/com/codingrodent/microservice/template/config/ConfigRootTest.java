@@ -26,12 +26,10 @@ package com.codingrodent.microservice.template.config;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
-
 public class ConfigRootTest {
 
     @Test
     public void basicTest() {
-        assertNotNull(new ConfigRoot());
+        new ConfigRoot();
     }
 }

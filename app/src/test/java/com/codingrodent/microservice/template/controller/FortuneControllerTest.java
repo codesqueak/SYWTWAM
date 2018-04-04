@@ -27,7 +27,6 @@ package com.codingrodent.microservice.template.controller;
 import com.codingrodent.microservice.template.MVCTestBase;
 import com.codingrodent.microservice.template.model.*;
 import com.codingrodent.microservice.template.service.api.IFortuneService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.*;
 import org.mockito.Mock;
 import org.springframework.dao.*;
@@ -60,7 +59,7 @@ public class FortuneControllerTest extends MVCTestBase {
     private IFortuneService<Fortune> fortuneService;
 
     @Before
-    public void init() throws JsonProcessingException {
+    public void init() {
         Fortune fortune = new Fortune("A fortune", Optional.of("An author"));
         fortuneWithUUID1 = new Fortune("A fortune with uuid", Optional.of("An author with uuid"), Optional.of(UUID.randomUUID()));
         fortuneWithUUID2 = new Fortune("A fortune with uuid 2", Optional.of("An author with uuid 2"), Optional.of(UUID.randomUUID()));

@@ -36,7 +36,7 @@ import static org.junit.Assert.*;
 public class EtagTest {
 
     @Test
-    public void encodDecodeEtagMatch() throws Exception {
+    public void encodeDecodeEtagMatch() {
         String url = "/a/test/url/" + UUID.randomUUID();
         long cas = (new Random()).nextLong();
         String etag = Etag.encodEtag(cas, url);
@@ -44,7 +44,7 @@ public class EtagTest {
     }
 
     @Test
-    public void encodDecodeEtagNoMatch() throws Exception {
+    public void encodeDecodeEtagNoMatch() {
         String url = "/a/test/url/" + UUID.randomUUID();
         String anotherUrl = "/a/test/url/" + UUID.randomUUID();
         long cas = (new Random()).nextLong();

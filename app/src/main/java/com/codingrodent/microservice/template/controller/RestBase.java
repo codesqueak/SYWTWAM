@@ -78,7 +78,6 @@ abstract class RestBase<V> {
         if (etag.get().equals(ETAG_WILDCARD))
             return false;
         // if (field matches record) return false;
-
         return !etag.get().equals(generateEtag(modelVersion).orElse(null));
     }
 
@@ -133,6 +132,6 @@ abstract class RestBase<V> {
     /**
      * Generate a quoted strong etag from a supplied CAS value and the URL attached to the thread
      */
-    private final Function<Long, String> makeETag = cas -> "\"" + Etag.encodEtag(cas, getURL()) + "\"";
+    private final Function<Long, String> makeETag = cas -> "\"" + Etag.encodeEtag(cas, getURL()) + "\"";
 
 }

@@ -33,6 +33,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 import rx.Observable;
+import rx.functions.Func0;
 
 import java.util.*;
 
@@ -119,7 +120,7 @@ public interface IAsyncREST<K, V extends ModelBase> {
             @ApiResponse(code = 200, message = "Response entity in body"), //
             @ApiResponse(code = 204, message = "Response entity body is empty"), //
             @ApiResponse(code = 404, message = "No matching entity exists")})
-    default DeferredResult<ResponseEntity<Void>> patch(@RequestBody V value) {
+    default DeferredResult<ResponseEntity<Void>> patch(@ApiParam(name = "uuid", value = "Unique identifier UUID", required = true) @PathVariable UUID uuid, @RequestBody V value) {
         throw new UnsupportedOperationException("Patch not implemented");
     }
 
@@ -155,7 +156,7 @@ public interface IAsyncREST<K, V extends ModelBase> {
         DeferredResult<List<Resource<V>>> result = new DeferredResult<>();
         rx.Observable<LinkedList<Resource<V>>> list = data.lift(new SaveStateOperator<>()).
                 map(f -> new Resource<>(f, getRelLink(f))).
-                collect(() -> new LinkedList<Resource<V>>(), LinkedList::add).first();
+                collect((Func0<LinkedList<Resource<V>>>) LinkedList::new, LinkedList::add).first();
         list.subscribe(result::setResult);
         return result;
     }

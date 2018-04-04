@@ -27,7 +27,6 @@ package com.codingrodent.microservice.template.controller;
 import com.codingrodent.microservice.template.MVCTestBase;
 import com.codingrodent.microservice.template.config.advice.RestAdvice;
 import com.codingrodent.microservice.template.metrics.api.ITemplateMetrics;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.*;
 import org.mockito.Mock;
 import org.springframework.core.SpringVersion;
@@ -55,13 +54,12 @@ public class VersionControllerTest extends MVCTestBase {
     private final static String json = "{\"Java\": \"" + JAVA + "\"," + "  \"Spring\":\"" + SPRING + "\"," + "\"Undertow\":\"" + UNDERTOW + "\"}";
     //
     private MockMvc mvc;
-    private VersionController controller;
     @Mock
     private ITemplateMetrics templateMetrics;
 
     @Before
-    public void init() throws JsonProcessingException {
-        controller = new VersionController(templateMetrics);
+    public void init() {
+        VersionController controller = new VersionController(templateMetrics);
         mvc = MockMvcBuilders.standaloneSetup(controller).setControllerAdvice(new RestAdvice()).setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
     }
 

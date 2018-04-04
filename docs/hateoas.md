@@ -1,6 +1,6 @@
 # HATEOAS - Hypermedia As The Engine Of Application State
 
-_The HATEOAS constraint decouples client and server in a way that allows the server functionality to evolve independently._
+The HATEOAS constraint decouples client and server in a way that allows the server functionality to evolve independently._
 
 ## Spring Support for HATEOAS
 
@@ -44,7 +44,7 @@ adding the link may not be the same thread as that on which the original call is
 generate links is associated with the thread. Different thread, no data - fail!
 
 The way to circumvent this is to store the required information somewhere it can be recovered later in the Observable call chain.  To do this we have a custom operator than in effect does
-nothing except act as a pass through which saving and restoring state.
+nothing except act as a pass through which saves and restores state.
 
 ```java
 public class SaveStateOperator<T> implements Observable.Operator<T, T> {

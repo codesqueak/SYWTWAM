@@ -45,7 +45,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.3.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.10.RELEASE")
         classpath('se.transmode.gradle:gradle-docker:1.2')
         classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17")
     }
@@ -194,47 +194,47 @@ configurations {
 // In this section you declare the dependencies for your production and test code
 dependencies {
     // Spring boot
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.5.4.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow', version: '1.5.4.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '1.5.4.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.5.4.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '1.5.4.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.5.10.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow', version: '1.5.10.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '1.5.10.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.5.10.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '1.5.10.RELEASE'
     // Cloud extensions
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter', version: '1.2.3.RELEASE'
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-commons', version: '1.2.3.RELEASE'
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter', version: '1.3.3.RELEASE'
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-commons', version: '1.3.3.RELEASE'
     // Consul / Discovery
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-consul-all', version: '1.2.1.RELEASE'
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-consul-all', version: '1.3.3.RELEASE'
     // Lots of netflix goodies
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-netflix-core', version: '1.3.2.RELEASE'
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix', version: '1.3.2.RELEASE'
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-hystrix-dashboard', version: '1.3.2.RELEASE'
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-netflix-core', version: '1.4.4.RELEASE'
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '1.4.4.RELEASE'
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix-dashboard', version: '1.4.4.RELEASE'
     // https://mvnrepository.com/artifact/org.springframework.retry/spring-retry
-    compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.2.1.RELEASE'
+    compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.2.2.RELEASE'
     // Spring data for couchbase
-    compile group: 'org.springframework.data', name: 'spring-data-couchbase', version: '2.2.4.RELEASE'
+    compile group: 'org.springframework.data', name: 'spring-data-couchbase', version: '2.2.10.RELEASE'
     // Spring hateoas support
-    compile group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '0.23.0.RELEASE'
+    compile group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '0.24.0.RELEASE'
     // Springfox swagger documentation tools
-    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.7.0'
-    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.7.0'
-    compile group: 'io.springfox', name: 'springfox-bean-validators', version: '2.7.0'
-    compile group: 'io.springfox', name: 'springfox-data-rest', version: '2.7.0'
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.8.0'
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.8.0'
+    compile group: 'io.springfox', name: 'springfox-bean-validators', version: '2.8.0'
+    compile group: 'io.springfox', name: 'springfox-data-rest', version: '2.8.0'
     //  Support for JSR 330: Dependency Injection for Java (pref to autowire - ymmv)
     compile group: 'javax.inject', name: 'javax.inject', version: '1'
     // Java / json twiddling
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.8.9'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.8.9'
-    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.8.9'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.5'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.5'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.5'
+    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.9.5'
     // Lots of observable goodies
-    compile group: 'io.reactivex', name: 'rxjava', version: '1.3.0'
-    // compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.1.0'
+    compile group: 'io.reactivex', name: 'rxjava', version: '1.3.8'
     // Couchbase client side driver
-    compile group: 'com.couchbase.client', name: 'java-client', version: '2.4.7'
+    compile group: 'com.couchbase.client', name: 'java-client', version: '2.5.5'
     // metrics
-    compile group: 'io.dropwizard.metrics', name: 'metrics-core', version: '3.2.3'
-    compile group: 'io.dropwizard.metrics', name: 'metrics-jvm', version: '3.2.3'
-    // https://mvnrepository.com/artifact/net.logstash.logback/logstash-logback-encoder
-    compile group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '4.11'
+    compile group: 'io.dropwizard.metrics', name: 'metrics-core', version: '4.0.2'
+    compile group: 'io.dropwizard.metrics', name: 'metrics-jvm', version: '4.0.2'
+    // elk
+    compile group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '5.0'
 }
 
 

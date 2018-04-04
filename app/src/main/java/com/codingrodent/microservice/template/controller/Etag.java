@@ -39,7 +39,7 @@ class Etag {
      * @param url Location entity held at
      * @return A fairly unique etag
      */
-    static String encodEtag(final long cas, final String url) {
+    static String encodeEtag(final long cas, final String url) {
         int hash = url.hashCode();
         long v = cas ^ (hash << 32 + hash);
         ByteBuffer buffer = ByteBuffer.allocate(8).putLong(v);

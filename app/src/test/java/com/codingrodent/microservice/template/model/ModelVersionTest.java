@@ -33,13 +33,13 @@ import static org.junit.Assert.assertEquals;
 public class ModelVersionTest {
 
     @Test
-    public void getModel() throws Exception {
+    public void getModel() {
         ModelVersion<String> modelVersion = new ModelVersion<>("abc123", Optional.of(12345L));
         assertEquals("abc123", modelVersion.getModel());
     }
 
     @Test
-    public void getVersion() throws Exception {
+    public void getVersion() {
         ModelVersion<String> modelVersion = new ModelVersion<>("abc123", Optional.of(12345L));
         assertEquals(12345L, modelVersion.getVersion().orElse(-1L).longValue());
         modelVersion = new ModelVersion<>("abc123", Optional.empty());
